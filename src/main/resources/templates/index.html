@@ -1,0 +1,20 @@
+<html>
+<head>
+<title>Red5 - OFLADemo</title>
+<script type='text/javascript' src='/static/jwplayer.js'></script>
+</head>
+<body>
+<div id="player">
+<script type='text/javascript'>
+  jwplayer('player').setup({
+    'flashplayer': 'player.swf',
+    'file': '直播页面的Name',
+    'streamer': 'rtmp://127.0.0.1:1935/oflaDemo',
+    'controlbar': 'bottom',
+    'width': '848',
+    'height': '360'
+  });
+</script>
+</div>
+</body>
+</html>
