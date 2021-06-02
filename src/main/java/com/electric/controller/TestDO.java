@@ -3,6 +3,7 @@ package com.electric.controller;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import nuonuo.open.sdk.NNOpenSDK;
 
 /**
  * 
@@ -15,5 +16,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class TestDO {
-    //    private String 
+    public static void main(String[] args) {
+        NNOpenSDK sdk = NNOpenSDK.getIntance();
+    }
 }

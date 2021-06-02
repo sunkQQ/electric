@@ -25,5 +25,6 @@ public class ElectricTuoQiangParam {
 	/** 签名 (必填) */
 	private String sign;
 
+	/** 房间ID */
 	private String roomId;
 }

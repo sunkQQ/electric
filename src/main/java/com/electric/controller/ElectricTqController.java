@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.electric.param.ElectricQuerySurplueParam;
+import com.electric.param.tuoqiang.ElectricTuoQiangParam;
 import com.electric.util.HttpServletRequestUtil;
 import com.electric.util.Md5Util;
 
@@ -30,11 +30,12 @@ public class ElectricTqController {
 	private final static String NONCE = "fWw2Hfn3mwKVtUyhEPYgVjJIvxCwDo9H";
 
 	@RequestMapping(value = "/surplus", method = RequestMethod.POST)
-	public String querySurplus(HttpServletRequest request, ElectricQuerySurplueParam param) {
+	public String querySurplus(HttpServletRequest request, ElectricTuoQiangParam param) {
 //		ValidationUtil.validateEntityThrows(param);
 		Map<String, String> map = HttpServletRequestUtil.getRequestParmeter(request);
 //		System.out.println(JSONObject.toJSON(map));
 
+		System.out.println(param);
 		System.out.println(getSign(map));
 		return map.toString();
 	}
