@@ -1,4 +1,4 @@
-package com.electric.controller;
+package com.electric.controller.electric;
 
 import java.util.ArrayList;
 import java.util.Comparator;

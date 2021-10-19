@@ -1,4 +1,4 @@
-package com.electric.controller;
+package com.electric.controller.nuonuo;
 
 import lombok.Getter;
 import lombok.Setter;
