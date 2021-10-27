@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
+import com.electric.constant.StringConstant;
 import com.electric.util.Base64Util;
 
 /**
@@ -34,9 +35,23 @@ public class NetCityHotController {
         String businessdecode = Base64Util.decodeString(business);
         LOG.info("接收参数：{}", businessdecode);
         if (businessdecode.startsWith("091")) {
-            String result = "E00\t1\t2017-11-20 09:39:30\t资费变更\t0\t0\t0\t0\t2017-11-20 00:00:00\t张婷\t4\t1\t0100000000000000000000000000000000000000000000000000000000000000\t0";
-            LOG.info("查询账号基本信息返回：{}", result);
-            return result;
+//            String result = "E00\t1\t2017-11-20 09:39:30\t资费变更\t0\t0\t0\t0\t2017-11-20 00:00:00\t张婷\t4\t1\t0100000000000000000000000000000000000000000000000000000000000000\t0";
+            StringBuilder sb = new StringBuilder("E00").append(StringConstant.T);
+            sb.append("1").append(StringConstant.T);
+            sb.append("2017-11-20 09:39:30").append(StringConstant.T);
+            sb.append("资费变更").append(StringConstant.T);
+            sb.append("0").append(StringConstant.T);
+            sb.append("0").append(StringConstant.T);
+            sb.append("0").append(StringConstant.T);
+            sb.append("0").append(StringConstant.T);
+            sb.append("2017-11-20 00:00:00").append(StringConstant.T);
+            sb.append("张婷").append(StringConstant.T);
+            sb.append("4").append(StringConstant.T);
+            sb.append("1").append(StringConstant.T);
+            sb.append("0100000000000000000000000000000000000000000000000000000000000000").append(StringConstant.T);
+
+            LOG.info("查询账号基本信息返回：{}", sb.toString());
+            return sb.toString();
         } else if (businessdecode.startsWith("010")) {
             String result = "E00";
             LOG.info("充值接口返回：{}", result);

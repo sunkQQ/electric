@@ -7,6 +7,8 @@ package com.electric.constant;
  */
 public class StringConstant {
 
+    public final static String T = "\t";
+
     public final static String IMG = "" +
             "                   .::::.\n" +
             "                 .::::::::.\n" +
