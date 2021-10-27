@@ -6,13 +6,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
+import com.electric.constant.StringConstant;
+
 @SpringBootApplication
-@EnableAutoConfiguration
+//@EnableAutoConfiguration
 public class ElectricApplication extends SpringBootServletInitializer {
 
 	public static void main(String[] args) {
 		SpringApplication springApplication = new SpringApplication(ElectricApplication.class);
 		springApplication.run(args);
+        System.out.println(StringConstant.IMG);
 	}
 
     @Override
