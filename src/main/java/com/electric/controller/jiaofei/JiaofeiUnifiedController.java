@@ -95,7 +95,7 @@ public class JiaofeiUnifiedController {
         response1.setProCode("101");
         response1.setProName("测试项目");
         response1.setThirdYear(DateUtil.getYear());
-        response1.setDurationCode("202111");
+        response1.setDurationCode(DateUtil.getTimeNow2());
         response1.setDurationName("21年11月");
         response1.setPayAmount("1");
         list.add(response1);
@@ -107,7 +107,7 @@ public class JiaofeiUnifiedController {
         response2.setProCode("101");
         response2.setProName("测试项目");
         response2.setThirdYear(DateUtil.getYear());
-        response2.setDurationCode("202112");
+        response2.setDurationCode(DateUtil.getTimeNow2());
         response2.setDurationName("21年12月");
         response2.setPayAmount("2");
         list.add(response2);
