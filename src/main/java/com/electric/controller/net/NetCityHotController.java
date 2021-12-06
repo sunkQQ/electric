@@ -110,9 +110,9 @@ public class NetCityHotController {
      */
     private void printParameters(HttpServletRequest request) {
         Map<String, Object> map = new HashMap<String, Object>();
-        Enumeration paramNames = request.getParameterNames();
+        Enumeration<String> paramNames = request.getParameterNames();
         while (paramNames.hasMoreElements()) {
-            String paramName = (String) paramNames.nextElement();
+            String paramName = paramNames.nextElement();
 
             String[] paramValues = request.getParameterValues(paramName);
             if (paramValues.length > 0) {
