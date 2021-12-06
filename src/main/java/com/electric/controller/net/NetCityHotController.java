@@ -1,9 +1,6 @@
 package com.electric.controller.net;
 
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.electric.constant.StringConstant;
+import com.electric.param.net.NetRequestParam;
+import com.electric.response.net.cityhot.CityHotV5AccountInfoResponse;
 import com.electric.util.Base64Util;
 
 /**
@@ -29,6 +28,13 @@ public class NetCityHotController {
 
     private static final Logger LOG = LoggerFactory.getLogger(NetCityHotController.class);
 
+    /**
+     * 城市热点接口
+     *
+     * @param request
+     * @param business
+     * @return
+     */
     @RequestMapping(value = "/DrcomServlet", method = RequestMethod.POST)
     public String DrcomServlet(HttpServletRequest request, String business) {
         printParameters(request);
@@ -62,6 +68,36 @@ public class NetCityHotController {
             jsonObject.put("list", null);
             LOG.info("查询订单充值结果返回：{}", jsonObject.toString());
             return jsonObject.toString();
+        }
+        return business;
+    }
+
+    /**
+     * 城市热点V5网费
+     *
+     * @param request
+     * @param business
+     * @return
+     */
+    @RequestMapping(value = "/DrcomService", method = RequestMethod.POST)
+    public String DrcomService(HttpServletRequest request, String business) {
+        printParameters(request);
+        String businessdecode = Base64Util.decodeString(business);
+        LOG.info("接收参数：{}", businessdecode);
+//        JSONObject jsonObject = JSONObject.parseObject(businessdecode);
+        NetRequestParam param = JSONObject.parseObject(businessdecode, NetRequestParam.class);
+        if (param.getCode().equals("S01")) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("result", "E00");
+            CityHotV5AccountInfoResponse response = new CityHotV5AccountInfoResponse();
+            response.setAccount(param.getAccount());
+            response.setBalance(220.0);
+            response.setUser_state(1);
+            response.setPackage_group_id(1);
+            List<CityHotV5AccountInfoResponse> list = new ArrayList<>();
+            list.add(response);
+            jsonObject.put("list", list);
+            return jsonObject.toJSONString();
         }
 
         return business;
