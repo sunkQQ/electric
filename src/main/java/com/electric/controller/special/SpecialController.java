@@ -1,22 +1,20 @@
 package com.electric.controller.special;
 
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.alibaba.fastjson.JSONObject;
+import com.electric.param.special.SpecialUserParam;
+import com.electric.response.special.kayroad.KayRoadQuZhiBaseResponse;
+import com.electric.response.special.kayroad.KayRoadQuZhiUserResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSONObject;
-import com.electric.param.special.SpecialUserParam;
-import com.electric.response.special.kayroad.KayRoadQuZhiBaseResponse;
-import com.electric.response.special.kayroad.KayRoadQuZhiUserResponse;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 生活缴费
@@ -79,6 +77,7 @@ public class SpecialController {
 
     /**
      * 查询个人充值记录接口
+     *
      * @param request
      * @return
      */
@@ -114,9 +113,9 @@ public class SpecialController {
         }
 
         Set<Map.Entry<String, Object>> set = map.entrySet();
-        System.out.println("==============================================================");
+        LOG.info("==============================================================");
         for (Map.Entry<String, Object> entry : set) {
-            System.out.println(entry.getKey() + ":" + entry.getValue());
+            LOG.info(entry.getKey() + ":" + entry.getValue());
         }
     }
 }
