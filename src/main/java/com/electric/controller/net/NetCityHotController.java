@@ -1,20 +1,18 @@
 package com.electric.controller.net;
 
-import java.util.*;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.alibaba.fastjson.JSONObject;
+import com.electric.constant.StringConstant;
+import com.electric.param.net.NetRequestParam;
+import com.electric.response.net.cityhot.CityHotV5AccountInfoResponse;
+import com.electric.util.Base64Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSONObject;
-import com.electric.constant.StringConstant;
-import com.electric.param.net.NetRequestParam;
-import com.electric.response.net.cityhot.CityHotV5AccountInfoResponse;
-import com.electric.util.Base64Util;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 /**
  * 城市热点网费
@@ -89,13 +87,17 @@ public class NetCityHotController {
         if (param.getCode().equals("S01")) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("result", "E00");
-            CityHotV5AccountInfoResponse response = new CityHotV5AccountInfoResponse();
-            response.setAccount(param.getAccount());
-            response.setBalance(220.0);
-            response.setUser_state(1);
-            response.setPackage_group_id(1);
+
             List<CityHotV5AccountInfoResponse> list = new ArrayList<>();
-            list.add(response);
+
+            for (int i = 0; i <= 20; i++) {
+                CityHotV5AccountInfoResponse response1 = new CityHotV5AccountInfoResponse();
+                response1.setAccount(param.getAccount());
+                response1.setBalance(220.0);
+                response1.setUser_state(1);
+                response1.setPackage_group_id(i);
+                list.add(response1);
+            }
             jsonObject.put("list", list);
             return jsonObject.toJSONString();
         }

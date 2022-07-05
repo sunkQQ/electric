@@ -23,4 +23,6 @@ public class NetRequestParam {
 
     /** 账号 */
     private String account;
+
+    private String package_group_id;
 }
