@@ -29,10 +29,12 @@ public class BizException extends BaseException {
 		super(errorCode, errorMessage, cause, args);
 	}
 
+	@Override
 	public void setAnswerUrl(String answerUrl) {
 		super.setAnswerUrl(answerUrl);
 	}
 
+	@Override
 	public String getAnswerUrl() {
 		return super.getAnswerUrl();
 	}

@@ -1,16 +1,17 @@
 package com.electric.socket;
 
-import java.io.IOException;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
+import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
-import com.sun.istack.internal.logging.Logger;
 
 /**
  * WebSocket
@@ -21,7 +22,8 @@ import com.sun.istack.internal.logging.Logger;
 @ServerEndpoint(value = "/websocket")
 public class WebSocketTest {
 
-    private static final Logger LOGGER = Logger.getLogger(WebSocketTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketTest.class);
+
     /**
      * 线程安全的静态变量，表示在线连接数
      */
