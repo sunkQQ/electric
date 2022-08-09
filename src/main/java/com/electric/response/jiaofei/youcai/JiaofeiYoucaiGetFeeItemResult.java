@@ -137,6 +137,9 @@ public class JiaofeiYoucaiGetFeeItemResult extends JiaofeiYoucaiBaseResult {
          */
         @JSONField(name = "IsAllowPartPay")
         private String isAllowPartPay;
+
+        @JSONField(name = "OrderNo")
+        private String orderNo;
     }
 
     public JiaofeiYoucaiGetFeeItemResult(String respcode, String respdesc) {
