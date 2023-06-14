@@ -1,11 +1,11 @@
 package com.electric.util;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * 调用一卡通签名工具类
@@ -112,6 +112,8 @@ public class SignUtil {
 	 * @history
 	 */
 	public static String getSignByMd5(Map<String, String> paramMap, String key) {
+		String str = getSignParams(paramMap);
+		System.out.println(str);
 		String md5F = Md5Util.md5(getSignParams(paramMap) + PARAM_SPLIT + key);
 		return Md5Util.md5(md5F + PARAM_SPLIT + key);
 	}

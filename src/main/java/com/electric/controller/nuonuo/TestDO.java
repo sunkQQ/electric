@@ -18,5 +18,6 @@ import nuonuo.open.sdk.NNOpenSDK;
 public class TestDO {
     public static void main(String[] args) {
         NNOpenSDK sdk = NNOpenSDK.getIntance();
+        //sdk.refreshISVToken()
     }
 }
