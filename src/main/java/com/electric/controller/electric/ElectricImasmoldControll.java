@@ -29,11 +29,16 @@ public class ElectricImasmoldControll {
         json.put("Msg", "成功");
 
         JSONArray array = new JSONArray();
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("RmId", "103");
-        jsonObject.put("WarMoney", "5");
-        jsonObject.put("SyMoney", "2.01");
-        array.add(jsonObject);
+        JSONObject jsonObject1 = new JSONObject();
+        jsonObject1.put("RmId", "103");
+        jsonObject1.put("WarMoney", "5");
+        jsonObject1.put("SyMoney", "2.01");
+        array.add(jsonObject1);
+        JSONObject jsonObject2 = new JSONObject();
+        jsonObject2.put("RmId", "001001001001001");
+        jsonObject2.put("WarMoney", "5");
+        jsonObject2.put("SyMoney", "5.20");
+        array.add(jsonObject2);
 
         json.put("Date", array);
         return json.toString();
