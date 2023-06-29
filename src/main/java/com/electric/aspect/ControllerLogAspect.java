@@ -1,8 +1,7 @@
 package com.electric.aspect;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -15,8 +14,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 
@@ -66,7 +65,9 @@ public class ControllerLogAspect {
 	@AfterReturning(returning = "ret", pointcut = "controllerLog()")
 	public void doAfterReturning(Object ret) throws Throwable {
 		// 处理完请求，返回内容
-		logger.info("返回 : " + JSONObject.toJSON(ret).toString());
+		if (ret != null) {
+			logger.info("返回 : " + JSONObject.toJSON(ret).toString());
+		}
 	}
 
 }
