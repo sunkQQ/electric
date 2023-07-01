@@ -3,9 +3,9 @@ package com.electric.controller.excel;
 import com.alibaba.excel.EasyExcel;
 import com.electric.controller.excel.adapter.CommentWriteHandler;
 import com.electric.controller.excel.listener.SendListListener;
+import com.electric.controller.excel.util.ExcelUtils;
 import com.electric.controller.excel.vo.ExcelError;
 import com.electric.controller.excel.vo.SendListExcel;
-import com.electric.controller.export.ExcelExportUtil;
 import com.electric.util.DateUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -55,8 +55,7 @@ public class ExcelController {
             //map.put(key, gson.toJson(listExcels));
             //map.put(key + SEND_LIST_ERROR, gson.toJson(sendListListener.getExcelErrorMap()));
 
-            SimpleDateFormat fDate = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-            String fileName = fDate.format(new Date());
+            String fileName = DateUtil.getTimeNow();
             response.setContentType("application/vnd.ms-excel");
             response.setCharacterEncoding("utf-8");
             response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
@@ -65,21 +64,10 @@ public class ExcelController {
                 CommentWriteHandler commentWriteHandler = new CommentWriteHandler();
                 Map<Integer, List<ExcelError>> errorMap = sendListListener.getExcelErrorMap();
                 commentWriteHandler.setExcelErrorMap(errorMap);
-                //WriteSheet wh = EasyExcel.write(response.getOutputStream(), SendListExcel.class).inMemory(Boolean.TRUE).sheet("sheet1")
-                //        //注册批注拦截器
-                //        .registerWriteHandler(commentWriteHandler).build();
-                //.doWrite(listExcels);
 
                 EasyExcel.write(response.getOutputStream(), SendListExcel.class).inMemory(Boolean.TRUE).sheet("sheet1")
                     //注册批注拦截器
                     .registerWriteHandler(commentWriteHandler).doWrite(listExcels);
-
-                //excelWriter.head(SendListExcel.class).sheet("sheet1").registerWriteHandler(commentWriteHandler);
-
-                //ExcelWriter ew = EasyExcel.write().excelType(ExcelTypeEnum.XLS).build();
-                //ew.writeContext().writeWorkbookHolder().getWorkbook();
-
-                //ZipEntry zipEntry = new ZipEntry();
             }
 
             System.out.println("size：" + listExcels.size());
@@ -151,12 +139,13 @@ public class ExcelController {
         List<SendListExcel> list = new ArrayList<>();
         for (int i = 0; i <= 100000; i++) {
             SendListExcel excel = new SendListExcel();
-            excel.setAccount(String.valueOf(i));
+            excel.setAccount(String.valueOf(2307620152773775371L + i));
             excel.setAccountType("msg");
             excel.setTemplateCode("code " + i);
             list.add(excel);
         }
-        ExcelExportUtil.exportFile(list, "sheet1", SendListExcel.class, "dddddd", response);
+        //ExcelExportUtil.exportFile(list, "sheet1", SendListExcel.class, "dddddd", response);
+        ExcelUtils.exportExcel(list, "dddddd.xlsx", SendListExcel.class, response);
         System.out.println("end：" + DateUtil.getTimeNow());
         return "success";
     }

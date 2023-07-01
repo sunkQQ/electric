@@ -3,13 +3,21 @@ package com.electric.controller.export;
 import cn.hutool.core.io.resource.ResourceUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.converters.Converter;
+import com.alibaba.excel.enums.CellDataTypeEnum;
+import com.alibaba.excel.metadata.GlobalConfiguration;
+import com.alibaba.excel.metadata.data.ReadCellData;
+import com.alibaba.excel.metadata.data.WriteCellData;
+import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.style.WriteCellStyle;
 import com.alibaba.excel.write.metadata.style.WriteFont;
 import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.AbstractColumnWidthStyleStrategy;
+import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.alibaba.excel.write.style.column.SimpleColumnWidthStyleStrategy;
 import com.electric.controller.export.constant.ExportConstant;
+import com.electric.exception.BizException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +26,7 @@ import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Objects;
@@ -31,7 +40,6 @@ import java.util.Objects;
 @Slf4j
 @Component
 public class ExcelExportUtil<T> {
-
 
     /**
      * excel文件导出, 固定表头(通过实体指定属性的方式)
@@ -47,26 +55,21 @@ public class ExcelExportUtil<T> {
             log.info("ExcelExportUtil exportFile required param can't be empty");
             return;
         }
-        ExcelWriter writer = null;
         try {
             response.setContentType(ExportConstant.EXCEL_CONTENT_TYPE);
             response.setCharacterEncoding(ExportConstant.UTF_8);
             response.setHeader(ExportConstant.CONTENT_DISPOSITION,
-                    ExportConstant.ATTACHMENT_FILENAME + URLEncoder.encode(fileName, "UTF-8") + ExportConstant.XLSX_SUFFIX);
+                ExportConstant.ATTACHMENT_FILENAME + URLEncoder.encode(fileName, "UTF-8") + ExportConstant.XLSX_SUFFIX);
             // 设置导出的表格样式
             HorizontalCellStyleStrategy horizontalCellStyleStrategy = getExportDefaultStyle();
-            writer = EasyExcel.write(response.getOutputStream()).registerWriteHandler(horizontalCellStyleStrategy).build();
-            // 表头数据
-            // sheet页的数据
-
-            WriteSheet sheet = EasyExcel.writerSheet(0, StringUtils.isBlank(sheetName) ? "sheet1" : sheetName).head(head).build();
-            writer.write(exportData, sheet);
+            EasyExcel.write(response.getOutputStream(), head).registerWriteHandler(horizontalCellStyleStrategy)
+                // 自动适配
+                .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+                // 大数值自动转换 防止失真
+                .registerConverter(new ExcelBigNumberConvert()).sheet(StringUtils.isBlank(sheetName) ? "sheet1" : sheetName).doWrite(exportData);
         } catch (Exception e) {
             log.error("ExcelExportUtil exportFile in error:{}", e);
-        } finally {
-            if (null != writer) {
-                writer.finish();
-            }
+            throw new BizException("excel导出异常");
         }
     }
 
@@ -79,7 +82,7 @@ public class ExcelExportUtil<T> {
      * @param exportData 需要导出数据
      * @param sheetNames sheet页的名称，为空则默认以:sheet + 数字规则命名
      */
-    public static <T> void exportFileMultiple(String fileName, List<T> head, List<List<T>> exportData, List<String> sheetNames,
+    public static <T> void exportFileMultiple(List<List<T>> exportData, List<String> sheetNames, String fileName, List<T> head,
                                               HttpServletResponse response) {
         if (Objects.isNull(response) || org.apache.commons.lang3.StringUtils.isBlank(fileName) || CollectionUtils.isEmpty(head)) {
             log.info("ExcelExportUtil exportFile required param can't be empty");
@@ -99,8 +102,9 @@ public class ExcelExportUtil<T> {
                 // sheet页的数据
                 List<T> list = exportData.get(itemIndex);
                 WriteSheet sheet = EasyExcel
-                        .writerSheet(itemIndex, CollectionUtils.isEmpty(sheetNames) ? ExportConstant.SHEET_NAME + itemIndex + 1 : sheetNames.get(itemIndex))
-                        .head(headData.getClass()).build();
+                    .writerSheet(itemIndex,
+                        CollectionUtils.isEmpty(sheetNames) ? ExportConstant.SHEET_NAME + itemIndex + 1 : sheetNames.get(itemIndex))
+                    .head(headData.getClass()).build();
                 writer.write(list, sheet);
             }
         } catch (Exception e) {
@@ -132,10 +136,10 @@ public class ExcelExportUtil<T> {
             HorizontalCellStyleStrategy horizontalCellStyleStrategy = getExportDefaultStyle();
             AbstractColumnWidthStyleStrategy columnWidthStyleStrategy = new SimpleColumnWidthStyleStrategy(ExportConstant.DEFAULT_CELL_LENGTH);
             writer = EasyExcel.write(response.getOutputStream()).registerWriteHandler(horizontalCellStyleStrategy)
-                    .registerWriteHandler(columnWidthStyleStrategy).build();
+                .registerWriteHandler(columnWidthStyleStrategy).build();
             //for (int i = 0; i < exportData.size(); i++) {
             WriteSheet sheet = EasyExcel.writerSheet(0, StringUtils.isBlank(sheetName) ? ExportConstant.SHEET_NAME + 1 : sheetName).head(head)
-                    .build();
+                .build();
             writer.write(exportData, sheet);
             //}
         } finally {
@@ -165,12 +169,12 @@ public class ExcelExportUtil<T> {
             HorizontalCellStyleStrategy horizontalCellStyleStrategy = getExportDefaultStyle();
             AbstractColumnWidthStyleStrategy columnWidthStyleStrategy = new SimpleColumnWidthStyleStrategy(ExportConstant.DEFAULT_CELL_LENGTH);
             writer = EasyExcel.write(response.getOutputStream()).registerWriteHandler(horizontalCellStyleStrategy)
-                    .registerWriteHandler(columnWidthStyleStrategy).build();
+                .registerWriteHandler(columnWidthStyleStrategy).build();
             for (int i = 0; i < exportData.size(); i++) {
                 List<List<T>> tableData = exportData.get(i);
                 WriteSheet sheet = EasyExcel
-                        .writerSheet(i, CollectionUtils.isEmpty(sheetNames) ? ExportConstant.SHEET_NAME + i + 1 : sheetNames.get(i)).head(head.get(i))
-                        .build();
+                    .writerSheet(i, CollectionUtils.isEmpty(sheetNames) ? ExportConstant.SHEET_NAME + i + 1 : sheetNames.get(i)).head(head.get(i))
+                    .build();
                 writer.write(tableData, sheet);
             }
         } finally {
@@ -219,5 +223,48 @@ public class ExcelExportUtil<T> {
         contentWriteCellStyle.setHorizontalAlignment(HorizontalAlignment.CENTER);
         HorizontalCellStyleStrategy horizontalCellStyleStrategy = new HorizontalCellStyleStrategy(headWriteCellStyle, contentWriteCellStyle);
         return horizontalCellStyleStrategy;
+    }
+
+    /**
+     * Excel 数值长度位15位 大于15位的数值转换位字符串
+     */
+    public static class ExcelBigNumberConvert implements Converter<Long> {
+
+        @Override
+        public Class<Long> supportJavaTypeKey() {
+            return Long.class;
+        }
+
+        @Override
+        public CellDataTypeEnum supportExcelTypeKey() {
+            return CellDataTypeEnum.STRING;
+        }
+
+        @Override
+        public Long convertToJavaData(ReadCellData<?> cellData, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
+            Object data = cellData.getData();
+            if (data == null) {
+                return null;
+            }
+            String s = String.valueOf(data);
+            if (s.matches("^\\d+$")) {
+                return Long.parseLong(s);
+            }
+            return null;
+        }
+
+        @Override
+        public WriteCellData<Object> convertToExcelData(Long object, ExcelContentProperty contentProperty, GlobalConfiguration globalConfiguration) {
+            if (object != null) {
+                String str = object.toString();
+                if (str.length() > 15) {
+                    return new WriteCellData<>(str);
+                }
+            }
+            WriteCellData<Object> cellData = new WriteCellData<>(new BigDecimal(object));
+            cellData.setType(CellDataTypeEnum.NUMBER);
+            return cellData;
+        }
+
     }
 }
