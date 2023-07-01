@@ -137,15 +137,16 @@ public class ExcelController {
     public String downloadExcel(HttpServletResponse response) throws IOException {
         System.out.println("start：" + DateUtil.getTimeNow());
         List<SendListExcel> list = new ArrayList<>();
+        int l = 0;
         for (int i = 0; i <= 100000; i++) {
             SendListExcel excel = new SendListExcel();
-            excel.setAccount(String.valueOf(2307620152773775371L + i));
+            excel.setAccount(String.valueOf(2307620152773775371L));
             excel.setAccountType("msg");
             excel.setTemplateCode("code " + i);
             list.add(excel);
         }
         //ExcelExportUtil.exportFile(list, "sheet1", SendListExcel.class, "dddddd", response);
-        ExcelUtils.exportExcel(list, "dddddd.xlsx", SendListExcel.class, response);
+        ExcelUtils.exportExcel(list, "dddddd.xlsx", SendListExcel.class, null, response);
         System.out.println("end：" + DateUtil.getTimeNow());
         return "success";
     }
