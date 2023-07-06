@@ -125,7 +125,7 @@ public class ExcelExportUtil<T> {
      * @param sheetName sheet页名称
      * @param response   响应流
      */
-    public static <T> void exportWithDynamicData(List<List<T>> exportData, String sheetName, List<List<String>> head, String fileName,
+    public static <T> void exportWithDynamicData(List<T> exportData, String sheetName, List<List<String>> head, String fileName,
                                                  HttpServletResponse response) throws IOException {
         ExcelWriter writer = null;
         try {
