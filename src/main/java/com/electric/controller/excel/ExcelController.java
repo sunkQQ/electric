@@ -1,22 +1,19 @@
 package com.electric.controller.excel;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.electric.controller.excel.adapter.CommentWriteHandler;
 import com.electric.controller.excel.listener.SendListListener;
 import com.electric.controller.excel.util.ExcelUtils;
 import com.electric.controller.excel.vo.ExcelError;
 import com.electric.controller.excel.vo.SendListExcel;
 import com.electric.util.DateUtil;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -28,8 +25,6 @@ import java.util.*;
 @RestController
 @RequestMapping("/excel/test")
 public class ExcelController {
-    @Autowired
-    GsonBuilder                 gsonBuilder;
 
     private static final String PREFIX          = "easyExcel_";
     public static final String  SEND_LIST       = "sendList_";
@@ -111,14 +106,10 @@ public class ExcelController {
         String key = PREFIX + SEND_LIST + uuid;
         String listExcelJson = (String) map.get(key);
         String listExcelErrorlJson = (String) map.get(key + SEND_LIST_ERROR);
-        Gson gson = gsonBuilder.create();
         if (listExcelJson != null && listExcelErrorlJson != null) {
-            Type listExcelJsonType = new TypeToken<List<SendListExcel>>() {
-            }.getType();
-            List<SendListExcel> sendListExcels = gson.fromJson(listExcelJson, listExcelJsonType);
-            Type listExcelErrorlJsonType = new TypeToken<Map<Integer, List<ExcelError>>>() {
-            }.getType();
-            Map<Integer, List<ExcelError>> errorMap = gson.fromJson(listExcelErrorlJson, listExcelErrorlJsonType);
+            List<SendListExcel> sendListExcels = JSONArray.parseArray(listExcelJson, SendListExcel.class);
+            Map<Integer, List<ExcelError>> errorMap = JSONObject.parseObject(listExcelErrorlJson, Map.class);
+
             commentWriteHandler.setExcelErrorMap(errorMap);
             EasyExcel.write(response.getOutputStream(), SendListExcel.class).inMemory(Boolean.TRUE).sheet("sheet1")
                 //注册批注拦截器
