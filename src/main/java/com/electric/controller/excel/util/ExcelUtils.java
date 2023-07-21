@@ -41,7 +41,7 @@ public class ExcelUtils {
      * @return   转换后集合
      */
     public static <T> List<T> importExcel(InputStream is, Class<T> clazz) {
-        return EasyExcel.read(is).head(clazz).autoCloseStream(false).sheet().doReadSync();
+        return EasyExcel.read(is).head(clazz).sheet().doReadSync();
     }
 
     /**

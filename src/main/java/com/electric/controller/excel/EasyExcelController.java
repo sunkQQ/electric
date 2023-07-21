@@ -4,6 +4,7 @@ import com.electric.constant.Numbers;
 import com.electric.controller.excel.util.EasyExcelUtil;
 import com.electric.controller.excel.util.ExcelUtils;
 import com.electric.controller.excel.vo.*;
+import com.electric.controller.export.ExcelExportUtil;
 import com.electric.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -80,35 +81,16 @@ public class EasyExcelController {
         List<SendListExcel> listExcels = ExcelUtils.importExcel(file.getInputStream(), SendListExcel.class);
         /* 校验导入信息 */
         Map<Integer, List<ExcelError>> excelErrorMap = checkImportInfo(listExcels);
-        System.out.println("check：" + DateUtil.getTimeNow());
+
         if (excelErrorMap.size() > Numbers.INT_0) {
             ExcelUtils.downErrorImportFile(listExcels, excelErrorMap, SendListExcel.class,response);
             System.out.println("end：" + DateUtil.getTimeNow());
             return "fial";
         } else {
+            // 入库
             save(listExcels);
         }
         return "success";
-    }
-
-    /**
-     * 设置批注集合
-     *
-     * @param excelErrorMap 失败数据标注
-     * @param rowsNum       行数
-     * @param cellIndex     单元格索引
-     * @param msg           错误信息
-     */
-    private void setExcelErrorMaps(Map<Integer, List<ExcelError>> excelErrorMap, int rowsNum, int cellIndex, String msg) {
-        if (excelErrorMap.containsKey(rowsNum)) {
-            List<ExcelError> excelErrors = excelErrorMap.get(rowsNum);
-            excelErrors.add(new ExcelError(rowsNum, cellIndex, msg));
-            excelErrorMap.put(rowsNum, excelErrors);
-        } else {
-            List<ExcelError> excelErrors = new ArrayList<>();
-            excelErrors.add(new ExcelError(rowsNum, cellIndex, msg));
-            excelErrorMap.put(rowsNum, excelErrors);
-        }
     }
 
     /**
@@ -126,25 +108,25 @@ public class EasyExcelController {
             Integer accountCellIndex = EasyExcelUtil.getCellIndex(sle, "account");
             if (accountCellIndex != null) {
                 if (StringUtils.isAllBlank(sle.getAccount())) {
-                    setExcelErrorMaps(excelErrorMap, i, accountCellIndex, "账号不能为空！");
+                    ExcelExportUtil.setExcelErrorMaps(excelErrorMap, i, accountCellIndex, "账号不能为空！");
                 }
             }
             Integer templateCodeCellIndex = EasyExcelUtil.getCellIndex(sle, "templateCode");
             if (templateCodeCellIndex != null) {
                 if (StringUtils.isAllBlank(sle.getTemplateCode())) {
-                    setExcelErrorMaps(excelErrorMap, i, templateCodeCellIndex, "模板编号不能为空！");
+                    ExcelExportUtil.setExcelErrorMaps(excelErrorMap, i, templateCodeCellIndex, "模板编号不能为空！");
                 }
             }
             Integer accountTypeCellIndex = EasyExcelUtil.getCellIndex(sle, "accountType");
             if (accountTypeCellIndex != null) {
                 if (StringUtils.isAllBlank(sle.getAccountType())) {
-                    setExcelErrorMaps(excelErrorMap, i, accountTypeCellIndex, "类型不能为空！");
+                    ExcelExportUtil.setExcelErrorMaps(excelErrorMap, i, accountTypeCellIndex, "类型不能为空！");
                 } else {
                     if ("sms".equals(sle.getAccountType()) || "email".equals(sle.getAccountType()) || "wechat".equals(sle.getAccountType())) {
                         isMatch = false;
                     }
                     if (isMatch) {
-                        setExcelErrorMaps(excelErrorMap, i, accountTypeCellIndex, "类型只允许：sms、email、wechat");
+                        ExcelExportUtil.setExcelErrorMaps(excelErrorMap, i, accountTypeCellIndex, "类型只允许：sms、email、wechat");
                     }
                 }
             }

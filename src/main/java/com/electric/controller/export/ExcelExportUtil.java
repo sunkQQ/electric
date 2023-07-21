@@ -16,6 +16,7 @@ import com.alibaba.excel.write.style.HorizontalCellStyleStrategy;
 import com.alibaba.excel.write.style.column.AbstractColumnWidthStyleStrategy;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.alibaba.excel.write.style.column.SimpleColumnWidthStyleStrategy;
+import com.electric.controller.excel.vo.ExcelError;
 import com.electric.controller.export.constant.ExportConstant;
 import com.electric.exception.BizException;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -266,5 +269,25 @@ public class ExcelExportUtil<T> {
             return cellData;
         }
 
+    }
+
+    /**
+     * 设置批注集合
+     *
+     * @param excelErrorMap 失败数据标注
+     * @param rowsNum       行数
+     * @param cellIndex     单元格索引
+     * @param msg           错误信息
+     */
+    public static void setExcelErrorMaps(Map<Integer, List<ExcelError>> excelErrorMap, int rowsNum, int cellIndex, String msg) {
+        if (excelErrorMap.containsKey(rowsNum)) {
+            List<ExcelError> excelErrors = excelErrorMap.get(rowsNum);
+            excelErrors.add(new ExcelError(rowsNum, cellIndex, msg));
+            excelErrorMap.put(rowsNum, excelErrors);
+        } else {
+            List<ExcelError> excelErrors = new ArrayList<>();
+            excelErrors.add(new ExcelError(rowsNum, cellIndex, msg));
+            excelErrorMap.put(rowsNum, excelErrors);
+        }
     }
 }
