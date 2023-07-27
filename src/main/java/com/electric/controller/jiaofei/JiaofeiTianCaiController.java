@@ -74,7 +74,7 @@ public class JiaofeiTianCaiController {
                 userInfo.setBjmc("测试班级");
                 userInfo.setAbcCode(QUERY_USER_INFO);
                 userInfo.setRxnd("2023");
-                userInfo.setZjh(abcJson.getXh());
+                userInfo.setZjh(abcJson.getSfzh());
                 userInfo.setRtnCode("00");
                 userInfo.setSign(StringUtil.newGuid20());
                 return JSONObject.toJSONString(userInfo);
