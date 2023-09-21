@@ -84,7 +84,7 @@ public class NetCityHotController {
         LOG.info("接收参数：{}", businessdecode);
 //        JSONObject jsonObject = JSONObject.parseObject(businessdecode);
         NetRequestParam param = JSONObject.parseObject(businessdecode, NetRequestParam.class);
-        if (param.getCode().equals("S01")) {
+        if ("S01".equals(param.getCode())) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("result", "E00");
 
@@ -100,12 +100,12 @@ public class NetCityHotController {
             //}
             jsonObject.put("list", list);
             return jsonObject.toJSONString();
-        } else if (param.getCode().equals("S07")) {
+        } else if ("S07".equals(param.getCode())) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("result", "E00");
             jsonObject.put("list", new ArrayList<>());
             return jsonObject.toString();
-        } else if (param.getCode().equals("010")) {
+        } else if ("010".equals(param.getCode())) {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("result", "E00");
             return jsonObject.toString();
