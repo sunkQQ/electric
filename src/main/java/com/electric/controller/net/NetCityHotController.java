@@ -90,16 +90,25 @@ public class NetCityHotController {
 
             List<CityHotV5AccountInfoResponse> list = new ArrayList<>();
 
-            for (int i = 0; i <= 20; i++) {
+            //for (int i = 0; i <= 20; i++) {
                 CityHotV5AccountInfoResponse response1 = new CityHotV5AccountInfoResponse();
                 response1.setAccount(param.getAccount());
                 response1.setBalance(220.0);
                 response1.setUser_state(1);
-                response1.setPackage_group_id(i);
+                response1.setPackage_group_id(8);
                 list.add(response1);
-            }
+            //}
             jsonObject.put("list", list);
             return jsonObject.toJSONString();
+        } else if (param.getCode().equals("S07")) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("result", "E00");
+            jsonObject.put("list", new ArrayList<>());
+            return jsonObject.toString();
+        } else if (param.getCode().equals("010")) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("result", "E00");
+            return jsonObject.toString();
         }
 
         return business;
