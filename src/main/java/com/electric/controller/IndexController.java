@@ -43,10 +43,11 @@ public class IndexController {
             if (values.length > 0) {
                 value = values[0];
             }
+
             inputDate.append("<").append(key).append(">").append(value).append("</").append(key).append(">");
         }
 
-        System.out.println(inputDate.toString());
+        System.out.println(inputDate);
         return "success";
     }
 }

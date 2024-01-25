@@ -10,6 +10,7 @@ import com.electric.response.jiaofei.tiancai.JiaofeiTianCaiBaseResponse;
 import com.electric.response.jiaofei.tiancai.JiaofeiTianCaiPaymentResponse;
 import com.electric.response.jiaofei.tiancai.JiaofeiTianCaiUserInfoResponse;
 import com.electric.util.StringUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -66,6 +67,9 @@ public class JiaofeiTianCaiController {
     @RequestMapping(value = "/BasePage.aspx", method = RequestMethod.POST)
     public String query(JiaofeiTianCaiBaseParam param) {
         JiaofeiTianCaiAbcJsonParam abcJson = JSONObject.parseObject(param.getAbcJson(), JiaofeiTianCaiAbcJsonParam.class);
+        if (StringUtils.isBlank(abcJson.getSfzh())){
+            return null;
+        }
         switch (abcJson.getAbcCode()) {
             case QUERY_USER_INFO:
                 JiaofeiTianCaiUserInfoResponse userInfo = new JiaofeiTianCaiUserInfoResponse();

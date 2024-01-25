@@ -78,7 +78,6 @@ public class SpecialController {
     /**
      * 查询个人充值记录接口
      *
-     * @param request
      * @return
      */
     @RequestMapping(value = "/recharge/user/list", method = RequestMethod.POST)

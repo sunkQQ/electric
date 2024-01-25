@@ -39,14 +39,14 @@ public class JiaofeiYouCaiController {
     private static JiaofeiYoucaiGetFeeItemResult result = new JiaofeiYoucaiGetFeeItemResult("00", "成功");
 
     static {
-        result.setStudentCode("YM201");
-        result.setStudentName("孙康");
+        result.setStudentCode("102404");
+        result.setStudentName("孙里毕");
 
         List<JiaofeiYoucaiGetFeeItemResult.FeeItems> feeItemsList = new ArrayList<>();
 
         List<JiaofeiYoucaiGetFeeItemResult.Items> itemsList = new ArrayList<>();
         JiaofeiYoucaiGetFeeItemResult.Items items1 = new JiaofeiYoucaiGetFeeItemResult.Items();
-        items1.setFeeId("bs-333450");
+        items1.setFeeId("bs-333454");
         items1.setIsMustPay(Boolean.TRUE);
         items1.setYear(2022);
         items1.setProjectCode("01");
@@ -59,7 +59,7 @@ public class JiaofeiYouCaiController {
         //items1.setOrderNo("test001");
         itemsList.add(items1);
         JiaofeiYoucaiGetFeeItemResult.Items items2 = new JiaofeiYoucaiGetFeeItemResult.Items();
-        items2.setFeeId("bs-333451");
+        items2.setFeeId("bs-333453");
         items2.setIsMustPay(Boolean.TRUE);
         items2.setYear(2022);
         items2.setProjectCode("02");
@@ -99,9 +99,9 @@ public class JiaofeiYouCaiController {
         //if (studentParam.getStudentCode().startsWith("YM")) {
         JiaofeiYoucaiStudentInfoResult studentInfo = new JiaofeiYoucaiStudentInfoResult("00", "成功");
         studentInfo.setSexual("男");
-        studentInfo.setStudentCode("YM201");
-        studentInfo.setIdCard("41022520000510571X");
-        studentInfo.setStudentName("孙康");
+        studentInfo.setStudentCode("102404");
+        studentInfo.setIdCard("420101198303168051");
+        studentInfo.setStudentName("孙里毕");
         return JSONObject.toJSONString(studentInfo);
         //}
         //return JSONObject.toJSONString(new JiaofeiYoucaiBaseResult("01", "学号不正确"));
