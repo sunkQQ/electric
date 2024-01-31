@@ -48,6 +48,7 @@ public class Numbers {
 	public static final int INT_61 = 61;
 	public static final int INT_62 = 62;
 	public static final int INT_63 = 63;
+	public static final int INT_64 = 64;
 	public static final int INT_80 = 80;
 	public static final int INT_99 = 99;
 	public static final int INT_100 = 100;
