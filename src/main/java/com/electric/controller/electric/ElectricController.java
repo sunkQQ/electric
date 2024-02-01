@@ -181,11 +181,9 @@ public class ElectricController {
         List<AppElectricUsageRecordVO> usageList = new ArrayList<>();
         int pageNo = param.getPageNo();
         int pageSize = param.getPageSize();
-        System.out.println("pageNo:" + pageNo);
-        System.out.println("pageSize:" + pageSize);
 
-        for (int i = (pageNo - 1) * pageSize + 1; i < pageSize * pageNo + 1; i++) {
-            System.out.println(i);
+        int size = Math.min(pageSize * pageNo + 1, 101);
+        for (int i = (pageNo - 1) * pageSize + 1; i < size; i++) {
             String dateTime = DateUtil.getNextDayString(new Date(), -i, DateUtil.DAY_FORMAT);
             AppElectricUsageRecordVO usageRecord = new AppElectricUsageRecordVO(dateTime, i + "度");
             usageList.add(usageRecord);
