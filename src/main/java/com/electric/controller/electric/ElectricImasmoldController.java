@@ -1,14 +1,16 @@
 package com.electric.controller.electric;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.electric.util.HttpServletRequestUtil;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.electric.util.HttpServletRequestUtil;
 
 /**
  * 亿码电控
@@ -18,7 +20,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/ymcb/inter")
-public class ElectricImasmoldControll {
+public class ElectricImasmoldController {
 
     @RequestMapping(value = "/GetWarning", method = RequestMethod.POST)
     public String getWarning(HttpServletRequest request) {
