@@ -18,6 +18,7 @@ import com.electric.param.*;
 import com.electric.response.CommResponse;
 import com.electric.response.PageResult;
 import com.electric.response.electric.AppElectricUsageRecordVO;
+import com.electric.response.electric.AppRoomBuyRecordVO;
 import com.electric.util.*;
 import com.electric.vo.ElectricRechargeVO;
 import com.electric.vo.ElectricRoomVO;
@@ -170,7 +171,7 @@ public class ElectricController {
     }
 
     @RequestMapping(value = "/queryUsageRecord", method = RequestMethod.POST)
-    public CommResponse<?> queryUsageRecord(HttpServletRequest request, ElectricQueryUsageRecordParam param) {
+    public CommResponse<?> queryUsageRecord(HttpServletRequest request, ElectricQueryRecordParam param) {
         Map<String, String> map = HttpServletRequestUtil.getRequestParmeter(request);
 
         /* 检验签名 */
@@ -187,6 +188,38 @@ public class ElectricController {
             String dateTime = DateUtil.getNextDayString(new Date(), -i, DateUtil.DAY_FORMAT);
             AppElectricUsageRecordVO usageRecord = new AppElectricUsageRecordVO(dateTime, i + "度");
             usageList.add(usageRecord);
+        }
+
+        return PageResult.handle(usageList, 100);
+    }
+
+    @RequestMapping(value = "/queryRoomRecord", method = RequestMethod.POST)
+    public CommResponse<?> queryRoomRecord(HttpServletRequest request, ElectricQueryRecordParam param) {
+        Map<String, String> map = HttpServletRequestUtil.getRequestParmeter(request);
+
+        /* 检验签名 */
+        String sign = SignUtil.getSignByMd5(map, KEY);
+        if (!sign.equalsIgnoreCase(param.getSign())) {
+            return CommResponse.failure("签名不正确");
+        }
+        List<AppRoomBuyRecordVO> usageList = new ArrayList<>();
+        int pageNo = param.getPageNo();
+        int pageSize = param.getPageSize();
+
+        int size = Math.min(pageSize * pageNo + 1, 101);
+        for (int i = (pageNo - 1) * pageSize + 1; i < size; i++) {
+            String dateTime = DateUtil.getNextDayString(new Date(), -i, DateUtil.DAY_FORMAT) + " "
+                              + DateUtil.getTimeNowFormat(DateUtil.HOUR_MINUTE_SECOND_FORMAT);
+            if (i % 2 == 0) {
+                AppRoomBuyRecordVO usageRecord = new AppRoomBuyRecordVO(dateTime, "电费充值", i + "元");
+                usageList.add(usageRecord);
+            } else if (i % 3 == 0) {
+                AppRoomBuyRecordVO usageRecord = new AppRoomBuyRecordVO(dateTime, "赠送金额", i + "元");
+                usageList.add(usageRecord);
+            } else {
+                AppRoomBuyRecordVO usageRecord = new AppRoomBuyRecordVO(dateTime, i + "元");
+                usageList.add(usageRecord);
+            }
         }
 
         return PageResult.handle(usageList, 100);

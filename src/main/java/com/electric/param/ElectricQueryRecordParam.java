@@ -18,7 +18,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class ElectricQueryUsageRecordParam implements Serializable {
+public class ElectricQueryRecordParam implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
