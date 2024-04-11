@@ -23,10 +23,10 @@ import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * 请求日志切面类
  * 
- * 
- * @Author Administrator
- * @Date 2020-9-16
+ * @author sunk
+ * @date 2020-9-16
  *
  */
 @Aspect
