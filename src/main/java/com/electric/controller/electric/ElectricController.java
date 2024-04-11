@@ -50,6 +50,7 @@ public class ElectricController {
     public CommResponse<?> querySurplus(HttpServletRequest request, ElectricQuerySurplueParam param) {
         ValidationUtil.validateEntityThrows(param);
         Map<String, String> map = HttpServletRequestUtil.getRequestParmeter(request);
+        Integer.parseInt(param.getRoomCode());
 
         String sign = SignUtil.getSignByMd5(map, KEY);
 
