@@ -46,7 +46,7 @@ public class IndexController {
 
             inputDate.append("<").append(key).append(">").append(value).append("</").append(key).append(">");
         }
-
+        inputDate.append("</jiJinBean>");
         System.out.println(inputDate);
         return "success";
     }
