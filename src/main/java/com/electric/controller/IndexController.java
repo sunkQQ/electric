@@ -48,6 +48,6 @@ public class IndexController {
         }
         inputDate.append("</jiJinBean>");
         System.out.println(inputDate);
-        return "success";
+        return inputDate.toString();
     }
 }
