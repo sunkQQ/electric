@@ -1,16 +1,16 @@
 package com.electric.controller.special;
 
-/**
- * @author sunk
- * @date 2023/08/08
- */
-
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-
+/**
+ * 获取IP工具类
+ * @author sunk
+ * @date 2023/08/08
+ */
 public class IpUtil {
 
     /**
@@ -18,31 +18,31 @@ public class IpUtil {
      * 主要功能都在main方法里，需要什么自己找
      */
     public static void main(String[] args) {
-        String ip="115.231.235.168";//ip
-        String mask="29";//位数，如果只知道子网掩码不知道位数的话在参考getMaskMap()方法
+        String ip = "115.231.235.168";//ip
+        String mask = "29";//位数，如果只知道子网掩码不知道位数的话在参考getMaskMap()方法
         String submark = getMaskMap(mask);
-        System.out.println("子网掩码为："+submark);
+        System.out.println("子网掩码为：" + submark);
         //获得起始IP和终止IP的方法（包含网络地址和广播地址）
-        String startIp=getBeginIpStr(ip, mask);
-        String endIp=getEndIpStr(ip, mask);
+        String startIp = getBeginIpStr(ip, mask);
+        String endIp = getEndIpStr(ip, mask);
         System.out.println("起始IP：" + startIp + "终止IP：" + endIp);
         //根据位数查询IP数量
         int ipCount = getIpCount("29");
-        System.out.println("ip个数："+ipCount);
+        System.out.println("ip个数：" + ipCount);
         //获得起始IP和终止IP的方法（不包含网络地址和广播地址）
-       /* String subStart=startIp.split("\\.")[0]+"."+startIp.split("\\.")[1]+"."+startIp.split("\\.")[2]+".";
+        /* String subStart=startIp.split("\\.")[0]+"."+startIp.split("\\.")[1]+"."+startIp.split("\\.")[2]+".";
         String subEnd=endIp.split("\\.")[0]+"."+endIp.split("\\.")[1]+"."+endIp.split("\\.")[2]+".";
         startIp=subStart+(Integer.parseInt(startIp.split("\\.")[3])+1);
         endIp=subEnd+(Integer.parseInt(endIp.split("\\.")[3])-1);
         System.out.println("起始IP：" + startIp + "终止IP：" + endIp);
-
+        
         //判断一个IP是否属于某个网段
         boolean flag = isInRange("10.2.0.0", "10.3.0.0/17");
         System.out.println(flag);
-
+        
         //判断是否是一个IP
         System.out.println(isIP("192.168.1.0"));
-
+        
         //把ip转换为数字(mysql中inet_aton()的实现)
         System.out.println(ipToDouble("192.168.1.1"));*/
 
@@ -51,9 +51,9 @@ public class IpUtil {
     /**
      * 根据Ip与子网长度mask,计算第一位可用地址
      * 业务IP是：42.48.62.50，子网长度是30；计算出网络地址是：42.48.62.48，可用地址为 42.48.62.49-42.48.62.50，第一位可用地址就是42.48.62.49
-     * @param ip
-     * @param mask
-     * @return
+     * @param ip ip地址
+     * @param mask 掩码
+     * @return 可用地址
      */
     public static String getStartIp(String ip, String mask) {
         String startIp = getBeginIpStr(ip, mask);
@@ -68,17 +68,13 @@ public class IpUtil {
      */
     public static boolean isInRange(String ip, String cidr) {
         String[] ips = ip.split("\\.");
-        int ipAddr = (Integer.parseInt(ips[0]) << 24)
-                | (Integer.parseInt(ips[1]) << 16)
-                | (Integer.parseInt(ips[2]) << 8) | Integer.parseInt(ips[3]);
+        int ipAddr = (Integer.parseInt(ips[0]) << 24) | (Integer.parseInt(ips[1]) << 16) | (Integer.parseInt(ips[2]) << 8) | Integer.parseInt(ips[3]);
         int type = Integer.parseInt(cidr.replaceAll(".*/", ""));
         int mask = 0xFFFFFFFF << (32 - type);
         String cidrIp = cidr.replaceAll("/.*", "");
         String[] cidrIps = cidrIp.split("\\.");
-        int cidrIpAddr = (Integer.parseInt(cidrIps[0]) << 24)
-                | (Integer.parseInt(cidrIps[1]) << 16)
-                | (Integer.parseInt(cidrIps[2]) << 8)
-                | Integer.parseInt(cidrIps[3]);
+        int cidrIpAddr = (Integer.parseInt(cidrIps[0]) << 24) | (Integer.parseInt(cidrIps[1]) << 16) | (Integer.parseInt(cidrIps[2]) << 8)
+                         | Integer.parseInt(cidrIps[3]);
 
         return (ipAddr & mask) == (cidrIpAddr & mask);
     }
@@ -110,7 +106,7 @@ public class IpUtil {
      * 格式：parseIpMaskRange("192.192.192.1", "23")
      */
     public static int getIpCount(String mask) {
-        return BigDecimal.valueOf(Math.pow(2, 32 - Integer.parseInt(mask))).setScale(0, BigDecimal.ROUND_DOWN).intValue();//IP总数，去小数点
+        return BigDecimal.valueOf(Math.pow(2, 32 - Integer.parseInt(mask))).setScale(0, RoundingMode.DOWN).intValue();//IP总数，去小数点
     }
 
     /**
@@ -134,12 +130,9 @@ public class IpUtil {
             int_ipt[i] = Integer.parseInt(iptod[i]);
         }
         for (int A = int_ipf[0]; A <= int_ipt[0]; A++) {
-            for (int B = (A == int_ipf[0] ? int_ipf[1] : 0); B <= (A == int_ipt[0] ? int_ipt[1]
-                    : 255); B++) {
-                for (int C = (B == int_ipf[1] ? int_ipf[2] : 0); C <= (B == int_ipt[1] ? int_ipt[2]
-                        : 255); C++) {
-                    for (int D = (C == int_ipf[2] ? int_ipf[3] : 0); D <= (C == int_ipt[2] ? int_ipt[3]
-                            : 255); D++) {
+            for (int B = (A == int_ipf[0] ? int_ipf[1] : 0); B <= (A == int_ipt[0] ? int_ipt[1] : 255); B++) {
+                for (int C = (B == int_ipf[1] ? int_ipf[2] : 0); C <= (B == int_ipt[1] ? int_ipt[2] : 255); C++) {
+                    for (int D = (C == int_ipf[2] ? int_ipf[3] : 0); D <= (C == int_ipt[2] ? int_ipt[3] : 255); D++) {
                         ips.add(A + "." + B + "." + C + "." + D);
                     }
                 }
@@ -151,8 +144,8 @@ public class IpUtil {
     /**
      * 把long类型的Ip转为一般Ip类型：xx.xx.xx.xx
      *
-     * @param ip
-     * @return
+     * @param ip long类型的Ip
+     * @return 返回一般Ip类型：xx.xx.xx.xx
      */
     public static String getIpFromLong(Long ip) {
         String s1 = String.valueOf((ip & 4278190080L) / 16777216L);
@@ -171,14 +164,11 @@ public class IpUtil {
     public static Long getIpFromString(String ip) {
         Long ipLong = 0L;
         String ipTemp = ip;
-        ipLong = ipLong * 256
-                + Long.parseLong(ipTemp.substring(0, ipTemp.indexOf('.')));
+        ipLong = ipLong * 256 + Long.parseLong(ipTemp.substring(0, ipTemp.indexOf('.')));
         ipTemp = ipTemp.substring(ipTemp.indexOf('.') + 1, ipTemp.length());
-        ipLong = ipLong * 256
-                + Long.parseLong(ipTemp.substring(0, ipTemp.indexOf('.')));
+        ipLong = ipLong * 256 + Long.parseLong(ipTemp.substring(0, ipTemp.indexOf('.')));
         ipTemp = ipTemp.substring(ipTemp.indexOf(".") + 1, ipTemp.length());
-        ipLong = ipLong * 256
-                + Long.parseLong(ipTemp.substring(0, ipTemp.indexOf('.')));
+        ipLong = ipLong * 256 + Long.parseLong(ipTemp.substring(0, ipTemp.indexOf('.')));
         ipTemp = ipTemp.substring(ipTemp.indexOf('.') + 1, ipTemp.length());
         ipLong = ipLong * 256 + Long.parseLong(ipTemp);
         return ipLong;
@@ -235,16 +225,14 @@ public class IpUtil {
      * @return 终止IP的长整型表示
      */
     public static Long getEndIpLong(String ip, String maskBit) {
-        return getBeginIpLong(ip, maskBit)
-                + ~getIpFromString(getMaskByMaskBit(maskBit));
+        return getBeginIpLong(ip, maskBit) + ~getIpFromString(getMaskByMaskBit(maskBit));
     }
-
 
     /**
      * 根据子网掩码转换为掩码位 如 255.255.255.252转换为掩码位 为 30
      *
-     * @param netmarks
-     * @return
+     * @param netmarks  子网掩码，如255.255.255.252
+     * @return 掩码位
      */
     public static int getNetMask(String netmarks) {
         StringBuilder sbf;
@@ -252,8 +240,8 @@ public class IpUtil {
         int inetmask = 0;
         int count = 0;
         String[] ipList = netmarks.split("\\.");
-        for (int n = 0; n < ipList.length; n++) {
-            sbf = toBin(Integer.parseInt(ipList[n]));
+        for (String s : ipList) {
+            sbf = toBin(Integer.parseInt(s));
             str = sbf.reverse().toString();
             count = 0;
             for (int i = 0; i < str.length(); i++) {
@@ -272,7 +260,7 @@ public class IpUtil {
      * 计算子网大小
      *
      * @param maskBit 掩码位
-     * @return
+     * @return 掩码大小
      */
     public static int getPoolMax(int maskBit) {
         if (maskBit <= 0 || maskBit >= 32) {

@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
- * @Author Administrator
- * @Date 2021年2月24日
+ * @author Administrator
+ * @date 2021年2月24日
  */
 @Controller
 @RequestMapping("/index")

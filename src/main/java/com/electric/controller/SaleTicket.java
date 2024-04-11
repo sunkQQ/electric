@@ -3,8 +3,8 @@ package com.electric.controller;
 /**
  * 
  * 
- * @Author Administrator
- * @Date 2020-9-17
+ * @author Administrator
+ * @date 2020-9-17
  *
  */
 
@@ -31,7 +31,7 @@ public class SaleTicket {
         Thread t3 = new SaleTicketThread("窗口2", ticket);
         Thread t4 = new SaleTicketThread("窗口3", ticket);
         Thread t5 = new SaleTicketThread("窗口4", ticket);
-        
+
     }
 }
 
