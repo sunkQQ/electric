@@ -130,7 +130,13 @@ public class ControllerLogAspect {
         // 定义一个字符串变量str
         String str;
         // 获取请求的输入流
-        BufferedReader br = request.getReader();
+        BufferedReader br;
+        try {
+            br = request.getReader();
+        } catch (Exception e) {
+            log.error("获取请求体输入流失败", e);
+            return;
+        }
         // 逐行读取输入流中的数据，直到读取完毕
         while ((str = br.readLine()) != null) {
             // 将读取到的数据追加到wholeParams中
