@@ -37,9 +37,6 @@ public class IAppService {
         result.setCode("0");
         result.setMsg("success");
 
-        JSONObject json = new JSONObject();
-        json.put("code", 0);
-        json.put("msg", "success");
         JSONObject data = new JSONObject();
         data.put("roomdm", "123456");
 
@@ -50,10 +47,10 @@ public class IAppService {
         topUpType1.put("mdname", "热水");
         topUpTypeList.add(topUpType1);
 
-        JSONObject topUpType2 = new JSONObject();
+        /*        JSONObject topUpType2 = new JSONObject();
         topUpType2.put("cztype", "1097");
         topUpType2.put("mdname", "天然气");
-        topUpTypeList.add(topUpType2);
+        topUpTypeList.add(topUpType2);*/
 
         JSONObject topUpType3 = new JSONObject();
         topUpType3.put("cztype", "1098");
@@ -64,34 +61,33 @@ public class IAppService {
 
         JSONArray sylList = new JSONArray();
         JSONObject syl1 = new JSONObject();
-        syl1.put("SYL", "39.66");
+        syl1.put("SYL", "0.0");
         syl1.put("mdtype", "1096");
         syl1.put("mdname", "热水");
-        syl1.put("SYLJE", "1189.80");
+        syl1.put("SYLJE", "0.0");
         syl1.put("SYBZJE", "0.00");
         syl1.put("SYBZ", "0.00");
         sylList.add(syl1);
 
         JSONObject syl2 = new JSONObject();
-        syl2.put("SYL", "59");
+        syl2.put("SYL", "0.0");
         syl2.put("mdtype", "1097");
         syl2.put("mdname", "天然气");
-        syl2.put("SYLJE", "1189.80");
+        syl2.put("SYLJE", "0.0");
         syl2.put("SYBZJE", "0.00");
         syl2.put("SYBZ", "0.00");
         sylList.add(syl2);
 
         JSONObject syl3 = new JSONObject();
-        syl3.put("SYL", "100");
+        syl3.put("SYL", "0.0");
         syl3.put("mdtype", "1098");
         syl3.put("mdname", "照明用电");
-        syl3.put("SYLJE", "1189.80");
+        syl3.put("SYLJE", "0.0");
         syl3.put("SYBZJE", "0.00");
         syl3.put("SYBZ", "0.00");
         sylList.add(syl3);
 
         data.put("sylList", sylList);
-        json.put("data", data);
         result.setData(data);
         return JSONObject.toJSONString(result);
     }
