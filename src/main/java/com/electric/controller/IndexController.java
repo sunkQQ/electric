@@ -2,6 +2,7 @@ package com.electric.controller;
 
 import com.electric.param.ElectricQuerySurplueParam;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
@@ -49,5 +50,28 @@ public class IndexController {
         inputDate.append("</jiJinBean>");
         System.out.println(inputDate);
         return inputDate.toString();
+    }
+
+    @RequestMapping(value = "/getParamHtml")
+    public String getParamHtml(HttpServletRequest request, Model model) {
+        Map<String, String[]> paramMap = request.getParameterMap();
+        StringBuilder inputDate = new StringBuilder();
+        inputDate.append("<jiJinBean>");
+        for (Map.Entry<String, String[]> entry : paramMap.entrySet()) {
+            String key = entry.getKey();
+            String[] values = entry.getValue();
+            String value = null;
+            if (values.length > 0) {
+                value = values[0];
+            }
+
+            inputDate.append("<").append(key).append(">").append(value).append("</").append(key).append(">");
+        }
+        inputDate.append("</jiJinBean>");
+        System.out.println(inputDate);
+        model.addAttribute("key", inputDate);
+
+        // System.out.println("test");
+        return "index2";
     }
 }

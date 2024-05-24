@@ -44,7 +44,7 @@ public class NetCityHotController {
         if (businessdecode.startsWith("091")) {
             //            String result = "E00\t1\t2017-11-20 09:39:30\t资费变更\t0\t0\t0\t0\t2017-11-20 00:00:00\t张婷\t4\t1\t0100000000000000000000000000000000000000000000000000000000000000\t0";
             StringBuilder sb = new StringBuilder("E00").append(StringConstant.T);
-            sb.append("1").append(StringConstant.T);
+            sb.append("2").append(StringConstant.T);
             sb.append("2017-11-20 09:39:30").append(StringConstant.T);
             sb.append("资费变更").append(StringConstant.T);
             sb.append("0").append(StringConstant.T);
@@ -60,6 +60,10 @@ public class NetCityHotController {
             LOG.info("查询账号基本信息返回：{}", sb.toString());
             return sb.toString();
         } else if (businessdecode.startsWith("010")) {
+            String result = "E00";
+            LOG.info("充值接口返回：{}", result);
+            return result;
+        } else if (businessdecode.startsWith("005")) {
             String result = "E00";
             LOG.info("充值接口返回：{}", result);
             return result;

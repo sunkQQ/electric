@@ -142,11 +142,14 @@ public class IAppService {
         json.put("msg", "充值成功！");
 
         JSONArray array = new JSONArray();
-        JSONObject user = new JSONObject();
-        user.put("roomdm", "1001");
-        user.put("datetime", "2024-04-18");
-        user.put("used", "2");
-        array.add(user);
+        for (int i = 0; i < 20; i++) {
+            JSONObject user = new JSONObject();
+            user.put("roomdm", "1001");
+            user.put("datetime", "2024-04-18");
+            user.put("used", "2");
+            user.put("unit", "吨");
+            array.add(user);
+        }
 
         json.put("data", array);
         return json.toString();

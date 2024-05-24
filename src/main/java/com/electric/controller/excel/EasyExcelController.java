@@ -1,5 +1,6 @@
 package com.electric.controller.excel;
 
+import com.alibaba.excel.util.ListUtils;
 import com.electric.constant.Numbers;
 import com.electric.controller.excel.util.EasyExcelUtil;
 import com.electric.controller.excel.util.ExcelUtils;
@@ -12,10 +13,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * 到处controller
@@ -26,6 +26,58 @@ import java.util.Map;
 @RestController
 @RequestMapping("/excel/easy")
 public class EasyExcelController {
+
+    @GetMapping("/eaysexcelUtil")
+    public void exportEasy(HttpServletResponse response) {
+        List<List<Object>> list = dataList();
+        List<List<String>> head = head();
+        Map<String, String> commentMap = new HashMap<>();
+        commentMap.put("字符串2", "这是个测试批注");
+        commentMap.put("日期", "这是个测试日期");
+        com.electric.controller.excel.EasyExcelUtil.exportExcel(list, "测试.xlsx", head, "测试", response, commentMap);
+    }
+
+    private List<List<String>> head() {
+        List<List<String>> list = ListUtils.newArrayList();
+        List<String> head0 = ListUtils.newArrayList();
+        //head0.add("字符串");
+        head0.add("字符串2");
+        List<String> head1 = ListUtils.newArrayList();
+        //head1.add("字符串");
+        head1.add("数字" + System.currentTimeMillis());
+        List<String> head2 = ListUtils.newArrayList();
+        //head2.add("字符串");
+        head2.add("日期");
+        List<String> head3 = ListUtils.newArrayList();
+        //head3.add("字符串");
+        head3.add("字符串2" + System.currentTimeMillis());
+        list.add(head0);
+        //list.add(head1);
+        list.add(head2);
+        list.add(head3);
+        return list;
+    }
+
+    private List<List<Object>> dataList() {
+        List<List<Object>> list = null;
+        try {
+            list = ListUtils.newArrayList();
+            for (int i = 0; i < 10; i++) {
+                List<Object> data = ListUtils.newArrayList();
+                data.add("字符串" + i);
+                data.add(0.56);
+                data.add(new Date());
+                Arrays.asList(new URL("https://img2.baidu.com/it/u=1906732828,3160455141&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=666"),
+                    new URL("https://img2.baidu.com/it/u=1906732828,3160455141&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=666"));
+                //data.add(new URL(
+                //        "https://img2.baidu.com/it/u=1906732828,3160455141&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=666","https://img2.baidu.com/it/u=1906732828,3160455141&fm=253&fmt=auto&app=138&f=JPEG?w=500&h=666"));
+                list.add(data);
+            }
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
+    }
 
     /**
      * 导出到一个压缩文件 包含两个excel，其中一个包含两个sheet，另一个使用模块
@@ -83,7 +135,7 @@ public class EasyExcelController {
         Map<Integer, List<ExcelError>> excelErrorMap = checkImportInfo(listExcels);
 
         if (excelErrorMap.size() > Numbers.INT_0) {
-            ExcelUtils.downErrorImportFile(listExcels, excelErrorMap, SendListExcel.class,response);
+            ExcelUtils.downErrorImportFile(listExcels, excelErrorMap, SendListExcel.class, response);
             System.out.println("end：" + DateUtil.getTimeNow());
             return "fial";
         } else {

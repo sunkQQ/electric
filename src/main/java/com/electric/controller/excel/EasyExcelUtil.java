@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
+import org.apache.poi.xssf.usermodel.XSSFRichTextString;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -26,10 +28,12 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.handler.CellWriteHandler;
 import com.alibaba.excel.write.handler.RowWriteHandler;
+import com.alibaba.excel.write.handler.context.RowWriteHandlerContext;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.holder.WriteSheetHolder;
 import com.alibaba.excel.write.metadata.holder.WriteTableHolder;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
+import com.electric.controller.excel.adapter.HeadCommentWriteHandler;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -131,6 +135,48 @@ public class EasyExcelUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 导出excel
+     *
+     * @param dataList 导出数据集合
+     * @param fileName 工作表的名称
+     * @param head 导出表头
+     * @param sheetName sheet名称
+     * @param response response
+     */
+    public static void exportExcel(List<List<Object>> dataList, String fileName, List<List<String>> head, String sheetName,
+                                   HttpServletResponse response, Map<String, String> commentMap) {
+        try {
+            response.reset();
+            setAttachmentResponseHeader(response, fileName);
+            ServletOutputStream os = response.getOutputStream();
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8");
+            HeadCommentWriteHandler handler = new HeadCommentWriteHandler();
+            handler.setCommentMap(commentMap, head);
+            EasyExcel.write(os).head(head)
+                // 自动适配
+                .registerWriteHandler(handler).registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+                // 大数值自动转换 防止失真
+                .registerConverter(new ExcelBigNumberConvert()).sheet(sheetName).doWrite(dataList);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 创建批注锚点
+     *
+     * @param workbook
+     * @return
+     * @date  2024年4月30日 上午9:16:04 luochao
+     *
+     */
+    private static ClientAnchor newClientAnchor() {
+        //xls
+        //xlsx
+        return new XSSFClientAnchor(0, 0, 0, 0, (short) 3, 3, (short) 5, 6);
     }
 
     /**
@@ -348,6 +394,28 @@ public class EasyExcelUtil {
         response.addHeader("Access-Control-Expose-Headers", "Content-Disposition,download-filename");
         response.setHeader("Content-disposition", contentDispositionValue);
         response.setHeader("download-filename", percentEncodedFileName);
+    }
+
+    /**
+     * 将参数校验失败的Exccel，添加批注后导出
+     *
+     * @author sunk
+     * @date 2023/07/14 9:10
+     */
+    public static class HeadBuildComment implements RowWriteHandler {
+        @Override
+        public void afterRowDispose(RowWriteHandlerContext context) {
+            if (context.getHead()) {
+                Sheet sheet = context.getWriteSheetHolder().getSheet();
+                Drawing<?> drawingPatriarch = sheet.createDrawingPatriarch();
+                // 在第一行 第二列创建一个批注
+                Comment comment = drawingPatriarch.createCellComment(new XSSFClientAnchor(0, 0, 0, 0, (short) 1, 0, (short) 2, 1));
+                // 输入批注信息
+                comment.setString(new XSSFRichTextString("创建批注!"));
+                // 将批注添加到单元格对象中
+                sheet.getRow(0).getCell(1).setCellComment(comment);
+            }
+        }
     }
 
     /**
