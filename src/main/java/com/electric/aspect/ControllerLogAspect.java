@@ -134,7 +134,7 @@ public class ControllerLogAspect {
         try {
             br = request.getReader();
         } catch (Exception e) {
-            log.error("获取请求体输入流失败", e);
+            log.error("获取请求体输入流失败");
             return;
         }
         // 逐行读取输入流中的数据，直到读取完毕

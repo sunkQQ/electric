@@ -25,14 +25,33 @@ public class IAppService {
 
     /**
      * 查询余额
-     * @param signkey
-     * @param roomdm
+     //* @param signkey
+     //* @param roomdm
      * @return
      */
-    @WebMethod(operationName = "GetYEInfo")
-    @WebResult(name = "GetYEInfoResult", targetNamespace = "www.cdgf.com")
-    public String GetYEInfo(@WebParam(name = "signkey") String signkey, @WebParam(name = "roomdm") String roomdm) {
-        log.info("查询余额， 请求参数--> roomdm:{}, signkey:{}", roomdm, signkey);
+    @WebMethod(action = "/GetYEInfo")
+    @WebResult(name = "GetYEInfoResult")
+    //@RequestMapping(value = "/GetYEInfo", produces = "text/xml;charset=UTF-8")
+    //public String GetYEInfo(@WebParam(name = "signkey") String signkey, @WebParam(name = "roomdm") String roomdm, @RequestBody String xmlData) {
+    //public String GetYEInfo(GetYeInfoParam param) {
+    public String GetYEInfo(/*HttpServletRequest request*/) {
+        /*StringBuffer sb = new StringBuffer();
+        try {
+            InputStream is = request.getInputStream();
+            String s;
+            BufferedReader in = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+            while ((s = in.readLine()) != null) {
+                sb.append(s);
+            }
+            in.close();
+            is.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(sb);*/
+        //log.info("xmlData:{}", xmlData);
+        //log.info("查询余额， 请求参数--> roomdm:{}, signkey:{}", roomdm, signkey);
+        //log.info("查询余额， 请求参数--> {}", param);
         GetYEInfoResult result = new GetYEInfoResult();
         result.setCode("0");
         result.setMsg("success");
@@ -170,7 +189,9 @@ public class IAppService {
 
     public static void main(String[] args) {
         //http://192.168.88.236:8080/AppService.svc?wsdl
+        //Endpoint.publish("http://192.168.88.236:8080/AppService.svc", new IAppService());
         Endpoint.publish("http://192.168.88.236:8080/AppService.svc", new IAppService());
+
         System.out.println("WebService is published!");
     }
 

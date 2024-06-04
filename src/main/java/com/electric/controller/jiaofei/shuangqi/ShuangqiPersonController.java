@@ -1,4 +1,4 @@
-package com.electric.controller.shuangqi;
+package com.electric.controller.jiaofei.shuangqi;
 
 import com.alibaba.fastjson.JSONObject;
 import com.electric.constant.Numbers;
