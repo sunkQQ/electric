@@ -8,11 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.*;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.electric.param.jiaofei.chaoxing.ChaoXingLibraryLendingParam;
 import com.electric.param.jiaofei.chaoxing.ChaoXingNoticeParam;
 import com.electric.response.jiaofei.chaoxing.ChaoXingBaseResult;
-import com.electric.response.jiaofei.chaoxing.ChaoXingLibraryTokenResult;
 import com.electric.response.jiaofei.chaoxing.ChaoxingUserDueDetailResult;
 import com.electric.util.DateUtil;
 import com.electric.util.StringUtil;
@@ -66,47 +66,62 @@ public class JiaofeiChaoXingController {
     @RequestMapping(value = "/fu/loa/lendbook/lending", method = RequestMethod.POST)
     public String lending(HttpServletRequest request, @RequestBody ChaoXingLibraryLendingParam param,
                           @RequestHeader(name = "Authorization") String authorization) {
-        System.out.println(param);
-        System.out.println(authorization);
-        /*Map<String, String> map = HttpServletRequestUtil.getRequestParmeter(request);
-        JSONObject jsonObject = new JSONObject(Boolean.TRUE);
-        String sign = SignUtil.getSignByMd5(map, KEY);
-        if (!sign.equalsIgnoreCase(param.getSign())) {
-            jsonObject.put("statusCode", -1);
-            jsonObject.put("message", "签名不正确");
-            return jsonObject.toString();
-        }
-        List<JiaofeiQueryDateResponse> list = getJiaofeiQueryDateResponses(param);
-        
-        jsonObject.put("statusCode", 0);
-        jsonObject.put("message", "操作成功");
-        jsonObject.put("data", JSONArray.toJSON(list));
-        return jsonObject.toJSONString();*/
-        String res = "{\n" + "  \"success\": true,\n" + "  \"errorCode\": 0,\n" + "  \"message\": \"成功\",\n" + "  \"data\": [\n" + "    {\n"
-                     + "      \"loanId\": 40,\n" + "      \"userId\": 1,\n" + "      \"userLibCode\": \"0000000000\",\n"
-                     + "      \"userLibName\": \"测试图书馆\",\n" + "      \"normReturnDate\": \"2018-05-27 08:12:28\",\n" + "      \"renewTimes\": 0,\n"
-                     + "      \"recallTimes\": 0,\n" + "      \"loanDate\": \"2018-05-21 08:12:28\",\n" + "      \"locationId\": 3,\n"
-                     + "      \"locationName\": \"人文图书馆藏地\",\n" + "      \"itemLibCode\": \"0000000000\",\n" + "      \"itemLibName\": \"测试图书馆\",\n"
-                     + "      \"loanDeskId\": 1,\n" + "      \"loanDeskName\": \"默认工作台\",\n" + "      \"attachment\": \"\",\n"
-                     + "      \"renewDate\": \"2018-05-21 08:12:28\",\n" + "      \"loanType\": \"2\",\n" + "      \"title\": \"用药咨询\",\n"
-                     + "      \"author\": \"郭曼茜主编\",\n" + "      \"publisher\": \"杭州出版社\",\n" + "      \"isbn\": \"7-80633-326-6\",\n"
-                     + "      \"isbn10\": \"7530833340\",\n" + "      \"isbn13\": \"9787530833346\",\n" + "      \"publishYear\": \"2002\",\n"
-                     + "      \"barcode\": \"12123123\",\n" + "      \"recordId\": \"248\"\n" + "    }\n" + "  ]\n" + "}";
-        return res;
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("success", true);
+        jsonObject.put("errorCode", 0);
+        jsonObject.put("message", "成功");
+
+        JSONArray jsonArray = new JSONArray();
+        JSONObject json = new JSONObject();
+        json.put("loanId", 40);
+        json.put("userId", 1);
+        json.put("userLibCode", "0000000000");
+        json.put("userLibName", "测试图书馆");
+        json.put("normReturnDate", DateUtil.getTimeNow());
+        json.put("renewTimes", 0);
+        json.put("recallTimes", 0);
+        json.put("loanDate", DateUtil.getTimeNow());
+        json.put("locationId", 3);
+        json.put("locationName", "人文图书馆藏地");
+        json.put("itemLibCode", "0000000000");
+        json.put("itemLibName", "测试图书馆");
+        json.put("loanDeskId", 1);
+        json.put("loanDeskName", "默认工作台");
+        json.put("attachment", "");
+        json.put("renewDate", DateUtil.getTimeNow());
+        json.put("loanType", "2");
+        json.put("title", "用药咨询");
+        json.put("author", "郭曼茜主编");
+        json.put("publisher", "杭州出版社");
+        json.put("isbn", "7-80633-326-6");
+        json.put("isbn10", "7530833340");
+        json.put("isbn13", "9787530833346");
+        json.put("publishYear", "2002");
+        json.put("barcode", "12123123");
+        json.put("recordId", "248");
+        jsonArray.add(json);
+        jsonObject.put("data", jsonArray);
+
+        return jsonObject.toJSONString();
 
     }
 
     @RequestMapping(value = "/oauth/token", method = RequestMethod.GET)
     public String getToken(String grant_type, String scope) {
         log.info("grant_type:{}, socpe:{}", grant_type, scope);
-        String str = " {\n"
-                     + "            \"access_token\": \"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6WyJ4Il0sImV4cCI6MTUyNjY1NDA3NywianRpIjoiMGIxYTdmNDMtMmU5Yi00NzAzLWIwZTYtNmJlMGM5ODEwZmI3IiwiY2xpZW50X2lkIjoiYzFjMWE0OTdlNzU3NDJkOTk1YjM1OGQ5Njk2NzcxNDUiLCJncm91cENvZGUiOiIwMDAwMDAwMDAwIiwibWFwcGluZ1BhdGgiOiJuanQifQ.InoBIu9ZvtT_TG6dFEn-bRhAaQ_dv2mAqqLu5eREehC2M4uh-Tpk3z5dAqaCUuLkcJILxLlZ0nI8jmjSRKSEdN2vVNLmIB-LsLXMVhOjcZny1NWge5cGy7yvrJr3dYUnmZwCJFe1XDzsrnzmv8ZLaeHPcXhsjSBMuuNGABbqjXk1FMOUglzQtY_fl03nhMYn_dGushyidS1EFz2IHD_t3VrT5mesa5SeQWZFD6Xc78rV-Jkq7uzjBIb21OaiqR-8x2JvW0MGENlaoKrGX4SrOcWxXFpArG6dOtPWCpF3URPsktn2YCgPHT9RgY8UOOA5DWUtCweF6d_P-OK_d_tExg\",\n"
-                     + "                \"token_type\": \"bearer\",\n" + "                \"expires_in\": 43199,\n"
-                     + "                \"scope\": \"x\",\n" + "                \"groupCode\": \"0000000000\",\n"
-                     + "                \"mappingPath\": \"njt\",\n" + "                \"jti\": \"0b1a7f43-2e9b-4703-b0e6-6be0c9810fb7\"\n"
-                     + "        }";
-        ChaoXingLibraryTokenResult tokenResult = JSONObject.parseObject(str, ChaoXingLibraryTokenResult.class);
-        return str;
+
+        JSONObject json = new JSONObject();
+        json.put("access_token",
+            "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6WyJ4Il0sImV4cCI6MTUyNjY1NDA3NywianRpIjoiMGIxYTdmNDMtMmU5Yi00NzAzLWIwZTYtNmJlMGM5ODEwZmI3IiwiY2xpZW50X2lkIjoiYzFjMWE0OTdlNzU3NDJkOTk1YjM1OGQ5Njk2NzcxNDUiLCJncm91cENvZGUiOiIwMDAwMDAwMDAwIiwibWFwcGluZ1BhdGgiOiJuanQifQ.InoBIu9ZvtT_TG6dFEn-bRhAaQ_dv2mAqqLu5eREehC2M4uh-Tpk3z5dAqaCUuLkcJILxLlZ0nI8jmjSRKSEdN2vVNLmIB-LsLXMVhOjcZny1NWge5cGy7yvrJr3dYUnmZwCJFe1XDzsrnzmv8ZLaeHPcXhsjSBMuuNGABbqjXk1FMOUglzQtY_fl03nhMYn_dGushyidS1EFz2IHD_t3VrT5mesa5SeQWZFD6Xc78rV-Jkq7uzjBIb21OaiqR-8x2JvW0MGENlaoKrGX4SrOcWxXFpArG6dOtPWCpF3URPsktn2YCgPHT9RgY8UOOA5DWUtCweF6d_P-OK_d_tExg");
+        json.put("token_type", "bearer");
+        json.put("expires_in", 43199);
+        json.put("scope", "x");
+        json.put("groupCode", "0000000000");
+        json.put("mappingPath", "njt");
+        json.put("jti", "0b1a7f43-2e9b-4703-b0e6-6be0c980fb7");
+
+        return json.toJSONString();
     }
 
     @RequestMapping(value = "/open/user/getUserOverDueDetail", method = RequestMethod.GET)

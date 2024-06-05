@@ -3,6 +3,8 @@ package com.electric.util;
 import java.util.Calendar;
 import java.util.Random;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * 字符串工具类
  *
@@ -161,6 +163,21 @@ public class StringUtil {
             }
         }
         return val.toString();
+    }
+
+    /**
+     * 获取首字母小写
+     *
+     * @param name
+     * @return
+     * @create  2020年6月24日 下午3:18:19 luochao
+     * @history
+     */
+    public static String getFirstCharLower(String name) {
+        if (StringUtils.isBlank(name)) {
+            return null;
+        }
+        return name.substring(0, 1).toLowerCase().concat(name.substring(1));
     }
 
     public static void main(String[] args) {
