@@ -46,15 +46,22 @@ public class JiaofeiFuDanFuYiController {
         map1.put("feeitemdeford", "1");
         map1.put("feeitemname", "java从入门到精通");
         map1.put("feeord", StringUtil.generateMixNum(6));
-        map1.put("paidamt", "50");
+        map1.put("paidamt", "1.47");
         LIST.add(map1);
 
         Map<String, String> map2 = new LinkedHashMap<>();
         map2.put("feeitemdeford", "2");
         map2.put("feeitemname", "java从入门到放弃");
         map2.put("feeord", StringUtil.generateMixNum(6));
-        map2.put("paidamt", "200");
+        map2.put("paidamt", "2.58");
         LIST.add(map2);
+
+        Map<String, String> map3 = new LinkedHashMap<>();
+        map3.put("feeitemdeford", "2");
+        map3.put("feeitemname", "java从入门到121312放弃");
+        map3.put("feeord", StringUtil.generateMixNum(6));
+        map3.put("paidamt", "3.69");
+        LIST.add(map3);
     }
 
     @RequestMapping(value = "/queryfee.action", method = RequestMethod.POST)
@@ -108,14 +115,16 @@ public class JiaofeiFuDanFuYiController {
             abcsh.addChild(username);
 
             OMElement fees = fac.createOMElement("fees", omNs);
-            for (Map<String, String> map : LIST) {
-                OMElement fee = fac.createOMElement("fee", omNs);
-                for (String key : map.keySet()) {
-                    OMElement keyElement = fac.createOMElement(key, omNs);
-                    keyElement.setText(map.get(key));
-                    fee.addChild(keyElement);
+            if (userid.getText().equals("24052302") || userid.getText().equals("234040020")) {
+                for (Map<String, String> map : LIST) {
+                    OMElement fee = fac.createOMElement("fee", omNs);
+                    for (String key : map.keySet()) {
+                        OMElement keyElement = fac.createOMElement(key, omNs);
+                        keyElement.setText(map.get(key));
+                        fee.addChild(keyElement);
+                    }
+                    fees.addChild(fee);
                 }
-                fees.addChild(fee);
             }
             abcsh.addChild(fees);
 

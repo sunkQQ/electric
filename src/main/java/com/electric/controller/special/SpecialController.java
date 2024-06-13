@@ -1,20 +1,25 @@
 package com.electric.controller.special;
 
-import com.alibaba.fastjson.JSONObject;
-import com.electric.param.special.SpecialUserParam;
-import com.electric.response.special.kayroad.KayRoadQuZhiBaseResponse;
-import com.electric.response.special.kayroad.KayRoadQuZhiUserResponse;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import com.alibaba.fastjson.JSONObject;
+import com.electric.param.special.KayRoadQuZhiRefundApplyParam;
+import com.electric.param.special.KayRoadQuZhiRefundStatusUpdateParam;
+import com.electric.param.special.SpecialUserParam;
+import com.electric.response.special.kayroad.KayRoadQuZhiBaseResponse;
+import com.electric.response.special.kayroad.KayRoadQuZhiRefundApplyResponse;
+import com.electric.response.special.kayroad.KayRoadQuZhiUserResponse;
 
 /**
  * 生活缴费
@@ -45,7 +50,7 @@ public class SpecialController {
         response.setAccountId("20001681");
         response.setTelPhone(param.getTelPhone());
         response.setStatusId("0");
-        response.setAccountMoney("0");
+        response.setAccountMoney("10");
         response.setAccountGivenMoney("0");
         response.setIsCard("0");
         response.setCardStatusId("-1");
@@ -88,6 +93,28 @@ public class SpecialController {
         base.setMessage("成功");
         base.setErrorCode("0");
 
+        return JSONObject.toJSONString(base);
+    }
+
+    @RequestMapping(value = "/refund/apply", method = RequestMethod.POST)
+    public String refundApply(HttpServletRequest request, KayRoadQuZhiRefundApplyParam param) {
+        KayRoadQuZhiBaseResponse base = new KayRoadQuZhiBaseResponse();
+        base.setMessage("成功");
+        base.setErrorCode("0");
+
+        KayRoadQuZhiRefundApplyResponse refundApply = new KayRoadQuZhiRefundApplyResponse();
+        refundApply.setTelPhone(param.getTelPhone());
+        refundApply.setRefundMoney("1000");
+        refundApply.setRefundApplyNo("2000000000");
+        base.setData(JSONObject.toJSONString(refundApply));
+        return JSONObject.toJSONString(base);
+    }
+
+    @RequestMapping(value = "/refund/apply/status/update", method = RequestMethod.POST)
+    public String refundStatus(HttpServletRequest request, KayRoadQuZhiRefundStatusUpdateParam param) {
+        KayRoadQuZhiBaseResponse base = new KayRoadQuZhiBaseResponse();
+        base.setMessage("成功");
+        base.setErrorCode("0");
         return JSONObject.toJSONString(base);
     }
 

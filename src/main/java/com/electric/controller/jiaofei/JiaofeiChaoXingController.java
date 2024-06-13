@@ -33,8 +33,7 @@ public class JiaofeiChaoXingController {
         detailList2.setBehaviourTypeId("3");
         detailList2.setBehaviourName("遗失赔款");
         detailList2.setAvoidPunish("1");
-        BigDecimal dueDebt2 = new BigDecimal("150");
-        detailList2.setDueDebt("150");
+        detailList2.setDueDebt("150.21");
         detailList2.setTitle("java从入门到放弃");
         detailList2.setAuthor("清华大学出版社");
         detailList2.setCallNo("A81/1");
@@ -71,36 +70,38 @@ public class JiaofeiChaoXingController {
         jsonObject.put("success", true);
         jsonObject.put("errorCode", 0);
         jsonObject.put("message", "成功");
-
         JSONArray jsonArray = new JSONArray();
-        JSONObject json = new JSONObject();
-        json.put("loanId", 40);
-        json.put("userId", 1);
-        json.put("userLibCode", "0000000000");
-        json.put("userLibName", "测试图书馆");
-        json.put("normReturnDate", DateUtil.getTimeNow());
-        json.put("renewTimes", 0);
-        json.put("recallTimes", 0);
-        json.put("loanDate", DateUtil.getTimeNow());
-        json.put("locationId", 3);
-        json.put("locationName", "人文图书馆藏地");
-        json.put("itemLibCode", "0000000000");
-        json.put("itemLibName", "测试图书馆");
-        json.put("loanDeskId", 1);
-        json.put("loanDeskName", "默认工作台");
-        json.put("attachment", "");
-        json.put("renewDate", DateUtil.getTimeNow());
-        json.put("loanType", "2");
-        json.put("title", "用药咨询");
-        json.put("author", "郭曼茜主编");
-        json.put("publisher", "杭州出版社");
-        json.put("isbn", "7-80633-326-6");
-        json.put("isbn10", "7530833340");
-        json.put("isbn13", "9787530833346");
-        json.put("publishYear", "2002");
-        json.put("barcode", "12123123");
-        json.put("recordId", "248");
-        jsonArray.add(json);
+        if (param.getPrimaryId().equals("24052302") || param.getPrimaryId().equals("234040020")) {
+
+            JSONObject json = new JSONObject();
+            json.put("loanId", 40);
+            json.put("userId", 1);
+            json.put("userLibCode", "0000000000");
+            json.put("userLibName", "测试图书馆");
+            json.put("normReturnDate", DateUtil.getTimeNow());
+            json.put("renewTimes", 0);
+            json.put("recallTimes", 0);
+            json.put("loanDate", DateUtil.getTimeNow());
+            json.put("locationId", 3);
+            json.put("locationName", "人文图书馆藏地");
+            json.put("itemLibCode", "0000000000");
+            json.put("itemLibName", "测试图书馆");
+            json.put("loanDeskId", 1);
+            json.put("loanDeskName", "默认工作台");
+            json.put("attachment", "");
+            json.put("renewDate", DateUtil.getTimeNow());
+            json.put("loanType", "2");
+            json.put("title", "用药咨询");
+            json.put("author", "郭曼茜主编");
+            json.put("publisher", "杭州出版社");
+            json.put("isbn", "7-80633-326-6");
+            json.put("isbn10", "7530833340");
+            json.put("isbn13", "9787530833346");
+            json.put("publishYear", "2002");
+            json.put("barcode", "12123123");
+            json.put("recordId", "248");
+            jsonArray.add(json);
+        }
         jsonObject.put("data", jsonArray);
 
         return jsonObject.toJSONString();
@@ -128,13 +129,17 @@ public class JiaofeiChaoXingController {
     public String getUserOverDueDetail(String primaryId) {
         log.info("primaryId:{}", primaryId);
         ChaoxingUserDueDetailResult detailResult = new ChaoxingUserDueDetailResult();
-        //detailResult.setDuePay("");
-        BigDecimal duePay = BigDecimal.ZERO;
-        for (ChaoxingUserDueDetailResult.DueDetailList detailList : LIST) {
-            duePay = duePay.add(new BigDecimal(detailList.getDueDebt()));
+        if (primaryId.equals("24052302") || primaryId.equals("234040020")) {
+            //detailResult.setDuePay("");
+            BigDecimal duePay = BigDecimal.ZERO;
+            for (ChaoxingUserDueDetailResult.DueDetailList detailList : LIST) {
+                duePay = duePay.add(new BigDecimal(detailList.getDueDebt()));
+            }
+            detailResult.setDuePay(duePay.toString());
+            detailResult.setList(JSONObject.toJSONString(LIST));
+        } else {
+            detailResult.setList("[]");
         }
-        detailResult.setDuePay(duePay.toString());
-        detailResult.setList(JSONObject.toJSONString(LIST));
 
         ChaoXingBaseResult baseResult = new ChaoXingBaseResult();
         baseResult.setSuccess(true);
