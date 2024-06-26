@@ -42,6 +42,9 @@ public class ElectricQueryRecordParam implements Serializable {
 
     private Integer           pageSize;
 
+    /** 类型：1、电费 2、水费 */
+    private Integer           bussiType;
+
     @NotEmpty(message = "签名不能为空")
     private String            sign;
 }
