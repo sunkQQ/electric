@@ -14,7 +14,7 @@ import java.util.List;
 public class DoubleColorBall {
 
     public static void main(String[] args) {
-        getDoubleColorBallNumber(1);
+        getDoubleColorBallNumber(100);
     }
 
     public static void getDoubleColorBallNumber(int num) {
