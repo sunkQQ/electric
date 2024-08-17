@@ -1,14 +1,19 @@
 package com.electric.controller;
 
-import com.electric.param.ElectricQuerySurplueParam;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
+import com.electric.param.ElectricQuerySurplueParam;
+import com.electric.param.TestParam;
 
 /**
  * @author Administrator
@@ -32,8 +37,14 @@ public class IndexController {
 
     // 获取所有参数和参数值
     @RequestMapping(value = "/getParam")
-    @ResponseBody
-    public String getParamFromRequest(HttpServletRequest request) {
+    public @ResponseBody String getParamFromRequest(HttpServletRequest request, @RequestAttribute(name = "centerExportPlaintext") Integer text,
+                                                    TestParam param, Integer centerExportPlaintext,
+                                                    @RequestParam(value = "centerExportPlaintext", required = false) String head) {
+        System.out.println(text);
+        System.out.println(centerExportPlaintext);
+        System.out.println(head);
+        System.out.println("param:" + param);
+        System.out.println(request.getAttribute("centerExportPlaintext"));
         Map<String, String[]> paramMap = request.getParameterMap();
         StringBuilder inputDate = new StringBuilder();
         inputDate.append("<jiJinBean>");

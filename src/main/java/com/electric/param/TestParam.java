@@ -19,7 +19,9 @@ import lombok.ToString;
 public class TestParam {
 
     @XmlElement(name = "roomdm", namespace = "electric", required = true, type = String.class)
-    private String roomdm;
+    private String  roomdm;
+
+    private Integer centerExportPlaintext;
 
     public TestParam(String roomdm) {
         this.roomdm = roomdm;
