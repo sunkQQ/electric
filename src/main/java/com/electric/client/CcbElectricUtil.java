@@ -91,7 +91,7 @@ public class CcbElectricUtil {
                 }
                 sb.append("&");
             }
-            sb = sb.deleteCharAt(sb.length() - 1);
+            sb.deleteCharAt(sb.length() - 1);
         }
         return sb;
     }
