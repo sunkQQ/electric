@@ -1,23 +1,26 @@
 package com.electric.demo;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.*;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.*;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang.StringUtils;
+
+import com.electric.util.HttpClientUtils;
+
 /**
- * @author sunk
- * @date 2023/05/27
+ * RSADemo
+ * 先md5，再RSA
  */
-public class RsaDemo {
+public class RSADemo {
 
     public static final String  PARAM_SIGN        = "sign";
     public static final String  PARAM_STARTWITH   = "t_";
@@ -128,12 +131,10 @@ public class RsaDemo {
             StringBuffer buf = new StringBuffer("");
             for (int offset = 0; offset < b.length; offset++) {
                 i = b[offset];
-                if (i < 0) {
+                if (i < 0)
                     i += 256;
-                }
-                if (i < 16) {
+                if (i < 16)
                     buf.append("0");
-                }
                 buf.append(Integer.toHexString(i));
             }
             str = buf.toString();
@@ -163,44 +164,48 @@ public class RsaDemo {
     }
 
     public static void main(String[] args) throws Exception {
-        String publicKey = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAJJg3nrXRJ7zCdanoJCcyQycK8CR04K2JXF9RZKDS3uF1jeNuuT6Fl75VVPUxXt/4QTgeBJdm9Y1khaFnOhTqAcCAwEAAQ==";
-
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("partner", "checkCard");
-        map.put("incomeAccount", "YM201");
-        map.put("incomeType", "2");
-        map.put("schoolCode", "yq025");
-        map.put("time", "20090202080403");
-        map.put("realName", "云马201");
-        map.put("ymAppId", "2009041114217022");
-        String signParams = md5(getSignParams(map));
-        System.out.println("signParams:" + signParams);
-        String sign = encryptByPublicKey(signParams, publicKey);
-        System.out.println("sign:" + sign);
-        //        结果
-        //        YM201|2|checkCard|云马201|yq025|20090202080403|2009041114217022
-        //        signParams:9bbacdd2283a65ede5e843440f09b820
-        //        sign:J83u4+YwURVeyNiR00//BsdQoTqCP+rQT4UOOZrYv+c3GXplFWwGzpZW/JnFF3FEORmdQ1ObD+coOtZDkdp/Uw==
-        //-----------------------------------------------------------
-
+        /*//以下公钥为demo数据，测试环境公钥详见对接文档
         String identityPublicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDbicqzabDYMeXzTdHMaRqMAM6e"
                                    + "2hqfzJrF1AkNyNW7G0sAlkypppqqYf68FINedcN3W4GNbjxXi83rzeqO6HOwpp5a"
                                    + "JfoxXGR2FWvyLt2au+j6/HS85VJEkGxvAP003rUMuJZgD+4iZTUUqQDq939ZzIMJ" + "GSr2/3OBgiQERt9rkQIDAQAB";
+        
+        //以下参与签名的key为demo数据，实际为每个接口的所有入参key
+        //例接口传参为callBackUrl=https://webapp.lsmart.wang/card/card_home.shtml&jobNo=YM201&openid=1111111111&userName=云马201&ymAppId=2008311104517010，则签名方式如下：
+        
         Map<String, String> identityMap = new HashMap<String, String>();
         identityMap.put("callBackUrl", "https://webapp.lsmart.wang/card/card_home.shtml");
         identityMap.put("jobNo", "YM201");
         identityMap.put("openid", "1111111111");
         identityMap.put("userName", "云马201");
-        //开发者应用id,由云马开放平台提供,纯粹测试接口不用修改此参数, 实际开发中请修改为实际值
+        //开发者应用id,由云马开放平台提供
         identityMap.put("ymAppId", "2008311104517010");
         String identitySignParams = md5(getSignParams(identityMap));
         System.out.println("identitySignParams:" + identitySignParams);
         String identitySign = encryptByPublicKey(identitySignParams, identityPublicKey);
-        System.out.println("identitySign:" + identitySign);
+        System.out.println("identitySign:" + identitySign);*/
         //结果
         //https://webapp.lsmart.wang/card/card_home.shtml|YM201|1111111111|云马201|2008311104517010
         //identitySignParams:e4ee0b6a34e031430328d749609134cc
         //identitySign:cBfJnBh1OARkf5w6aMRp9o/SPan52LyrESJKoq+Cj7OfmJPZrwSg2r12c/a2nylTn3We7qC5oHUGsFWcTJRqp8iuhw4CeriqgKQm7ET4Otu2HbGU3wsZV38ARCJ7c8PqkRAKPBBmvHmmU/9b1QXYXFRRtpllemofCwxCwDNyRQ0=
+        String publicKey = "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEApKe+rHj0HlJWaKdJls6N"
+                           + "jVCBOW1NLPo8Lb3xsoI+kHnHszIzIAFQi+WxIvB7pNDN0FIAG/DIl2DDvUqi2Veg"
+                           + "YjQx3IkeEyG/JeV5sd0vWsotDZ7YONNWBLWu+FNr1Gnk0/kUiUv1q7Lo/VHH7LQJ"
+                           + "unrOJ7m+4SbBlh1xrttj/NoeIQkGMyTvKQtZxRWyhNZanjACrYDvF6PSw62cMgTL"
+                           + "zyjBLm70PMTRqn4zkXIgafbb+o31jrvpxhm/AI9mr4kUJGDuz5nos1HSDPwqE4qK"
+                           + "1Wzp1ubddvCY4Zo3dZKUT4P+x7XdNJ0t/xHxqxXhOECu8kRGV3XQq89Co6piaIg8"
+                           + "vwpUiDOWu/RKtWP064k3DnoC8PiFOz3tXbprlc7AV4u1FJOLJouqVauKvBXUKjl2"
+                           + "Vqo3Sbs45ZS+BfemkepeqQszraJGRCwarRayQSJl3YFmHIX0q1IW/DZM2E+RoPLO"
+                           + "Cx1n7T97yN5E1IfG0kaaRzg5wAurY8Fh7TdrP4PDwMREPV8ekG87Q4dbhXJkDILR"
+                           + "o55JW6tiPu9XfSBrJ2DvCsBv5KlECnNhr3MQlU0GCdCfJHPcZmKAJLjNjSlMVMQt"
+                           + "YLNlou9pJQuOH4cV24m+7uGq7lH3McfLCzMLZT7tWx/kUdAFG2Nl3b1SqnJNjacB" + "Nf0f4+cYtDRgFS2TMsfhI5sCAwEAAQ==";
+        String url = "https://opengray.xiaofubao.com/routesc/api/route/electric/queryArea";
+        Map<String, String> map = new HashMap<>();
+        map.put("schoolCode", "10514");
+        map.put("ymAppId", "2004241219561002");
+        String signParams = md5(getSignParams(map));
+        String sign = encryptByPublicKey(signParams, publicKey);
+        map.put("sign", sign);
+        String result = HttpClientUtils.post(url, map);
+        System.out.println(result);
     }
-
 }

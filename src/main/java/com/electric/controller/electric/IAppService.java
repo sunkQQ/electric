@@ -190,7 +190,7 @@ public class IAppService {
     public static void main(String[] args) {
         //http://192.168.88.236:8080/AppService.svc?wsdl
         //Endpoint.publish("http://192.168.88.236:8080/AppService.svc", new IAppService());
-        Endpoint.publish("http://192.168.88.236:8080/AppService.svc", new IAppService());
+        Endpoint.publish("http://192.168.88.236:8082/AppService.svc", new IAppService());
 
         System.out.println("WebService is published!");
     }
