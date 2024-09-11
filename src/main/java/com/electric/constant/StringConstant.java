@@ -92,4 +92,6 @@ public class StringConstant {
     public static final String SUCCESS_CHINESE = "成功";
     public static final String FAIL_CHINESE    = "失败";
     public static final String UTF8            = "UTF-8";
+
+    public static final String INNER_NETWORK   = "192.168.";
 }

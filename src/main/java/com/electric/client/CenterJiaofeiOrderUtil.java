@@ -1,7 +1,10 @@
 package com.electric.client;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.electric.util.HttpClientUtils;
+import com.electric.util.SignUtil;
 
 /**
  * 缴费请求测试
@@ -11,8 +14,8 @@ import java.util.List;
  */
 public class CenterJiaofeiOrderUtil {
 
-    //private static final String queryOrderPage = "https://open.lsmart.wang/routesapp/api/route/paycenter/queryOrderPage";
-    private static final String queryOrderPage = "https://opengray.xiaofubao.com/routesapp/api/route/dn/paycenter/list/query";
+    private static final String queryOrderPage = "https://opengray.xiaofubao.com/routesapp/api/route/paycenter/queryOrderPage";
+    //private static final String queryOrderPage = "https://open.xiaofubao.com/routesapp/api/route/dn/paycenter/list/query";
 
     //uri=/routesapp/api/route/dn/paycenter/list/user,params=
     // {ymAppId=2308503402345807873, proId=2308629495116636174, userNo=371327200606115126,
@@ -20,12 +23,13 @@ public class CenterJiaofeiOrderUtil {
     // schoolCode=2023080901}
 
     public static void main(String[] args) {
-        /*Map<String, String> map = new HashMap<>();
-        map.put("schoolCode", "2023080901");
-        map.put("ymAppId", "2308503402345807873");
-        map.put("userNo", "371327200606115126");
-        map.put("proId", "2308629495116636174");
-        map.put("userName", "卢伊");
+        Map<String, String> map = new HashMap<>();
+        map.put("schoolCode", "12301");
+        map.put("ymAppId", "2408573002005774337");
+        //map.put("userNo", "371327200606115126");
+        map.put("proId", "2408713506239549454");
+        //map.put("userName", "卢伊");
+        map.put("userIdCard", "430121200608310159");
         //map.put("currentPage", "");
         map.put("createTimeStart", "2024-01-01");
         map.put("createTimeEnd", "2024-08-19");
@@ -37,16 +41,16 @@ public class CenterJiaofeiOrderUtil {
         //map.put("payTimeStart", "2024-07-31");
         //map.put("payTimeEnd", "2024-07-31");
         //map.put("limit", "100");
-        
-        String sign = SignUtil.getSignByMd5(map, "caa003a1ed834d7ea45e551863b6ed7d");
+
+        String sign = SignUtil.getSignByMd5(map, "3db06b91a4dc4168814dba2c7c1c7349");
         System.out.println(sign);
         map.put("sign", sign);
         System.out.println(sign);
         String result = HttpClientUtils.post(queryOrderPage, map);
-        System.out.println(result);*/
-
-        List<String> strList = Arrays.asList("s", "k");
-        System.out.println(String.join("|", strList));
+        System.out.println(result);
+        //
+        //List<String> strList = Arrays.asList("s", "k");
+        //System.out.println(String.join("|", strList));
 
     }
 }

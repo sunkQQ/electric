@@ -24,7 +24,7 @@ public class CcbElectricUtil {
     private static final String SIGNTYPE       = "SIGNTYPE";
     private static final String SIGN           = "SIGN";
 
-    private static final String QUERY_AREA_URL = "https://open.lsmart.wang/routecom/queryArea";
+    private static final String QUERY_AREA_URL = "https://open.lsmart.wang/routesc/api/route/ua/ccb/electric/queryArea";
 
     private static final String SIGN_KEY       = "Fil5L78xOEYZ3KETkQ1w8RYpeS+/MThG";
 
@@ -36,7 +36,7 @@ public class CcbElectricUtil {
         Map<String, String> map = new HashMap<>();
         map.put("school_id", SCHOOL_ID);
         map.put("ymAppId", YM_APP_ID);
-        map.put("routeUri", "/routesc/api/route/ua/ccb/electric/queryArea");
+        //map.put("routeUri", "/routesc/api/route/ua/ccb/electric/queryArea");
 
         String sign = md5(map, SIGN_KEY);
         map.put("SIGN", sign);
