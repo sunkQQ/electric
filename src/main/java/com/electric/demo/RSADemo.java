@@ -14,7 +14,7 @@ import javax.crypto.NoSuchPaddingException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 
-import com.electric.util.HttpClientUtils;
+import com.electric.util.HttpBaseUtil;
 
 /**
  * RSADemo
@@ -187,25 +187,21 @@ public class RSADemo {
         //https://webapp.lsmart.wang/card/card_home.shtml|YM201|1111111111|云马201|2008311104517010
         //identitySignParams:e4ee0b6a34e031430328d749609134cc
         //identitySign:cBfJnBh1OARkf5w6aMRp9o/SPan52LyrESJKoq+Cj7OfmJPZrwSg2r12c/a2nylTn3We7qC5oHUGsFWcTJRqp8iuhw4CeriqgKQm7ET4Otu2HbGU3wsZV38ARCJ7c8PqkRAKPBBmvHmmU/9b1QXYXFRRtpllemofCwxCwDNyRQ0=
-        String publicKey = "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEApKe+rHj0HlJWaKdJls6N"
-                           + "jVCBOW1NLPo8Lb3xsoI+kHnHszIzIAFQi+WxIvB7pNDN0FIAG/DIl2DDvUqi2Veg"
-                           + "YjQx3IkeEyG/JeV5sd0vWsotDZ7YONNWBLWu+FNr1Gnk0/kUiUv1q7Lo/VHH7LQJ"
-                           + "unrOJ7m+4SbBlh1xrttj/NoeIQkGMyTvKQtZxRWyhNZanjACrYDvF6PSw62cMgTL"
-                           + "zyjBLm70PMTRqn4zkXIgafbb+o31jrvpxhm/AI9mr4kUJGDuz5nos1HSDPwqE4qK"
-                           + "1Wzp1ubddvCY4Zo3dZKUT4P+x7XdNJ0t/xHxqxXhOECu8kRGV3XQq89Co6piaIg8"
-                           + "vwpUiDOWu/RKtWP064k3DnoC8PiFOz3tXbprlc7AV4u1FJOLJouqVauKvBXUKjl2"
-                           + "Vqo3Sbs45ZS+BfemkepeqQszraJGRCwarRayQSJl3YFmHIX0q1IW/DZM2E+RoPLO"
-                           + "Cx1n7T97yN5E1IfG0kaaRzg5wAurY8Fh7TdrP4PDwMREPV8ekG87Q4dbhXJkDILR"
-                           + "o55JW6tiPu9XfSBrJ2DvCsBv5KlECnNhr3MQlU0GCdCfJHPcZmKAJLjNjSlMVMQt"
-                           + "YLNlou9pJQuOH4cV24m+7uGq7lH3McfLCzMLZT7tWx/kUdAFG2Nl3b1SqnJNjacB" + "Nf0f4+cYtDRgFS2TMsfhI5sCAwEAAQ==";
-        String url = "https://opengray.xiaofubao.com/routesc/api/route/electric/queryArea";
+        String publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCfwnHG8kTpx2EZFtNZZYqZd7nw\n"
+                           + "2Nq9+sAZz6NwzScttTOG2XiulYbA07Qn017dpXjniRqUvC6OsMhYIcJ6GYGgKZNg\n"
+                           + "L0Zv25Fabzlge1FG2De0eVhmGb5XEy1s+9IY83z7mVyxWV8pn00n/TemRUnYZ1xg\n" + "j04WPzynWGmfpze9xQIDAQAB";
+        //String url = "https://opengray.xiaofubao.com/routesc/api/route/electric/queryArea";
+        String url = "https://open.lsmart.wang/routesapp/api/route/third/order/save";
         Map<String, String> map = new HashMap<>();
-        map.put("schoolCode", "10514");
-        map.put("ymAppId", "2004241219561002");
+        map.put("schoolCode", "yq025");
+        map.put("ymAppId", "2409577171911376897");
+        map.put("userId", "123456");
+        map.put("thirdUserId", "T123456");
+        map.put("payNo", "1234567890872");
         String signParams = md5(getSignParams(map));
         String sign = encryptByPublicKey(signParams, publicKey);
         map.put("sign", sign);
-        String result = HttpClientUtils.post(url, map);
+        String result = HttpBaseUtil.sendPost(url, map);
         System.out.println(result);
     }
 }

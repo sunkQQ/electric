@@ -144,6 +144,7 @@ public class HttpBaseUtil extends HttpBaseUtilParam {
         HttpGet httpget = new HttpGet(urlStringBuilder.toString());
         assembleHeader(httpget, head, CONTENTTYPE);
         try (CloseableHttpResponse response = getHttpClient(timeoutEnum).execute(httpget)) {
+            System.out.println(response.getStatusLine().getStatusCode());
             return getString(url, response, CHARTSET_UTF8);
         } catch (Exception e) {
             String ip = IpUtil.getRemoteIp(url);
