@@ -35,6 +35,7 @@ public class IndexController {
     // 获取所有参数和参数值
     @RequestMapping(value = "/getParam")
     public @ResponseBody String getParamFromRequest(HttpServletRequest request) {
+        System.out.println(request.getRequestURL());
         Map<String, String[]> paramMap = request.getParameterMap();
         StringBuilder inputDate = new StringBuilder();
         inputDate.append("<jiJinBean>");
