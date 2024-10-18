@@ -1,7 +1,7 @@
 package com.electric.controller.auth.org;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.electric.param.auth.AuthOrgDepartmentParam;
 import com.electric.param.auth.AuthOrgUserParam;
 import com.electric.util.HttpServletRequestUtil;
@@ -307,7 +307,7 @@ public class AuthOrgController {
     }
 
     private static void successUser() {
-        JSONObject jsonObject = new JSONObject(true);
+        JSONObject jsonObject = new JSONObject();
 
         jsonObject.put("code", 0);
 

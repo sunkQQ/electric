@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.electric.param.jiaofei.JiaofeiUnifiedNoticeParam;
 import com.electric.param.jiaofei.JiaofeiUnifiedQueryParam;
 import com.electric.response.jiaofei.JiaofeiQueryDateResponse;
@@ -45,7 +45,7 @@ public class JiaofeiUnifiedController {
     public String query(HttpServletRequest request, JiaofeiUnifiedQueryParam param) {
 
         Map<String, String> map = HttpServletRequestUtil.getRequestParmeter(request);
-        JSONObject jsonObject = new JSONObject(Boolean.TRUE);
+        JSONObject jsonObject = new JSONObject();
         String sign = SignUtil.getSignByMd5(map, KEY);
         if (!sign.equalsIgnoreCase(param.getSign())) {
             jsonObject.put("statusCode", -1);
@@ -56,7 +56,7 @@ public class JiaofeiUnifiedController {
 
         jsonObject.put("statusCode", 0);
         jsonObject.put("message", "操作成功");
-        jsonObject.put("data", JSONArray.toJSON(list));
+        jsonObject.put("data", JSONArray.toJSONString(list));
         return jsonObject.toJSONString();
     }
 
@@ -69,7 +69,7 @@ public class JiaofeiUnifiedController {
     @RequestMapping(value = "/notice", method = RequestMethod.POST)
     public String notice(HttpServletRequest request, JiaofeiUnifiedNoticeParam param) {
         Map<String, String> map = HttpServletRequestUtil.getRequestParmeter(request);
-        JSONObject jsonObject = new JSONObject(Boolean.TRUE);
+        JSONObject jsonObject = new JSONObject();
         String sign = SignUtil.getSignByMd5(map, KEY);
         if (!sign.equalsIgnoreCase(param.getSign())) {
             jsonObject.put("statusCode", -1);
@@ -113,6 +113,5 @@ public class JiaofeiUnifiedController {
         list.add(response2);
         return list;
     }
-
 
 }

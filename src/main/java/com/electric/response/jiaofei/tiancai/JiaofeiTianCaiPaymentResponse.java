@@ -1,6 +1,6 @@
 package com.electric.response.jiaofei.tiancai;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson2.annotation.JSONField;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,19 +21,19 @@ public class JiaofeiTianCaiPaymentResponse {
 
     /** 收费期间代码 */
     @JSONField(name = "SFQJDM")
-    private String sfqjdm;
+    private String     sfqjdm;
 
     /** 收费期间名称 */
     @JSONField(name = "SFQJMC")
-    private String sfqjmc;
+    private String     sfqjmc;
 
     /** 收费项目代码 */
     @JSONField(name = "SFXMDM")
-    private String sfxmdm;
+    private String     sfxmdm;
 
     /** 收费项目名称 */
     @JSONField(name = "SFXMMC")
-    private String sfxmmc;
+    private String     sfxmmc;
 
     /** 交易金额(类型：double，如：100.00) */
     @JSONField(name = "JYYE")
@@ -41,5 +41,5 @@ public class JiaofeiTianCaiPaymentResponse {
 
     /** 备注 */
     @JSONField(name = "BZ")
-    private String bz;
+    private String     bz;
 }

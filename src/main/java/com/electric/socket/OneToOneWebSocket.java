@@ -10,7 +10,7 @@ import javax.websocket.server.ServerEndpoint;
 
 import org.springframework.stereotype.Component;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSON;
 import com.electric.socket.domain.MyMessage;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,12 +28,12 @@ public class OneToOneWebSocket {
     /**
      * 记录当前在线的连接数
      */
-    private static AtomicInteger onlineCount = new AtomicInteger();
+    private static AtomicInteger        onlineCount = new AtomicInteger();
 
     /**
      * 在放所有的在线的客户端
      */
-    private static Map<String, Session> clients = new ConcurrentHashMap<>();
+    private static Map<String, Session> clients     = new ConcurrentHashMap<>();
 
     /**
      * 连接建立成功的调用的方法

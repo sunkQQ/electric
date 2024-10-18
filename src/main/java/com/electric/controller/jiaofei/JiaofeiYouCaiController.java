@@ -1,6 +1,6 @@
 package com.electric.controller.jiaofei;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.electric.constant.Numbers;
 import com.electric.param.jiaofei.youcai.JiaofeiYoucaiAddOrderParam;
 import com.electric.param.jiaofei.youcai.JiaofeiYoucaiBaseParam;
@@ -32,9 +32,7 @@ import java.util.List;
 @RequestMapping("/API")
 public class JiaofeiYouCaiController {
 
-
-    private static final String KEY = "123456";
-
+    private static final String                  KEY    = "123456";
 
     private static JiaofeiYoucaiGetFeeItemResult result = new JiaofeiYoucaiGetFeeItemResult("00", "成功");
 

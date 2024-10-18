@@ -1,6 +1,6 @@
 package com.electric.response.jiaofei.tiancai;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson2.annotation.JSONField;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +16,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class JiaofeiTianCaiBaseResponse {
-
 
     /** 状态码（00：代表成功，其余代码均代表失败） */
     @JSONField(name = "RTN_MSG")

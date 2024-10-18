@@ -1,7 +1,7 @@
 package com.electric.controller.jiaofei;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.electric.constant.Numbers;
 import com.electric.param.jiaofei.tiancai.JiaofeiTianCaiAbcJsonParam;
 import com.electric.param.jiaofei.tiancai.JiaofeiTianCaiBaseParam;
@@ -67,7 +67,7 @@ public class JiaofeiTianCaiController {
     @RequestMapping(value = "/BasePage.aspx", method = RequestMethod.POST)
     public String query(JiaofeiTianCaiBaseParam param) {
         JiaofeiTianCaiAbcJsonParam abcJson = JSONObject.parseObject(param.getAbcJson(), JiaofeiTianCaiAbcJsonParam.class);
-        if (StringUtils.isBlank(abcJson.getSfzh())){
+        if (StringUtils.isBlank(abcJson.getSfzh())) {
             return null;
         }
         switch (abcJson.getAbcCode()) {

@@ -1,6 +1,6 @@
 package com.electric.controller.scan;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,7 +24,7 @@ public class IdsteScreenController {
     }
 
     @RequestMapping(value = "/oauth/authorize")
-    public String authorize(){
+    public String authorize() {
         return "token";
     }
 }

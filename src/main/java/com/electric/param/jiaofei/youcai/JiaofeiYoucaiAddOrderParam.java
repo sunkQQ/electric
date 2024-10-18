@@ -1,6 +1,6 @@
 package com.electric.param.jiaofei.youcai;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -22,19 +22,19 @@ public class JiaofeiYoucaiAddOrderParam {
      * 学号
      */
     @JSONField(name = "StudentCode")
-    private String studentCode;
+    private String         studentCode;
 
     /**
      * 结算日期
      */
     @JSONField(name = "SettleDate")
-    private String settleDate;
+    private String         settleDate;
 
     /**
      * 订单金额
      */
     @JSONField(name = "TotalAmount")
-    private String totalAmount;
+    private String         totalAmount;
 
     /**
      * 订单明细

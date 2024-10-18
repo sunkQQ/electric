@@ -1,6 +1,6 @@
 package com.electric.controller.jiaofei.shuangqi;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.electric.constant.Numbers;
 import com.electric.response.shuangqi.ShuangqiUserPersonInfo;
 import org.apache.commons.lang.StringUtils;

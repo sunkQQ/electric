@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.bind.annotation.*;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.electric.param.jiaofei.chaoxing.ChaoXingLibraryLendingParam;
 import com.electric.param.jiaofei.chaoxing.ChaoXingNoticeParam;
 import com.electric.response.jiaofei.chaoxing.ChaoXingBaseResult;

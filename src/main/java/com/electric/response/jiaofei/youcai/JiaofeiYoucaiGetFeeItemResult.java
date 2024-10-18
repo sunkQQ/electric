@@ -1,6 +1,6 @@
 package com.electric.response.jiaofei.youcai;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -23,13 +23,13 @@ public class JiaofeiYoucaiGetFeeItemResult extends JiaofeiYoucaiBaseResult {
      * 学号
      */
     @JSONField(name = "StudentCode")
-    private String studentCode;
+    private String         studentCode;
 
     /**
      * 姓名
      */
     @JSONField(name = "StudentName")
-    private String studentName;
+    private String         studentName;
 
     @JSONField(name = "FeeItems")
     private List<FeeItems> feeItems;
@@ -40,13 +40,13 @@ public class JiaofeiYoucaiGetFeeItemResult extends JiaofeiYoucaiBaseResult {
     public static class FeeItems {
 
         @JSONField(name = "Name")
-        private String name;
+        private String      name;
 
         @JSONField(name = "Year")
-        private String year;
+        private String      year;
 
         @JSONField(name = "Message")
-        private String message;
+        private String      message;
 
         @JSONField(name = "Items")
         private List<Items> items;
@@ -65,7 +65,7 @@ public class JiaofeiYoucaiGetFeeItemResult extends JiaofeiYoucaiBaseResult {
          * 学分学费:xfxf-
          */
         @JSONField(name = "FeeId")
-        private String feeId;
+        private String     feeId;
 
         /**
          * 是否必缴项目
@@ -73,37 +73,37 @@ public class JiaofeiYoucaiGetFeeItemResult extends JiaofeiYoucaiBaseResult {
          * False
          */
         @JSONField(name = "IsMustPay")
-        private Boolean isMustPay;
+        private Boolean    isMustPay;
 
         /**
          * 收费年度
          */
         @JSONField(name = "Year")
-        private Integer year;
+        private Integer    year;
 
         /**
          * 收费项目编号
          */
         @JSONField(name = "ProjectCode")
-        private String projectCode;
+        private String     projectCode;
 
         /**
          * 收费项目名称
          */
         @JSONField(name = "ProjectName")
-        private String projectName;
+        private String     projectName;
 
         /**
          * 收费区间编号
          */
         @JSONField(name = "FeeRangCode")
-        private String feeRangCode;
+        private String     feeRangCode;
 
         /**
          * 收费区间名称
          */
         @JSONField(name = "FeeRangName")
-        private String feeRangName;
+        private String     feeRangName;
 
         /**
          * 收费金额（元）
@@ -115,13 +115,13 @@ public class JiaofeiYoucaiGetFeeItemResult extends JiaofeiYoucaiBaseResult {
          * 入账银行卡号
          */
         @JSONField(name = "BankAccount")
-        private String bankAccount;
+        private String     bankAccount;
 
         /**
          * 已缴金额
          */
         @JSONField(name = "Paid")
-        private String paid;
+        private String     paid;
 
         /**
          * 费用类型
@@ -130,16 +130,16 @@ public class JiaofeiYoucaiGetFeeItemResult extends JiaofeiYoucaiBaseResult {
          * 2:学分学费
          */
         @JSONField(name = "FeeType")
-        private String feeType;
+        private String     feeType;
 
         /**
          * 是否允许部分缴费
          */
         @JSONField(name = "IsAllowPartPay")
-        private String isAllowPartPay;
+        private String     isAllowPartPay;
 
         @JSONField(name = "OrderNo")
-        private String orderNo;
+        private String     orderNo;
     }
 
     public JiaofeiYoucaiGetFeeItemResult(String respcode, String respdesc) {

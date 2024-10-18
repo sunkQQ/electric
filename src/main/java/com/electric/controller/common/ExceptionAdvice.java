@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.electric.exception.ValidationException;
 
 /**
@@ -22,21 +22,21 @@ import com.electric.exception.ValidationException;
 @ResponseBody
 public class ExceptionAdvice {
 
-//	private static final Logger logger = LoggerFactory.getLogger(ExceptionAdvice.class);
+    //	private static final Logger logger = LoggerFactory.getLogger(ExceptionAdvice.class);
 
-	/**
-	 * 校验异常
-	 *
-	 * @param e
-	 * @return
-	 * @history
-	 */
-	@ExceptionHandler(ValidationException.class)
-	@ResponseStatus(HttpStatus.OK)
-	public String handleValidationException(ValidationException e, HttpServletRequest request) throws Exception {
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("statusCode", "203");
-		jsonObject.put("message", e.getMessage());
-		return jsonObject.toString();
-	}
+    /**
+     * 校验异常
+     *
+     * @param e
+     * @return
+     * @history
+     */
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.OK)
+    public String handleValidationException(ValidationException e, HttpServletRequest request) throws Exception {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("statusCode", "203");
+        jsonObject.put("message", e.getMessage());
+        return jsonObject.toString();
+    }
 }

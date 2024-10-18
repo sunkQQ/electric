@@ -12,7 +12,7 @@ import javax.crypto.spec.IvParameterSpec;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.electric.exception.BizException;
 import com.electric.util.Base64Util;
 import com.electric.util.HttpClientUtils;

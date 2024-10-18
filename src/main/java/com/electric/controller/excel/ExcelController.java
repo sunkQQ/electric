@@ -1,8 +1,8 @@
 package com.electric.controller.excel;
 
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.electric.controller.excel.adapter.CommentWriteHandler;
 import com.electric.controller.excel.listener.SendListListener;
 import com.electric.controller.excel.util.ExcelUtils;
