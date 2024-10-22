@@ -33,12 +33,18 @@ public class CenterAppOrderTest {
                                              + "L0Zv25Fabzlge1FG2De0eVhmGb5XEy1s+9IY83z7mVyxWV8pn00n/TemRUnYZ1xg" + "j04WPzynWGmfpze9xQIDAQAB";
 
     public static void main(String[] args) throws Exception {
-        //savaOrder();
+        savaOrder();
         //batchsave();
 
-        String result = HttpClientUtils.get(
+        /*List<Integer> numbers = Arrays.asList(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1, 1);
+        
+        int sum = numbers.stream().reduce(0, Integer::sum);
+        
+        System.out.println("Sum: " + sum);*/
+
+        /*String result = HttpClientUtils.get(
             "https://www.douyin.com/user/MS4wLjABAAAAvLWTkvLHuRN6pvvcV7obHewhkFZphikhux6TDqfJ3EU?from_tab_name=main&modal_id=7426743026397039887");
-        System.out.println(result);
+        System.out.println(result);*/
     }
 
     private static void batchsave() throws Exception {
@@ -95,22 +101,24 @@ public class CenterAppOrderTest {
     }
 
     private static void savaOrder() throws Exception {
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 20; i++) {
             Map<String, String> map = new HashMap<>();
             map.put("schoolCode", "yq025");
             map.put("ymAppId", ymAppId);
-            map.put("thirdUserId", "123456789122233121");
+            map.put("thirdUserId", "12345678");
             map.put("proName", "测试商品" + StringUtil.generateMixNum(1));
-            map.put("userId", "12345123124123122");
+            map.put("userId", "1111111");
             map.put("firm", "1");
             map.put("payNo", StringUtil.generateMixNum(19));
-            map.put("payMoney", "2");
+
+            String money = StringUtil.generateMixNum(1);
+            map.put("payMoney", money);
             //map.put("payType", "ALIPAY_FACE");
             map.put("payType", "WXPAY");
-            map.put("createTime", DateUtil.getTimeNow());
-            map.put("payTime", DateUtil.getTimeNow());
+            map.put("createTime", "2024-10-20 13:20");
+            map.put("payTime", "2024-10-20 13:22");
             map.put("refundTime", DateUtil.getTimeNow());
-            map.put("totalMoney", StringUtil.generateMixNum(1));
+            map.put("totalMoney", money);
 
             //String sourceStr1 = RsaUtil3.encryptByPublicKey(sign, public_key);
 
