@@ -1,10 +1,10 @@
 package com.electric.controller.special;
 
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -142,6 +142,40 @@ public class SpecialController {
         LOG.info("==============================================================");
         for (Map.Entry<String, Object> entry : set) {
             LOG.info(entry.getKey() + ":" + entry.getValue());
+        }
+    }
+
+    @RequestMapping(value = "/diandianResDecrypt")
+    public String diandianResDecrypt(String result) {
+        return decryptEcb(result, "bLFjEgl@psfFtm+=");
+    }
+
+    private static final String ALGORITHM            = "AES";
+
+    private static final String AES_ECB_PKCS5PADDING = "AES/ECB/PKCS5Padding";
+
+    /**
+     * AES算法解密  AES/ECB/PKCS5Paddin
+     *
+     * @param data 数据
+     * @param key key
+     * @return 解密结果
+     */
+    public static String decryptEcb(String data, String key) {
+        try {
+            // 创建AES解密算法实例
+            Cipher cipher = Cipher.getInstance(AES_ECB_PKCS5PADDING);
+            SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(), ALGORITHM);
+
+            // 初始化为解密模式，并将密钥注入到算法中
+            cipher.init(Cipher.DECRYPT_MODE, keySpec);
+
+            // 将Base64编码的密文解码  解密
+            byte[] decByte = cipher.doFinal(Base64.getDecoder().decode(data));
+
+            return new String(decByte, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            return null;
         }
     }
 }
