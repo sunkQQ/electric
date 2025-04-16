@@ -14,6 +14,7 @@ import javax.crypto.NoSuchPaddingException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 
+import com.electric.util.DateUtil;
 import com.electric.util.HttpBaseUtil;
 
 /**
@@ -196,8 +197,17 @@ public class RSADemo {
         map.put("schoolCode", "yq025");
         map.put("ymAppId", "2409577171911376897");
         map.put("userId", "123456");
-        map.put("thirdUserId", "T123456");
-        map.put("payNo", "1234567890872");
+        map.put("thirdUserId", "123456789t");
+        map.put("payNo", "123456789087223");
+        map.put("firm", "1");
+        map.put("proName", "雪碧");
+        map.put("payMoney", "12");
+        map.put("payStatus", "2");
+        map.put("payType", "CARDPAY");
+        map.put("createTime", DateUtil.getTimeNow());
+        map.put("payTime", DateUtil.getTimeNow());
+        map.put("totalMoney", "12");
+        map.put("remark", "test");
         String signParams = md5(getSignParams(map));
         String sign = encryptByPublicKey(signParams, publicKey);
         map.put("sign", sign);

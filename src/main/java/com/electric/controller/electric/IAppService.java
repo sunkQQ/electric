@@ -25,33 +25,15 @@ public class IAppService {
 
     /**
      * 查询余额
-     //* @param signkey
-     //* @param roomdm
+     * //* @param signkey
+     * //* @param roomdm
+     *
      * @return
      */
     @WebMethod(action = "/GetYEInfo")
     @WebResult(name = "GetYEInfoResult")
-    //@RequestMapping(value = "/GetYEInfo", produces = "text/xml;charset=UTF-8")
-    //public String GetYEInfo(@WebParam(name = "signkey") String signkey, @WebParam(name = "roomdm") String roomdm, @RequestBody String xmlData) {
-    //public String GetYEInfo(GetYeInfoParam param) {
-    public String GetYEInfo(/*HttpServletRequest request*/) {
-        /*StringBuffer sb = new StringBuffer();
-        try {
-            InputStream is = request.getInputStream();
-            String s;
-            BufferedReader in = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-            while ((s = in.readLine()) != null) {
-                sb.append(s);
-            }
-            in.close();
-            is.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        System.out.println(sb);*/
-        //log.info("xmlData:{}", xmlData);
-        //log.info("查询余额， 请求参数--> roomdm:{}, signkey:{}", roomdm, signkey);
-        //log.info("查询余额， 请求参数--> {}", param);
+    public String GetYEInfo(@WebParam(name = "signkey") String signkey) {
+        System.out.println(signkey);
         GetYEInfoResult result = new GetYEInfoResult();
         result.setCode("0");
         result.setMsg("success");
@@ -80,28 +62,28 @@ public class IAppService {
 
         JSONArray sylList = new JSONArray();
         JSONObject syl1 = new JSONObject();
-        syl1.put("SYL", "0.0");
+        syl1.put("SYL", "2.0");
         syl1.put("mdtype", "1096");
         syl1.put("mdname", "热水");
-        syl1.put("SYLJE", "0.0");
+        syl1.put("SYLJE", "4.0");
         syl1.put("SYBZJE", "0.00");
         syl1.put("SYBZ", "0.00");
         sylList.add(syl1);
 
         JSONObject syl2 = new JSONObject();
-        syl2.put("SYL", "0.0");
+        syl2.put("SYL", "1.0");
         syl2.put("mdtype", "1097");
         syl2.put("mdname", "天然气");
-        syl2.put("SYLJE", "0.0");
+        syl2.put("SYLJE", "2.0");
         syl2.put("SYBZJE", "0.00");
         syl2.put("SYBZ", "0.00");
         sylList.add(syl2);
 
         JSONObject syl3 = new JSONObject();
-        syl3.put("SYL", "0.0");
+        syl3.put("SYL", "3.0");
         syl3.put("mdtype", "1098");
         syl3.put("mdname", "照明用电");
-        syl3.put("SYLJE", "0.0");
+        syl3.put("SYLJE", "5.0");
         syl3.put("SYBZJE", "0.00");
         syl3.put("SYBZ", "0.00");
         sylList.add(syl3);
@@ -125,7 +107,7 @@ public class IAppService {
                                                                      @WebParam(name = "signkey") String signkey) {
         log.info("获取房间硬件状态， 请求参数--> roomdm:{}, signkey:{}", roomdm, signkey);
         JSONObject json = new JSONObject();
-        json.put("status", "未用电");
+        json.put("status", "正常");
         return json.toString();
     }
 
@@ -187,12 +169,30 @@ public class IAppService {
         return json.toString();
     }
 
-    public static void main(String[] args) {
-        //http://192.168.88.236:8080/AppService.svc?wsdl
-        Endpoint.publish("http://192.168.88.236:8080/AppService.svc", new IAppService());
-        //Endpoint.publish("http://192.168.88.236:8082/AppService.svc", new IAppService());
-
-        System.out.println("WebService is published!");
+    /**
+     * 电表控制
+     * @param roomdm
+     * @param mdtype
+     * @param controltype
+     * @param operno
+     * @param signkey
+     * @return
+     */
+    @WebMethod(operationName = "MeterControl")
+    public @WebResult(name = "MeterControlResult") String MeterControl(@WebParam(name = "roomdm") String roomdm,
+                                                                       @WebParam(name = "mdtype") String mdtype,
+                                                                       @WebParam(name = "controltype") String controltype,
+                                                                       @WebParam(name = "operno") String operno,
+                                                                       @WebParam(name = "signkey") String signkey) {
+        log.info("获取房间硬件状态， 请求参数--> roomdm:{}, signkey:{}", roomdm, signkey);
+        JSONObject json = new JSONObject();
+        json.put("returncode", "1");
+        json.put("opno", "正常");
+        return json.toString();
     }
 
+    public static void main(String[] args) {
+        Endpoint.publish("http://192.168.88.236:8080/AppService.svc", new IAppService());
+        System.out.println("WebService is published!");
+    }
 }

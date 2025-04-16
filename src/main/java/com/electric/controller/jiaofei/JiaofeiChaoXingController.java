@@ -2,6 +2,7 @@ package com.electric.controller.jiaofei;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -71,17 +72,17 @@ public class JiaofeiChaoXingController {
         jsonObject.put("errorCode", 0);
         jsonObject.put("message", "成功");
         JSONArray jsonArray = new JSONArray();
-        if (param.getPrimaryId().equals("24052302") || param.getPrimaryId().equals("234040020")) {
+        if (param.getPrimaryId().equals("24052302") || param.getPrimaryId().equals("234040020") || param.getPrimaryId().equals("202107")) {
 
             JSONObject json = new JSONObject();
             json.put("loanId", 40);
             json.put("userId", 1);
             json.put("userLibCode", "0000000000");
             json.put("userLibName", "测试图书馆");
-            json.put("normReturnDate", DateUtil.getTimeNow());
+            json.put("normReturnDate", DateUtil.getNextDayDate(new Date(), -1));
             json.put("renewTimes", 0);
             json.put("recallTimes", 0);
-            json.put("loanDate", DateUtil.getTimeNow());
+            json.put("loanDate", DateUtil.getNextDayDate(new Date(), -1));
             json.put("locationId", 3);
             json.put("locationName", "人文图书馆藏地");
             json.put("itemLibCode", "0000000000");
@@ -89,7 +90,7 @@ public class JiaofeiChaoXingController {
             json.put("loanDeskId", 1);
             json.put("loanDeskName", "默认工作台");
             json.put("attachment", "");
-            json.put("renewDate", DateUtil.getTimeNow());
+            json.put("renewDate", DateUtil.getNextDayDate(new Date(), -1));
             json.put("loanType", "2");
             json.put("title", "用药咨询");
             json.put("author", "郭曼茜主编");
