@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @WebService(name = "IAppService", targetNamespace = "www.cdgf.com")
 public class IAppService {
 
-    /**
+    /** 
      * 查询余额
      * //* @param signkey
      * //* @param roomdm
