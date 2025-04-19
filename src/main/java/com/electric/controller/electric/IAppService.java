@@ -1,15 +1,17 @@
 package com.electric.controller.electric;
 
+import java.util.Date;
+
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.ws.Endpoint;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.electric.response.electric.isims.GetYEInfoResult;
+import com.electric.util.DateUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,15 +27,16 @@ public class IAppService {
 
     /** 
      * 查询余额
-     * //* @param signkey
-     * //* @param roomdm
+     * @param signkey signkey
+     * @param roomdm 房间编码
      *
-     * @return
+     * @return 结果
      */
     @WebMethod(action = "/GetYEInfo")
     @WebResult(name = "GetYEInfoResult")
-    public String GetYEInfo(@WebParam(name = "signkey") String signkey) {
-        System.out.println(signkey);
+    public String GetYEInfo(@WebParam(name = "signkey", targetNamespace = "www.cdgf.com") String signkey,
+                            @WebParam(name = "roomdm", targetNamespace = "www.cdgf.com") String roomdm) {
+        log.info("查询余额， 请求参数--> roomdm:{}, signkey:{}", roomdm, signkey);
         GetYEInfoResult result = new GetYEInfoResult();
         result.setCode("0");
         result.setMsg("success");
@@ -48,16 +51,30 @@ public class IAppService {
         topUpType1.put("mdname", "热水");
         topUpTypeList.add(topUpType1);
 
-        /*        JSONObject topUpType2 = new JSONObject();
+        JSONObject topUpType2 = new JSONObject();
         topUpType2.put("cztype", "1097");
         topUpType2.put("mdname", "天然气");
-        topUpTypeList.add(topUpType2);*/
+        topUpTypeList.add(topUpType2);
 
         JSONObject topUpType3 = new JSONObject();
         topUpType3.put("cztype", "1098");
         topUpType3.put("mdname", "照明用电");
         topUpTypeList.add(topUpType3);
 
+        JSONObject topUpType4 = new JSONObject();
+        topUpType4.put("cztype", "1098");
+        topUpType4.put("mdname", "空调用电");
+        topUpTypeList.add(topUpType4);
+
+        JSONObject topUpType5 = new JSONObject();
+        topUpType5.put("cztype", "1100");
+        topUpType5.put("mdname", "其他");
+        topUpTypeList.add(topUpType5);
+
+        JSONObject topUpType6 = new JSONObject();
+        topUpType6.put("cztype", "1101");
+        topUpType6.put("mdname", "燃气");
+        topUpTypeList.add(topUpType6);
         data.put("topUpTypeList", topUpTypeList);
 
         JSONArray sylList = new JSONArray();
@@ -88,56 +105,105 @@ public class IAppService {
         syl3.put("SYBZ", "0.00");
         sylList.add(syl3);
 
+        JSONObject syl4 = new JSONObject();
+        syl4.put("SYL", "3.0");
+        syl4.put("mdtype", "1099");
+        syl4.put("mdname", "空调用电");
+        syl4.put("SYLJE", "5.0");
+        syl4.put("SYBZJE", "0.00");
+        syl4.put("SYBZ", "0.00");
+        sylList.add(syl4);
+
+        JSONObject syl5 = new JSONObject();
+        syl5.put("SYL", "3.0");
+        syl5.put("mdtype", "1100");
+        syl5.put("mdname", "其他");
+        syl5.put("SYLJE", "5.0");
+        syl5.put("SYBZJE", "0.00");
+        syl5.put("SYBZ", "0.00");
+        sylList.add(syl5);
+
+        JSONObject syl6 = new JSONObject();
+        syl6.put("SYL", "3.0");
+        syl6.put("mdtype", "1101");
+        syl6.put("mdname", "燃气");
+        syl6.put("SYLJE", "5.0");
+        syl6.put("SYBZJE", "0.00");
+        syl6.put("SYBZ", "0.00");
+        sylList.add(syl6);
+
         data.put("sylList", sylList);
         result.setData(data);
         return JSONObject.toJSONString(result);
     }
 
+    int i = 0;
+
     /**
      * 获取房间硬件状态
-     * @param roomdm
-     * @param mdtype
-     * @param type
-     * @param signkey
-     * @return
+     * @param roomdm 房间编码
+     * @param mdtype 计量控制类型
+     * @param type 1
+     * @param signkey 签名key
+     * @return 结果
      */
     @WebMethod(operationName = "GetMeterStu")
-    public @WebResult(name = "GetMeterStuResult") String GetMeterStu(@WebParam(name = "roomdm") String roomdm,
-                                                                     @WebParam(name = "mdtype") String mdtype, @WebParam(name = "type") String type,
-                                                                     @WebParam(name = "signkey") String signkey) {
-        log.info("获取房间硬件状态， 请求参数--> roomdm:{}, signkey:{}", roomdm, signkey);
+    @WebResult(name = "GetMeterStuResult")
+    public String GetMeterStu(@WebParam(name = "roomdm", targetNamespace = "www.cdgf.com") String roomdm,
+                              @WebParam(name = "mdtype", targetNamespace = "www.cdgf.com") String mdtype,
+                              @WebParam(name = "type", targetNamespace = "www.cdgf.com") String type,
+                              @WebParam(name = "signkey", targetNamespace = "www.cdgf.com") String signkey) {
+        log.info("获取房间硬件状态， 请求参数--> roomdm:{}, signkey:{}, mdtype:{}, type:{}", roomdm, signkey, mdtype, type);
         JSONObject json = new JSONObject();
-        json.put("status", "正常");
+        if (i % 2 == 0) {
+            json.put("status", "正常");
+        } else {
+            json.put("status", "软件关断");
+        }
+        i++;
         return json.toString();
     }
 
     /**
      * 充值
-     * @param signkey
-     * @param orderid
-     * @param cztype
-     * @param roomdm
-     * @param money
-     * @return
+     * @param signkey signkey
+     * @param orderid 订单号
+     * @param cztype 充值类型
+     * @param roomdm 房间编码
+     * @param money 充值金额
+     * @return 结果
      */
     @WebMethod(operationName = "TopUp")
-    public @WebResult(name = "TopUpResult") String TopUp(@WebParam(name = "signkey") String signkey, @WebParam(name = "orderid") String orderid,
-                                                         @WebParam(name = "cztype") String cztype, @WebParam(name = "roomdm") String roomdm,
-                                                         @WebParam(name = "money") String money) {
-        log.info("充值， 请求参数--> roomdm:{}, signkey:{}", roomdm, signkey);
+    @WebResult(name = "TopUpResult")
+    public String TopUp(@WebParam(name = "signkey", targetNamespace = "www.cdgf.com") String signkey,
+                        @WebParam(name = "orderid", targetNamespace = "www.cdgf.com") String orderid,
+                        @WebParam(name = "cztype", targetNamespace = "www.cdgf.com") String cztype,
+                        @WebParam(name = "roomdm", targetNamespace = "www.cdgf.com") String roomdm,
+                        @WebParam(name = "money", targetNamespace = "www.cdgf.com") String money) {
+        log.info("充值， 请求参数--> roomdm:{}, signkey:{}, orderid:{}, cztype:{}, money:{}", roomdm, signkey, orderid, cztype, money);
         JSONObject json = new JSONObject();
         json.put("code", 0);
         json.put("msg", "充值成功！");
         return json.toString();
     }
 
+    /**
+     * 房间用量查询
+     * @param signkey 签名key
+     * @param roomdm 房间信息
+     * @param fromDate 起始时间
+     * @param toDate 结束时间
+     * @param mdtype 计量控制类型
+     * @return 结果
+     */
     @WebMethod(operationName = "GetDayUsedRecords")
-    public @WebResult(name = "GetDayUsedRecordsResult") String GetDayUsedRecords(@WebParam(name = "signkey") String signkey,
-                                                                                 @WebParam(name = "roomdm") String roomdm,
-                                                                                 @WebParam(name = "fromDate") String fromDate,
-                                                                                 @WebParam(name = "toDate") String toDate,
-                                                                                 @WebParam(name = "mdtype") String mdtype) {
-        log.info("用量查询， 请求参数--> roomdm:{}, signkey:{}", roomdm, signkey);
+    @WebResult(name = "GetDayUsedRecordsResult")
+    public String GetDayUsedRecords(@WebParam(name = "signkey", targetNamespace = "www.cdgf.com") String signkey,
+                                    @WebParam(name = "roomdm", targetNamespace = "www.cdgf.com") String roomdm,
+                                    @WebParam(name = "fromDate", targetNamespace = "www.cdgf.com") String fromDate,
+                                    @WebParam(name = "toDate", targetNamespace = "www.cdgf.com") String toDate,
+                                    @WebParam(name = "mdtype", targetNamespace = "www.cdgf.com") String mdtype) {
+        log.info("用量查询， 请求参数--> roomdm:{}, signkey:{}, fromDate:{}, toDate:{}, mdtype:{}", roomdm, signkey, fromDate, toDate, mdtype);
         JSONObject json = new JSONObject();
         json.put("code", 0);
         json.put("msg", "充值成功！");
@@ -157,34 +223,56 @@ public class IAppService {
     }
 
     /**
-     * 获取房间硬件状态
-     * @return
+     * 常工获取房间充值记录
+     * @param signkey 签名类型
+     * @param roomdm 房间编码
+     * @param fromDate 超始时间
+     * @param toDate 结束时间
+     * @param cztype 充值类型
+     * @return 结果
      */
-    @WebMethod(operationName = "test")
-    @WebResult(name = "testResult")
-    public String test(@XmlElement(name = "roomdm", namespace = "##electric") String roomdm) {
-        log.info("获取房间硬件状态， 请求参数--> roomdm:{}", roomdm);
+    @WebMethod(action = "/GetBuyRecord")
+    @WebResult(name = "GetBuyRecordResult")
+    public String GetBuyRecord(@WebParam(name = "signkey", targetNamespace = "www.cdgf.com") String signkey,
+                               @WebParam(name = "roomdm", targetNamespace = "www.cdgf.com") String roomdm,
+                               @WebParam(name = "fromDate", targetNamespace = "www.cdgf.com") String fromDate,
+                               @WebParam(name = "toDate", targetNamespace = "www.cdgf.com") String toDate,
+                               @WebParam(name = "cztype", targetNamespace = "www.cdgf.com") String cztype) {
+        log.info("常工获取房间充值记录， 请求参数--> roomdm:{}, signkey:{}, fromDate:{}, toDate:{}, cztype:{}", roomdm, signkey, fromDate, toDate, cztype);
         JSONObject json = new JSONObject();
-        json.put("status", "未用电");
+        json.put("code", 0);
+        json.put("msg", "充值成功！");
+        JSONArray array = new JSONArray();
+
+        for (int i = 0; i < 20; i++) {
+            JSONObject user = new JSONObject();
+            user.put("roomdm", roomdm);
+            user.put("datetime", DateUtil.dateToString(DateUtil.getNextDayDate(new Date(), -i), DateUtil.DAY_FORMAT));
+            user.put("buyusingtpe", "照明用电");
+            user.put("money", 2 + i);
+            array.add(user);
+        }
+        json.put("data", array);
         return json.toString();
     }
 
     /**
      * 电表控制
-     * @param roomdm
-     * @param mdtype
-     * @param controltype
-     * @param operno
-     * @param signkey
-     * @return
+     * @param roomdm 房间编码
+     * @param mdtype 计量控控制类型
+     * @param controltype 控制类型 0、软件关断(关闭)  1、硬件控制(打开) 2、软件打开(打开) 3、过流复位 4、负载复位
+     * @param operno 没用空着
+     * @param signkey signkey
+     * @return 结果
      */
     @WebMethod(operationName = "MeterControl")
-    public @WebResult(name = "MeterControlResult") String MeterControl(@WebParam(name = "roomdm") String roomdm,
-                                                                       @WebParam(name = "mdtype") String mdtype,
-                                                                       @WebParam(name = "controltype") String controltype,
-                                                                       @WebParam(name = "operno") String operno,
-                                                                       @WebParam(name = "signkey") String signkey) {
-        log.info("获取房间硬件状态， 请求参数--> roomdm:{}, signkey:{}", roomdm, signkey);
+    @WebResult(name = "MeterControlResult")
+    public String MeterControl(@WebParam(name = "roomdm", targetNamespace = "www.cdgf.com") String roomdm,
+                               @WebParam(name = "mdtype", targetNamespace = "www.cdgf.com") String mdtype,
+                               @WebParam(name = "controltype", targetNamespace = "www.cdgf.com") String controltype,
+                               @WebParam(name = "operno", targetNamespace = "www.cdgf.com") String operno,
+                               @WebParam(name = "signkey", targetNamespace = "www.cdgf.com") String signkey) {
+        log.info("电表控制， 请求参数--> roomdm:{}, signkey:{}, mdtype:{}, controltype:{}, operno:{}, ", roomdm, signkey, mdtype, controltype, operno);
         JSONObject json = new JSONObject();
         json.put("returncode", "1");
         json.put("opno", "正常");
