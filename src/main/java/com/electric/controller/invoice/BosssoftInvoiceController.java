@@ -29,7 +29,7 @@ import com.electric.util.StringUtil;
 public class BosssoftInvoiceController {
 
     /**
-     * 发票开票接口
+     * 发票开票接口 
      * @param request
      * @param param
      * @return

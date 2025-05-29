@@ -62,7 +62,7 @@ public class IAppService {
         topUpTypeList.add(topUpType3);
 
         JSONObject topUpType4 = new JSONObject();
-        topUpType4.put("cztype", "1098");
+        topUpType4.put("cztype", "1099");
         topUpType4.put("mdname", "空调用电");
         topUpTypeList.add(topUpType4);
 
@@ -79,10 +79,10 @@ public class IAppService {
 
         JSONArray sylList = new JSONArray();
         JSONObject syl1 = new JSONObject();
-        syl1.put("SYL", "2.0");
+        syl1.put("SYL", "92337.26");
         syl1.put("mdtype", "1096");
         syl1.put("mdname", "热水");
-        syl1.put("SYLJE", "4.0");
+        syl1.put("SYLJE", 60019.21);
         syl1.put("SYBZJE", "0.00");
         syl1.put("SYBZ", "0.00");
         sylList.add(syl1);
@@ -214,7 +214,9 @@ public class IAppService {
             user.put("roomdm", "1001");
             user.put("datetime", "2024-04-18");
             user.put("used", "2");
-            user.put("unit", "吨");
+            /* if (i % 2 == 0) {
+                user.put("unit", "吨");
+            }*/
             array.add(user);
         }
 
