@@ -2,9 +2,17 @@ package com.electric.client;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.KeyFactory;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -101,37 +109,37 @@ public class CenterAppOrderTest {
     }
 
     private static void savaOrder() throws Exception {
-        for (int i = 0; i < 20; i++) {
-            Map<String, String> map = new HashMap<>();
-            map.put("schoolCode", "yq025");
-            map.put("ymAppId", ymAppId);
-            map.put("thirdUserId", "12345678");
-            map.put("proName", "测试商品" + StringUtil.generateMixNum(1));
-            map.put("userId", "1111111");
-            map.put("firm", "1");
-            map.put("payNo", StringUtil.generateMixNum(19));
+        //for (int i = 0; i < 20; i++) {
+        Map<String, String> map = new HashMap<>();
+        map.put("schoolCode", "yq025");
+        map.put("ymAppId", ymAppId);
+        map.put("thirdUserId", "12345678");
+        map.put("proName", "测试商品" + StringUtil.generateMixNum(1));
+        map.put("userId", "1111111");
+        map.put("firm", "5");
+        map.put("payNo", StringUtil.generateMixNum(19));
 
-            String money = StringUtil.generateMixNum(1);
-            map.put("payMoney", money);
-            //map.put("payType", "ALIPAY_FACE");
-            map.put("payType", "WXPAY");
-            map.put("createTime", "2024-10-20 13:20");
-            map.put("payTime", "2024-10-20 13:22");
-            map.put("refundTime", DateUtil.getTimeNow());
-            map.put("totalMoney", money);
+        String money = StringUtil.generateMixNum(1);
+        map.put("payMoney", money);
+        //map.put("payType", "ALIPAY_FACE");
+        map.put("payType", "WXPAY");
+        map.put("createTime", "2024-10-20 13:20");
+        map.put("payTime", "2024-10-20 13:22");
+        map.put("refundTime", DateUtil.getTimeNow());
+        map.put("totalMoney", money);
 
-            //String sourceStr1 = RsaUtil3.encryptByPublicKey(sign, public_key);
+        //String sourceStr1 = RsaUtil3.encryptByPublicKey(sign, public_key);
 
-            String signParams = md5(getSignParams(map));
-            String sign = encryptByPublicKey(signParams, public_key);
+        String signParams = md5(getSignParams(map));
+        String sign = encryptByPublicKey(signParams, public_key);
 
-            //String sign = SignUtil.getSignByMd5(map, "3db06b91a4dc4168814dba2c7c1c7349");
-            System.out.println(sign);
-            map.put("sign", sign);
-            System.out.println(sign);
-            String result = HttpClientUtils.post(SAVE_ORDER, map);
-            System.out.println(result);
-        }
+        //String sign = SignUtil.getSignByMd5(map, "3db06b91a4dc4168814dba2c7c1c7349");
+        System.out.println(sign);
+        map.put("sign", sign);
+        System.out.println(sign);
+        String result = HttpClientUtils.post(SAVE_ORDER, map);
+        System.out.println(result);
+        //}
     }
 
     public static final String  PARAM_SIGN        = "sign";
