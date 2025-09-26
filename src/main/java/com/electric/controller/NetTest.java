@@ -1,5 +1,15 @@
 package com.electric.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
+import com.electric.constant.Numbers;
+import com.electric.util.HttpClientUtils;
+import com.electric.util.Md5Util;
+
 /**
  * @author sunk
  * @date 2023/08/08
@@ -36,6 +46,66 @@ public class NetTest {
         map.put("phones", "18710369301");
         String result = HttpClientUtils.post(ADDRESS, map);
         System.out.println(result);*/
+        String address = "https://open.xiaofubao.com/routesc/api/route/ua/ccb/electric/queryRoomSurplus";
+        //{routeUri=/routesc/api/route/ua/ccb/electric/queryRoomSurplus, ymAppId=2007281100065004, areaId=2509111111318044673,
+        // school_id=00643309, SIGNTYPE=MD5, buildingCode=2001, roomCode=20010201, SIGN=6dc2afebee0f8a7b1c0a97a6edcab264,
+        // floorCode=200102},URL:http://192.168.81.24:8000/api/route/ua/ccb/electric/queryRoomSurplus
+        //{routeUri=/routesc/api/route/ua/ccb/electric/queryRoomSurplus, ymAppId=2007281100065004,
+        //        areaId=2509111111318044673, school_id=00643309, SIGNTYPE=MD5, buildingCode=2001,
+        //        roomCode=20010201, SIGN=6dc2afebee0f8a7b1c0a97a6edcab264, floorCode=200102},
+        //URL:http://192.168.81.24:8000/api/route/ua/ccb/electric/queryRoomSurplus
+        Map<String, String> map = new HashMap<>();
+        map.put("routeUri", "/routesc/api/route/ua/ccb/electric/queryRoomSurplus");
+        map.put("ymAppId", "2007281100065004");
+        map.put("areaId", "2509111111318044673");
+        map.put("school_id", "00643309");
+        map.put("SIGNTYPE", "MD5");
+        map.put("buildingCode", "2001");
+        map.put("roomCode", "20010201");
+        map.put("floorCode", "200102");
+        String sign = md5(map, "8ZH7+2hPcMENcEr0a9DmHPGR+/toT3DB");
+        map.put("SIGN", sign);
+        String result = HttpClientUtils.post(address, map);
+        System.out.println(result);
+    }
 
+    public static final String SIGNTYPE = "SIGNTYPE";
+    public static final String SIGN     = "SIGN";
+
+    private static String md5(Map<String, String> map, String key) {
+        TreeMap<String, String> treemap = new TreeMap<String, String>(map);
+
+        try {
+            treemap.remove(SIGNTYPE);
+            treemap.remove(SIGN);
+            StringBuffer params = getParamer(treemap);
+            if (key.length() > Numbers.INT_30) {
+                key = key.substring(key.length() - Numbers.INT_30);
+            }
+            params.append("&PUB=").append(key);
+            return Md5Util.md5(params.toString()).toUpperCase();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return "";
+    }
+
+    private static StringBuffer getParamer(Map<String, String> params) throws UnsupportedEncodingException {
+        StringBuffer sb = new StringBuffer();
+        if (params != null) {
+            for (Map.Entry<String, String> e : params.entrySet()) {
+                if (e.getValue() != null && !"".equals(e.getValue())) {
+                    sb.append(e.getKey());
+                    sb.append("=");
+                    sb.append(URLEncoder.encode(e.getValue().toString(), "utf-8"));
+                } else {
+                    continue;
+                }
+                sb.append("&");
+            }
+            sb = sb.deleteCharAt(sb.length() - 1);
+        }
+        return sb;
     }
 }

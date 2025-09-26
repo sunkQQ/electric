@@ -1,6 +1,9 @@
 package com.electric.controller.electric;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -10,6 +13,12 @@ import javax.xml.ws.Endpoint;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
+import com.electric.param.isims.BatchRefundRequest;
+import com.electric.param.isims.GetRefundByRefundIdRequest;
+import com.electric.param.isims.QueryRoomBalanceRequest;
+import com.electric.response.electric.isims.BalanceResponseWrapper;
+import com.electric.response.electric.isims.BatchRefundResponseWrapper;
+import com.electric.response.electric.isims.GetRefundByRefundIdResponseWrapper;
 import com.electric.response.electric.isims.GetYEInfoResult;
 import com.electric.util.DateUtil;
 
@@ -24,6 +33,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @WebService(name = "IAppService", targetNamespace = "www.cdgf.com")
 public class IAppService {
+
+    private static final List<String> LIST = new ArrayList<>();
 
     /** 
      * 查询余额
@@ -279,6 +290,139 @@ public class IAppService {
         json.put("returncode", "1");
         json.put("opno", "正常");
         return json.toString();
+    }
+
+    /**
+     * 查询房间余额 (批量查询)
+     * @param request 请求对象，包含房间编码列表和签名密钥
+     * @return 结果
+     */
+    @WebMethod(operationName = "QueryRoomBalance")
+    @WebResult(name = "QueryRoomBalanceResult")
+    public BalanceResponseWrapper QueryRoomBalance(@WebParam(name = "request", targetNamespace = "www.cdgf.com") QueryRoomBalanceRequest request) {
+        log.info("查询房间余额，请求参数--> roomdms:{}, signkey:{}", request.getRoomdms() != null ? request.getRoomdms().getString() : null,
+            request.getSignkey());
+        // 创建响应对象
+        List<BalanceResponseWrapper.BalanceResponse> balanceResponse = new ArrayList<>();
+
+        // 设置响应数据 - 这里使用模拟数据，您可以根据实际业务逻辑调整
+        if (request.getRoomdms() != null && request.getRoomdms().getString() != null && !request.getRoomdms().getString().isEmpty()) {
+            for (String roomdm : request.getRoomdms().getString()) {
+                BalanceResponseWrapper.BalanceResponse balance = new BalanceResponseWrapper.BalanceResponse();
+                balance.setLeftdu("0.2");
+                balance.setLeftmoney("0.1");
+                balance.setLeftration("0.00");
+                balance.setLeftrationdu("0.00");
+                balance.setMdname("11-北102");
+                balance.setMessage("查询成功");
+                balance.setRoomdm(roomdm);
+                balance.setStatus("0");
+                balanceResponse.add(balance);
+            }
+        }
+
+        BalanceResponseWrapper balance = new BalanceResponseWrapper(balanceResponse);
+        log.info("查询房间余额，请求参数--> roomdms:{}, 返回结果:{}", request.getRoomdms() != null ? request.getRoomdms().getString() : null, balance);
+        // 使用FastJSON转换为JSON字符串返回
+        return balance;
+    }
+
+    /**
+     * 批量退费接口
+     * @param request 请求对象，包含退费项列表和签名密钥
+     * @return 结果
+     */
+    @WebMethod(operationName = "BatchRefund")
+    @WebResult(name = "BatchRefundResult")
+    public BatchRefundResponseWrapper BatchRefund(@WebParam(name = "request", targetNamespace = "www.cdgf.com") BatchRefundRequest request) {
+        log.info("批量退费，请求参数--> refundItems size:{}, signkey:{}",
+            request.getRefundItems() != null && request.getRefundItems().getRefundItem() != null ? request.getRefundItems().getRefundItem().size()
+                : 0,
+            request.getSignkey());
+
+        // 创建响应对象
+        BatchRefundResponseWrapper response = new BatchRefundResponseWrapper();
+
+        // 处理退费逻辑
+        if (request.getRefundItems() != null && request.getRefundItems().getRefundItem() != null
+            && !request.getRefundItems().getRefundItem().isEmpty()) {
+
+            List<BatchRefundResponseWrapper.RefundResponse> refundResponses = new ArrayList<>();
+
+            for (BatchRefundRequest.RefundItem refundItem : request.getRefundItems().getRefundItem()) {
+                BatchRefundResponseWrapper.RefundResponse refundResponse = new BatchRefundResponseWrapper.RefundResponse();
+                refundResponse.setRefundId(refundItem.getRefundId());
+                refundResponse.setRoomdm(refundItem.getRoomdm());
+                refundResponse.setMdname(refundItem.getRoomdm().substring(refundItem.getRoomdm().length() - 3) + "房间"); // 模拟房间名称
+
+                // 模拟不同的退费结果
+                if (refundItem.getRoomdm().endsWith("08")) {
+                    // 模拟退费失败的情况
+                    refundResponse.setDianliang("");
+                    refundResponse.setMoney("");
+                    refundResponse.setPrice("");
+                    refundResponse.setMessage("退费不成功,前一天还在用电,不能进行退费");
+                    refundResponse.setStatus("-4");
+                } else {
+                    // 模拟退费成功的情况
+                    refundResponse.setDianliang("-0.2");
+                    refundResponse.setMoney("-0.1");
+                    refundResponse.setPrice("0.5380");
+                    refundResponse.setMessage("退费处理中");
+                    refundResponse.setStatus("0");
+                    LIST.add(refundItem.getRefundId());
+                }
+
+                refundResponses.add(refundResponse);
+            }
+
+            response.setRefundResponse(refundResponses);
+
+        } else {
+            // 无退费数据的情况
+            BatchRefundResponseWrapper.RefundResponse refundResponse = new BatchRefundResponseWrapper.RefundResponse();
+            refundResponse.setRefundId("");
+            refundResponse.setRoomdm("");
+            refundResponse.setMdname("");
+            refundResponse.setDianliang("");
+            refundResponse.setMoney("");
+            refundResponse.setPrice("");
+            refundResponse.setMessage("无退费数据");
+            refundResponse.setStatus("-1");
+
+            response.setRefundResponse(Arrays.asList(refundResponse));
+        }
+        log.info("批量退费，返回结果--> {}", response);
+        return response;
+    }
+
+    /**
+     * 根据退费ID查询退费结果
+     * @param request 请求对象，包含退费ID和签名密钥
+     * @return 结果
+     */
+    @WebMethod(operationName = "GetRefundByRefundId")
+    @WebResult(name = "GetRefundByRefundIdResult")
+    public GetRefundByRefundIdResponseWrapper GetRefundByRefundId(@WebParam(name = "request", targetNamespace = "www.cdgf.com") GetRefundByRefundIdRequest request) {
+        log.info("根据退费ID查询退费结果，请求参数--> refundId:{}, signkey:{}", request.getRefundId(), request.getSignkey());
+
+        // 创建响应对象
+        GetRefundByRefundIdResponseWrapper response = new GetRefundByRefundIdResponseWrapper();
+
+        // 设置响应数据
+        response.setErrorMessage("退费成功");
+        response.setIsSuccess("true");
+        response.setMdid("10003");
+        response.setMessage("查询成功");
+        response.setRefundAmount("-0.1");
+        response.setRefundId(request.getRefundId());
+        response.setRefundTime("2025-06-24T11:03:34.903");
+        response.setRoomId("10060204");
+        response.setStatusCode("200");
+        response.setSuccess("true");
+        response.setIssend("1");
+        log.info("根据退费ID查询退费结果，请求参数--> refundId:{}, 返回结果:{}", request.getRefundId(), response);
+        return response;
     }
 
     public static void main(String[] args) {
