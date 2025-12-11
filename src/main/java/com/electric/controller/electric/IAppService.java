@@ -57,6 +57,11 @@ public class IAppService {
 
         JSONArray topUpTypeList = new JSONArray();
 
+        JSONObject topUpType = new JSONObject();
+        topUpType.put("cztype", "1095");
+        topUpType.put("mdname", "插座");
+        topUpTypeList.add(topUpType);
+
         JSONObject topUpType1 = new JSONObject();
         topUpType1.put("cztype", "1096");
         topUpType1.put("mdname", "热水");
@@ -86,9 +91,20 @@ public class IAppService {
         topUpType6.put("cztype", "1101");
         topUpType6.put("mdname", "燃气");
         topUpTypeList.add(topUpType6);
+
         data.put("topUpTypeList", topUpTypeList);
 
         JSONArray sylList = new JSONArray();
+
+        /*JSONObject syl = new JSONObject();
+        syl.put("SYL", "92337.26");
+        syl.put("mdtype", "1095");
+        syl.put("mdname", "插座");
+        syl.put("SYLJE", 60019.21);
+        syl.put("SYBZJE", "0.00");
+        syl.put("SYBZ", "0.00");
+        sylList.add(syl);*/
+
         JSONObject syl1 = new JSONObject();
         syl1.put("SYL", "92337.26");
         syl1.put("mdtype", "1096");
@@ -98,14 +114,14 @@ public class IAppService {
         syl1.put("SYBZ", "0.00");
         sylList.add(syl1);
 
-        JSONObject syl2 = new JSONObject();
+        /*JSONObject syl2 = new JSONObject();
         syl2.put("SYL", "1.0");
         syl2.put("mdtype", "1097");
         syl2.put("mdname", "天然气");
         syl2.put("SYLJE", "2.0");
         syl2.put("SYBZJE", "0.00");
         syl2.put("SYBZ", "0.00");
-        sylList.add(syl2);
+        sylList.add(syl2);*/
 
         JSONObject syl3 = new JSONObject();
         syl3.put("SYL", "3.0");
@@ -125,7 +141,7 @@ public class IAppService {
         syl4.put("SYBZ", "0.00");
         sylList.add(syl4);
 
-        JSONObject syl5 = new JSONObject();
+        /*JSONObject syl5 = new JSONObject();
         syl5.put("SYL", "3.0");
         syl5.put("mdtype", "1100");
         syl5.put("mdname", "其他");
@@ -133,7 +149,7 @@ public class IAppService {
         syl5.put("SYBZJE", "0.00");
         syl5.put("SYBZ", "0.00");
         sylList.add(syl5);
-
+        
         JSONObject syl6 = new JSONObject();
         syl6.put("SYL", "3.0");
         syl6.put("mdtype", "1101");
@@ -141,7 +157,7 @@ public class IAppService {
         syl6.put("SYLJE", "5.0");
         syl6.put("SYBZJE", "0.00");
         syl6.put("SYBZ", "0.00");
-        sylList.add(syl6);
+        sylList.add(syl6);*/
 
         data.put("sylList", sylList);
         result.setData(data);
@@ -320,9 +336,11 @@ public class IAppService {
                 balanceResponse.add(balance);
             }
         }
-
+        System.out.println(JSONObject.toJSONString(balanceResponse));
         BalanceResponseWrapper balance = new BalanceResponseWrapper(balanceResponse);
-        log.info("查询房间余额，请求参数--> roomdms:{}, 返回结果:{}", request.getRoomdms() != null ? request.getRoomdms().getString() : null, balance);
+
+        log.info("查询房间余额，请求参数--> roomdms:{}, 返回结果:{}", request.getRoomdms() != null ? request.getRoomdms().getString() : null,
+            JSONObject.toJSONString(balance));
         // 使用FastJSON转换为JSON字符串返回
         return balance;
     }
@@ -426,7 +444,7 @@ public class IAppService {
     }
 
     public static void main(String[] args) {
-        Endpoint.publish("http://192.168.88.236:8080/AppService.svc", new IAppService());
+        Endpoint.publish("http://192.168.75.236:8080/AppService.svc", new IAppService());
         System.out.println("WebService is published!");
     }
 }

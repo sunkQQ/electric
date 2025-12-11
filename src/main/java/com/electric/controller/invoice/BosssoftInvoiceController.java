@@ -40,6 +40,10 @@ public class BosssoftInvoiceController {
 
         BosssoftInvoiceParam invoiceParam = JSONObject.parseObject(Base64Util.decodeString(param.getData()), BosssoftInvoiceParam.class);
         BosssoftBaseDataResult baseDataResult = new BosssoftBaseDataResult();
+
+        //baseDataResult.setResult("S0001");
+        //baseDataResult.setMessage(Base64Util.encodeString("设置开票失败"));
+
         baseDataResult.setResult("S0000");
 
         BosssoftInvoiceResult invoiceResult = new BosssoftInvoiceResult();

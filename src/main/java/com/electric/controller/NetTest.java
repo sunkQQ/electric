@@ -46,7 +46,8 @@ public class NetTest {
         map.put("phones", "18710369301");
         String result = HttpClientUtils.post(ADDRESS, map);
         System.out.println(result);*/
-        String address = "https://open.xiaofubao.com/routesc/api/route/ua/ccb/electric/queryRoomSurplus";
+        String address = "https://open.xiaofubao.com/routesapp/api/route/ua/ccb/electric/queryRoomSurplus";
+        //String address = "https://183.131.4.58:9301/routesc/api/route/ua/ccb/electric/queryRoomSurplus";
         //{routeUri=/routesc/api/route/ua/ccb/electric/queryRoomSurplus, ymAppId=2007281100065004, areaId=2509111111318044673,
         // school_id=00643309, SIGNTYPE=MD5, buildingCode=2001, roomCode=20010201, SIGN=6dc2afebee0f8a7b1c0a97a6edcab264,
         // floorCode=200102},URL:http://192.168.81.24:8000/api/route/ua/ccb/electric/queryRoomSurplus
