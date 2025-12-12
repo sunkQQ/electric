@@ -1,11 +1,11 @@
 package com.electric.util;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * 调用一卡通签名工具类
@@ -76,7 +76,7 @@ public class SignUtil {
                 || entry.getKey().equalsIgnoreCase(serialVersionUID)) {
                 continue;
             }
-            sortedParamMap.put(entry.getKey(), entry.getValue().toString());
+            sortedParamMap.put(entry.getKey(), entry.getValue());
         }
         System.out.println("sortedParamMap：" + sortedParamMap);
         // 最终结果
