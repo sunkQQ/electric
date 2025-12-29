@@ -63,7 +63,7 @@ public class BatchRefundRequest {
      * 单个退费项
      */
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "RefundItem", propOrder = { "refundId", "roomdm" })
+    @XmlType(name = "RefundItem", propOrder = { "refundId", "roomdm", "cztype" })
     public static class RefundItem {
 
         @XmlElement(name = "RefundId", namespace = "http://schemas.datacontract.org/2004/07/ISims.App.Wcf.Service.Model")
@@ -71,6 +71,9 @@ public class BatchRefundRequest {
 
         @XmlElement(name = "Roomdm", namespace = "http://schemas.datacontract.org/2004/07/ISims.App.Wcf.Service.Model")
         private String roomdm;
+
+        @XmlElement(name = "cztype", namespace = "http://schemas.datacontract.org/2004/07/ISims.App.Wcf.Service.Model")
+        private String cztype;
 
         public String getRefundId() {
             return refundId;
@@ -86,6 +89,14 @@ public class BatchRefundRequest {
 
         public void setRoomdm(String roomdm) {
             this.roomdm = roomdm;
+        }
+
+        public String getCztype() {
+            return cztype;
+        }
+
+        public void setCztype(String cztype) {
+            this.cztype = cztype;
         }
     }
 }

@@ -1,5 +1,14 @@
 package com.electric.controller.jiaofei;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.alibaba.fastjson2.JSONObject;
 import com.electric.constant.Numbers;
 import com.electric.param.jiaofei.youcai.JiaofeiYoucaiAddOrderParam;
@@ -11,15 +20,8 @@ import com.electric.response.jiaofei.youcai.JiaofeiYoucaiGetFeeItemResult;
 import com.electric.response.jiaofei.youcai.JiaofeiYoucaiStudentInfoResult;
 import com.electric.util.Md5Util;
 import com.electric.util.StringUtil;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 天津学院友财接口
@@ -44,7 +46,7 @@ public class JiaofeiYouCaiController {
 
         List<JiaofeiYoucaiGetFeeItemResult.Items> itemsList = new ArrayList<>();
         JiaofeiYoucaiGetFeeItemResult.Items items1 = new JiaofeiYoucaiGetFeeItemResult.Items();
-        items1.setFeeId("bs-333454");
+        items1.setFeeId("bs-333455");
         items1.setIsMustPay(Boolean.TRUE);
         items1.setYear(2022);
         items1.setProjectCode("01");
@@ -57,7 +59,7 @@ public class JiaofeiYouCaiController {
         //items1.setOrderNo("test001");
         itemsList.add(items1);
         JiaofeiYoucaiGetFeeItemResult.Items items2 = new JiaofeiYoucaiGetFeeItemResult.Items();
-        items2.setFeeId("bs-333453");
+        items2.setFeeId("bs-333456");
         items2.setIsMustPay(Boolean.TRUE);
         items2.setYear(2022);
         items2.setProjectCode("02");
@@ -86,9 +88,9 @@ public class JiaofeiYouCaiController {
      */
     @RequestMapping(value = "/GetStudentInfo", method = RequestMethod.POST)
     public String getStudentInfo(JiaofeiYoucaiBaseParam param) {
-        if (StringUtils.isBlank(param.getJson()) || StringUtils.isBlank(param.getMerchantno()) || StringUtils.isBlank(param.getSignature())) {
-            return JSONObject.toJSONString(new JiaofeiYoucaiBaseResult("01", "验签失败"));
-        }
+        //if (StringUtils.isBlank(param.getJson()) || StringUtils.isBlank(param.getMerchantno()) || StringUtils.isBlank(param.getSignature())) {
+        //    return JSONObject.toJSONString(new JiaofeiYoucaiBaseResult("01", "验签失败"));
+        //}
         String sign = getSign(param.getJson(), KEY);
         if (!sign.equalsIgnoreCase(param.getSignature())) {
             return JSONObject.toJSONString(new JiaofeiYoucaiBaseResult("01", "验签失败"));

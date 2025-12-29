@@ -1,7 +1,7 @@
 package com.electric.controller.electric;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -106,28 +106,28 @@ public class IAppService {
         sylList.add(syl);*/
 
         JSONObject syl1 = new JSONObject();
-        syl1.put("SYL", "92337.26");
+        syl1.put("SYL", "9.26");
         syl1.put("mdtype", "1096");
         syl1.put("mdname", "热水");
-        syl1.put("SYLJE", 60019.21);
+        syl1.put("SYLJE", 6.21);
         syl1.put("SYBZJE", "0.00");
         syl1.put("SYBZ", "0.00");
         sylList.add(syl1);
 
-        /*JSONObject syl2 = new JSONObject();
+        JSONObject syl2 = new JSONObject();
         syl2.put("SYL", "1.0");
         syl2.put("mdtype", "1097");
         syl2.put("mdname", "天然气");
         syl2.put("SYLJE", "2.0");
         syl2.put("SYBZJE", "0.00");
         syl2.put("SYBZ", "0.00");
-        sylList.add(syl2);*/
+        sylList.add(syl2);
 
         JSONObject syl3 = new JSONObject();
-        syl3.put("SYL", "3.0");
+        syl3.put("SYL", "19.0");
         syl3.put("mdtype", "1098");
         syl3.put("mdname", "照明用电");
-        syl3.put("SYLJE", "5.0");
+        syl3.put("SYLJE", "15.0");
         syl3.put("SYBZJE", "0.00");
         syl3.put("SYBZ", "0.00");
         sylList.add(syl3);
@@ -161,7 +161,9 @@ public class IAppService {
 
         data.put("sylList", sylList);
         result.setData(data);
-        return JSONObject.toJSONString(result);
+        String jsonStr = JSONObject.toJSONString(result);
+        log.info("查询余额， 返回结果--> {}", jsonStr);
+        return jsonStr;
     }
 
     int i = 0;
@@ -408,7 +410,7 @@ public class IAppService {
             refundResponse.setMessage("无退费数据");
             refundResponse.setStatus("-1");
 
-            response.setRefundResponse(Arrays.asList(refundResponse));
+            response.setRefundResponse(Collections.singletonList(refundResponse));
         }
         log.info("批量退费，返回结果--> {}", response);
         return response;
@@ -440,6 +442,67 @@ public class IAppService {
         response.setSuccess("true");
         response.setIssend("1");
         log.info("根据退费ID查询退费结果，请求参数--> refundId:{}, 返回结果:{}", request.getRefundId(), response);
+        return response;
+    }
+
+    @WebMethod(operationName = "ValidateBatchRefund")
+    @WebResult(name = "ValidateBatchRefundResult")
+    public BatchRefundResponseWrapper ValidateBatchRefund(@WebParam(name = "request", targetNamespace = "www.cdgf.com") BatchRefundRequest request) {
+        log.info("校验房间是否允许退费接口，请求参数--> refundItems:{}, signkey:{}", JSONObject.toJSONString(request.getRefundItems()), request.getSignkey());
+
+        // 创建响应对象
+        BatchRefundResponseWrapper response = new BatchRefundResponseWrapper();
+
+        // 处理退费逻辑
+        if (request.getRefundItems() != null && request.getRefundItems().getRefundItem() != null
+            && !request.getRefundItems().getRefundItem().isEmpty()) {
+
+            List<BatchRefundResponseWrapper.RefundResponse> refundResponses = new ArrayList<>();
+
+            for (BatchRefundRequest.RefundItem refundItem : request.getRefundItems().getRefundItem()) {
+                BatchRefundResponseWrapper.RefundResponse refundResponse = new BatchRefundResponseWrapper.RefundResponse();
+                refundResponse.setRefundId(refundItem.getRefundId());
+                refundResponse.setRoomdm(refundItem.getRoomdm());
+                refundResponse.setMdname(refundItem.getRoomdm().substring(refundItem.getRoomdm().length() - 3) + "房间"); // 模拟房间名称
+                refundResponse.setCztype(refundItem.getCztype());
+                // 模拟不同的退费结果
+                if (refundItem.getRoomdm().endsWith("08")) {
+                    // 模拟退费失败的情况
+                    refundResponse.setDianliang("");
+                    refundResponse.setMoney("");
+                    refundResponse.setPrice("");
+                    refundResponse.setMessage("退费不成功,前一天还在用电,不能进行退费");
+                    refundResponse.setStatus("-4");
+                } else {
+                    // 模拟退费成功的情况
+                    //refundResponse.setDianliang("-0.2");
+                    //refundResponse.setMoney("-0.1");
+                    //refundResponse.setPrice();
+                    refundResponse.setMessage("验证通过，可以退费");
+                    refundResponse.setStatus("0");
+                    //LIST.add(refundItem.getRefundId());
+                }
+
+                refundResponses.add(refundResponse);
+            }
+
+            response.setRefundResponse(refundResponses);
+
+        } else {
+            // 无退费数据的情况
+            BatchRefundResponseWrapper.RefundResponse refundResponse = new BatchRefundResponseWrapper.RefundResponse();
+            refundResponse.setRefundId("");
+            refundResponse.setRoomdm("");
+            refundResponse.setMdname("");
+            refundResponse.setDianliang("");
+            refundResponse.setMoney("");
+            refundResponse.setPrice("");
+            refundResponse.setMessage("无退费数据");
+            refundResponse.setStatus("-1");
+
+            response.setRefundResponse(Collections.singletonList(refundResponse));
+        }
+        log.info("批量校验房间是否允许退费，返回结果--> {}", JSONObject.toJSONString(response));
         return response;
     }
 

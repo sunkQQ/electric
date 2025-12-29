@@ -57,6 +57,7 @@ public class JiaofeiUnifiedController {
         jsonObject.put("statusCode", 0);
         jsonObject.put("message", "操作成功");
         jsonObject.put("data", JSONArray.toJSONString(list));
+        //jsonObject.put("data", list);
         return jsonObject.toJSONString();
     }
 
@@ -91,7 +92,7 @@ public class JiaofeiUnifiedController {
         JiaofeiQueryDateResponse response1 = new JiaofeiQueryDateResponse();
         response1.setUserNo(param.getUserNo());
         response1.setUserName(param.getUserName());
-        response1.setSeqNo("12138");
+        response1.setSeqNo("122138");
         response1.setProCode("101");
         response1.setProName("测试项目");
         response1.setThirdYear(DateUtil.getYear());
@@ -103,7 +104,7 @@ public class JiaofeiUnifiedController {
         JiaofeiQueryDateResponse response2 = new JiaofeiQueryDateResponse();
         response2.setUserNo(param.getUserNo());
         response2.setUserName(param.getUserName());
-        response2.setSeqNo("865");
+        response2.setSeqNo("8625");
         response2.setProCode("101");
         response2.setProName("测试项目");
         response2.setThirdYear(DateUtil.getYear());

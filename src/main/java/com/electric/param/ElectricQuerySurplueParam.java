@@ -41,6 +41,7 @@ public class ElectricQuerySurplueParam implements Serializable {
     /** 类型：1、电费 2、水费 */
     private Integer           bussiType;
 
+    /** 签名 */
     @NotEmpty(message = "签名不能为空")
     private String            sign;
 }
