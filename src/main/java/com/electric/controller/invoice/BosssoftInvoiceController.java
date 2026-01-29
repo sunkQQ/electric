@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.electric.param.ElectricQuerySurplueParam;
-import com.electric.param.invoice.BosssoftBaseParam;
-import com.electric.param.invoice.BosssoftInvoiceParam;
-import com.electric.response.invoice.BosssoftBaseDataResult;
-import com.electric.response.invoice.BosssoftBaseResult;
-import com.electric.response.invoice.BosssoftGetPicUrlResult;
-import com.electric.response.invoice.BosssoftInvoiceResult;
+import com.electric.model.param.ElectricQuerySurplueParam;
+import com.electric.model.param.invoice.BosssoftBaseParam;
+import com.electric.model.param.invoice.BosssoftInvoiceParam;
+import com.electric.model.response.invoice.BosssoftBaseDataResult;
+import com.electric.model.response.invoice.BosssoftBaseResult;
+import com.electric.model.response.invoice.BosssoftGetPicUrlResult;
+import com.electric.model.response.invoice.BosssoftInvoiceResult;
 import com.electric.util.Base64Util;
 import com.electric.util.StringUtil;
 

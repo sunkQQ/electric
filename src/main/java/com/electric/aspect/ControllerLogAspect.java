@@ -2,6 +2,7 @@ package com.electric.aspect;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -19,6 +21,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import com.electric.annotation.ReqPass;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -56,6 +59,14 @@ public class ControllerLogAspect {
         HttpServletRequest request = null;
         if (attributes != null) {
             request = attributes.getRequest();
+        }
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = signature.getMethod();
+
+        // 获取特定注解
+        ReqPass myAnnotation = method.getAnnotation(ReqPass.class);
+        if (myAnnotation != null) {
+            return;
         }
 
         // 如果请求不为空且请求方法为POST

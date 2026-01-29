@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.electric.constant.Numbers;
-import com.electric.param.jiaofei.youcai.JiaofeiYoucaiAddOrderParam;
-import com.electric.param.jiaofei.youcai.JiaofeiYoucaiBaseParam;
-import com.electric.param.jiaofei.youcai.JiaofeiYoucaiStudentParam;
-import com.electric.param.jiaofei.youcai.JiaofeiYoucaiUpdateOrderParam;
-import com.electric.response.jiaofei.youcai.JiaofeiYoucaiBaseResult;
-import com.electric.response.jiaofei.youcai.JiaofeiYoucaiGetFeeItemResult;
-import com.electric.response.jiaofei.youcai.JiaofeiYoucaiStudentInfoResult;
+import com.electric.model.constant.Numbers;
+import com.electric.model.param.jiaofei.youcai.JiaofeiYoucaiAddOrderParam;
+import com.electric.model.param.jiaofei.youcai.JiaofeiYoucaiBaseParam;
+import com.electric.model.param.jiaofei.youcai.JiaofeiYoucaiStudentParam;
+import com.electric.model.param.jiaofei.youcai.JiaofeiYoucaiUpdateOrderParam;
+import com.electric.model.response.jiaofei.youcai.JiaofeiYoucaiBaseResult;
+import com.electric.model.response.jiaofei.youcai.JiaofeiYoucaiGetFeeItemResult;
+import com.electric.model.response.jiaofei.youcai.JiaofeiYoucaiStudentInfoResult;
 import com.electric.util.Md5Util;
 import com.electric.util.StringUtil;
 
@@ -176,7 +176,9 @@ public class JiaofeiYouCaiController {
         JiaofeiYoucaiUpdateOrderParam updateOrderParam = JSONObject.parseObject(param.getJson(), JiaofeiYoucaiUpdateOrderParam.class);
         for (JiaofeiYoucaiGetFeeItemResult.FeeItems feeitem : result.getFeeItems()) {
             for (JiaofeiYoucaiGetFeeItemResult.Items items : feeitem.getItems()) {
-                if (items.getOrderNo().equalsIgnoreCase(updateOrderParam.getOrderNo())) {
+                //items.getFeeId().equals(updateOrderParam.get)
+
+                if (StringUtils.isNotBlank(items.getOrderNo()) && items.getOrderNo().equalsIgnoreCase(updateOrderParam.getOrderNo())) {
                     feeitem.getItems().remove(items);
                 }
             }

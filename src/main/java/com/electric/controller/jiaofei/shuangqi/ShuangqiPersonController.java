@@ -1,15 +1,15 @@
 package com.electric.controller.jiaofei.shuangqi;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.electric.constant.Numbers;
-import com.electric.response.shuangqi.ShuangqiUserPersonInfo;
+import com.electric.model.constant.Numbers;
+import com.electric.model.response.shuangqi.ShuangqiUserPersonInfo;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.electric.param.shuangqi.ShuangqiPersonInfoParam;
-import com.electric.response.shuangqi.ShuangqiBaseResponse;
+import com.electric.model.param.shuangqi.ShuangqiPersonInfoParam;
+import com.electric.model.response.shuangqi.ShuangqiBaseResponse;
 import com.electric.util.DateUtil;
 import com.electric.util.Md5Util;
 

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.electric.param.send.CenterElectricRemindParam;
+import com.electric.model.param.send.CenterElectricRemindParam;
 import com.electric.util.BeanConvertor;
 import com.electric.util.HttpClientUtils;
 import com.electric.util.HttpServletRequestUtil;

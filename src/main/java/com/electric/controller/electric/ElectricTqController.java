@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.electric.param.tuoqiang.ElectricTuoQiangParam;
+import com.electric.model.param.tuoqiang.ElectricTuoQiangParam;
 import com.electric.util.HttpServletRequestUtil;
 import com.electric.util.Md5Util;
 

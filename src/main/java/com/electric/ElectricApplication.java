@@ -1,12 +1,11 @@
 package com.electric;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
-import com.electric.constant.StringConstant;
+import com.electric.model.constant.StringConstant;
 
 @SpringBootApplication
 //@EnableAutoConfiguration

@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
-import com.electric.constant.Numbers;
+import com.electric.model.constant.Numbers;
 import com.electric.util.HttpClientUtils;
 import com.electric.util.Md5Util;
 

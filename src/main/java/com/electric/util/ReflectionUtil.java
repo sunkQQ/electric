@@ -8,8 +8,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 
-import com.electric.constant.Numbers;
-import com.electric.constant.StringConstant;
+import com.electric.model.constant.Numbers;
+import com.electric.model.constant.StringConstant;
 import com.google.common.base.CaseFormat;
 
 import lombok.extern.slf4j.Slf4j;

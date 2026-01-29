@@ -2,8 +2,8 @@ package com.electric.controller.auth.org;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
-import com.electric.param.auth.AuthOrgDepartmentParam;
-import com.electric.param.auth.AuthOrgUserParam;
+import com.electric.model.param.auth.AuthOrgDepartmentParam;
+import com.electric.model.param.auth.AuthOrgUserParam;
 import com.electric.util.HttpServletRequestUtil;
 import com.electric.util.RsaUtil3;
 import lombok.extern.slf4j.Slf4j;

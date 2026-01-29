@@ -1,9 +1,13 @@
 package com.electric.controller.electric;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -11,15 +15,17 @@ import javax.jws.WebResult;
 import javax.jws.WebService;
 import javax.xml.ws.Endpoint;
 
+import org.apache.commons.collections4.CollectionUtils;
+
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
-import com.electric.param.isims.BatchRefundRequest;
-import com.electric.param.isims.GetRefundByRefundIdRequest;
-import com.electric.param.isims.QueryRoomBalanceRequest;
-import com.electric.response.electric.isims.BalanceResponseWrapper;
-import com.electric.response.electric.isims.BatchRefundResponseWrapper;
-import com.electric.response.electric.isims.GetRefundByRefundIdResponseWrapper;
-import com.electric.response.electric.isims.GetYEInfoResult;
+import com.electric.model.param.isims.BatchRefundRequest;
+import com.electric.model.param.isims.GetRefundByRefundIdRequest;
+import com.electric.model.param.isims.QueryRoomBalanceRequest;
+import com.electric.model.response.electric.isims.BalanceResponseWrapper;
+import com.electric.model.response.electric.isims.BatchRefundResponseWrapper;
+import com.electric.model.response.electric.isims.GetRefundByRefundIdResponseWrapper;
+import com.electric.model.response.electric.isims.GetYEInfoResult;
 import com.electric.util.DateUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +40,70 @@ import lombok.extern.slf4j.Slf4j;
 @WebService(name = "IAppService", targetNamespace = "www.cdgf.com")
 public class IAppService {
 
-    private static final List<String> LIST = new ArrayList<>();
+    private static final List<BatchRefundResponseWrapper.RefundResponse> LIST             = new ArrayList<>();
+
+    private static final List<BalanceResponseWrapper.BalanceResponse>    BALANCE_RESPONSE = new ArrayList<>();
+    static {
+        BalanceResponseWrapper.BalanceResponse balance = new BalanceResponseWrapper.BalanceResponse();
+        balance.setLeftdu("0.2");
+        balance.setLeftmoney("0.1");
+        balance.setLeftration("0.00");
+        balance.setLeftrationdu("0.00");
+        balance.setMdname("照明用电");
+        balance.setMessage("查询成功");
+        balance.setHdclassname("电表");
+        balance.setCztype("1");
+        balance.setStatus("0");
+        BALANCE_RESPONSE.add(balance);
+
+        BalanceResponseWrapper.BalanceResponse balance1 = new BalanceResponseWrapper.BalanceResponse();
+        balance1.setLeftdu("0.2");
+        balance1.setLeftmoney("0.2");
+        balance1.setLeftration("0.00");
+        balance1.setLeftrationdu("0.00");
+        balance1.setMdname("空调用电");
+        balance1.setCztype("2");
+        balance1.setMessage("查询成功");
+        balance1.setHdclassname("电表");
+        balance1.setStatus("0");
+        BALANCE_RESPONSE.add(balance1);
+
+        BalanceResponseWrapper.BalanceResponse waterBalance = new BalanceResponseWrapper.BalanceResponse();
+        waterBalance.setLeftdu("0.2");
+        waterBalance.setLeftmoney("0");
+        waterBalance.setLeftration("0.00");
+        waterBalance.setLeftrationdu("0.00");
+        waterBalance.setMdname("热水");
+        waterBalance.setCztype("3");
+        waterBalance.setMessage("查询成功");
+        waterBalance.setHdclassname("水表");
+        waterBalance.setStatus("0");
+        BALANCE_RESPONSE.add(waterBalance);
+
+        BalanceResponseWrapper.BalanceResponse waterBalance1 = new BalanceResponseWrapper.BalanceResponse();
+        waterBalance1.setLeftdu("0.25");
+        waterBalance1.setLeftmoney("-0.66");
+        waterBalance1.setLeftration("0.00");
+        waterBalance1.setLeftrationdu("0.00");
+        waterBalance1.setMdname("冷水");
+        waterBalance1.setCztype("5");
+        waterBalance1.setMessage("查询成功");
+        waterBalance1.setHdclassname("水表");
+        waterBalance1.setStatus("0");
+        BALANCE_RESPONSE.add(waterBalance1);
+
+        BalanceResponseWrapper.BalanceResponse gasBalance = new BalanceResponseWrapper.BalanceResponse();
+        gasBalance.setLeftdu("0.3");
+        gasBalance.setLeftmoney("0.6");
+        gasBalance.setLeftration("0.00");
+        gasBalance.setLeftrationdu("0.00");
+        gasBalance.setMdname("燃气");
+        gasBalance.setCztype("4");
+        gasBalance.setMessage("查询成功");
+        gasBalance.setHdclassname("气表");
+        gasBalance.setStatus("0");
+        BALANCE_RESPONSE.add(gasBalance);
+    }
 
     /** 
      * 查询余额
@@ -53,111 +122,31 @@ public class IAppService {
         result.setMsg("success");
 
         JSONObject data = new JSONObject();
-        data.put("roomdm", "123456");
+        data.put("roomdm", roomdm);
 
         JSONArray topUpTypeList = new JSONArray();
 
-        JSONObject topUpType = new JSONObject();
-        topUpType.put("cztype", "1095");
-        topUpType.put("mdname", "插座");
-        topUpTypeList.add(topUpType);
-
-        JSONObject topUpType1 = new JSONObject();
-        topUpType1.put("cztype", "1096");
-        topUpType1.put("mdname", "热水");
-        topUpTypeList.add(topUpType1);
-
-        JSONObject topUpType2 = new JSONObject();
-        topUpType2.put("cztype", "1097");
-        topUpType2.put("mdname", "天然气");
-        topUpTypeList.add(topUpType2);
-
-        JSONObject topUpType3 = new JSONObject();
-        topUpType3.put("cztype", "1098");
-        topUpType3.put("mdname", "照明用电");
-        topUpTypeList.add(topUpType3);
-
-        JSONObject topUpType4 = new JSONObject();
-        topUpType4.put("cztype", "1099");
-        topUpType4.put("mdname", "空调用电");
-        topUpTypeList.add(topUpType4);
-
-        JSONObject topUpType5 = new JSONObject();
-        topUpType5.put("cztype", "1100");
-        topUpType5.put("mdname", "其他");
-        topUpTypeList.add(topUpType5);
-
-        JSONObject topUpType6 = new JSONObject();
-        topUpType6.put("cztype", "1101");
-        topUpType6.put("mdname", "燃气");
-        topUpTypeList.add(topUpType6);
+        BALANCE_RESPONSE.forEach(balance -> {
+            JSONObject topUpType = new JSONObject();
+            topUpType.put("cztype", roomdm + balance.getCztype());
+            topUpType.put("mdname", balance.getMdname());
+            topUpTypeList.add(topUpType);
+        });
 
         data.put("topUpTypeList", topUpTypeList);
 
         JSONArray sylList = new JSONArray();
-
-        /*JSONObject syl = new JSONObject();
-        syl.put("SYL", "92337.26");
-        syl.put("mdtype", "1095");
-        syl.put("mdname", "插座");
-        syl.put("SYLJE", 60019.21);
-        syl.put("SYBZJE", "0.00");
-        syl.put("SYBZ", "0.00");
-        sylList.add(syl);*/
-
-        JSONObject syl1 = new JSONObject();
-        syl1.put("SYL", "9.26");
-        syl1.put("mdtype", "1096");
-        syl1.put("mdname", "热水");
-        syl1.put("SYLJE", 6.21);
-        syl1.put("SYBZJE", "0.00");
-        syl1.put("SYBZ", "0.00");
-        sylList.add(syl1);
-
-        JSONObject syl2 = new JSONObject();
-        syl2.put("SYL", "1.0");
-        syl2.put("mdtype", "1097");
-        syl2.put("mdname", "天然气");
-        syl2.put("SYLJE", "2.0");
-        syl2.put("SYBZJE", "0.00");
-        syl2.put("SYBZ", "0.00");
-        sylList.add(syl2);
-
-        JSONObject syl3 = new JSONObject();
-        syl3.put("SYL", "19.0");
-        syl3.put("mdtype", "1098");
-        syl3.put("mdname", "照明用电");
-        syl3.put("SYLJE", "15.0");
-        syl3.put("SYBZJE", "0.00");
-        syl3.put("SYBZ", "0.00");
-        sylList.add(syl3);
-
-        JSONObject syl4 = new JSONObject();
-        syl4.put("SYL", "3.0");
-        syl4.put("mdtype", "1099");
-        syl4.put("mdname", "空调用电");
-        syl4.put("SYLJE", "5.0");
-        syl4.put("SYBZJE", "0.00");
-        syl4.put("SYBZ", "0.00");
-        sylList.add(syl4);
-
-        /*JSONObject syl5 = new JSONObject();
-        syl5.put("SYL", "3.0");
-        syl5.put("mdtype", "1100");
-        syl5.put("mdname", "其他");
-        syl5.put("SYLJE", "5.0");
-        syl5.put("SYBZJE", "0.00");
-        syl5.put("SYBZ", "0.00");
-        sylList.add(syl5);
-        
-        JSONObject syl6 = new JSONObject();
-        syl6.put("SYL", "3.0");
-        syl6.put("mdtype", "1101");
-        syl6.put("mdname", "燃气");
-        syl6.put("SYLJE", "5.0");
-        syl6.put("SYBZJE", "0.00");
-        syl6.put("SYBZ", "0.00");
-        sylList.add(syl6);*/
+        BALANCE_RESPONSE.forEach(balance -> {
+            JSONObject syl = new JSONObject();
+            syl.put("SYL", balance.getLeftdu());
+            syl.put("mdtype", roomdm + balance.getCztype());
+            syl.put("mdname", balance.getMdname());
+            syl.put("SYLJE", balance.getLeftmoney());
+            syl.put("SYBZJE", balance.getLeftration());
+            syl.put("SYBZ", balance.getLeftrationdu());
+            syl.put("hdclassname", balance.getHdclassname());
+            sylList.add(syl);
+        });
 
         data.put("sylList", sylList);
         result.setData(data);
@@ -210,6 +199,14 @@ public class IAppService {
                         @WebParam(name = "roomdm", targetNamespace = "www.cdgf.com") String roomdm,
                         @WebParam(name = "money", targetNamespace = "www.cdgf.com") String money) {
         log.info("充值， 请求参数--> roomdm:{}, signkey:{}, orderid:{}, cztype:{}, money:{}", roomdm, signkey, orderid, cztype, money);
+
+        for (BalanceResponseWrapper.BalanceResponse balanceResponse : BALANCE_RESPONSE) {
+            if (cztype.endsWith(balanceResponse.getCztype())) {
+                balanceResponse.setLeftmoney(
+                    new BigDecimal(balanceResponse.getLeftmoney()).add(new BigDecimal(money)).setScale(2, RoundingMode.HALF_UP).toString());
+            }
+        }
+
         JSONObject json = new JSONObject();
         json.put("code", 0);
         json.put("msg", "充值成功！");
@@ -326,16 +323,21 @@ public class IAppService {
         // 设置响应数据 - 这里使用模拟数据，您可以根据实际业务逻辑调整
         if (request.getRoomdms() != null && request.getRoomdms().getString() != null && !request.getRoomdms().getString().isEmpty()) {
             for (String roomdm : request.getRoomdms().getString()) {
-                BalanceResponseWrapper.BalanceResponse balance = new BalanceResponseWrapper.BalanceResponse();
-                balance.setLeftdu("0.2");
-                balance.setLeftmoney("0.1");
-                balance.setLeftration("0.00");
-                balance.setLeftrationdu("0.00");
-                balance.setMdname("11-北102");
-                balance.setMessage("查询成功");
-                balance.setRoomdm(roomdm);
-                balance.setStatus("0");
-                balanceResponse.add(balance);
+                AtomicInteger i = new AtomicInteger();
+                BALANCE_RESPONSE.forEach(res -> {
+                    BalanceResponseWrapper.BalanceResponse balance = new BalanceResponseWrapper.BalanceResponse();
+                    balance.setLeftdu(res.getLeftdu());
+                    balance.setLeftmoney(res.getLeftmoney());
+                    balance.setLeftration(res.getLeftration());
+                    balance.setLeftrationdu(res.getLeftrationdu());
+                    balance.setMdname(res.getMdname());
+                    balance.setMessage(res.getMessage());
+                    balance.setCztype(roomdm + res.getCztype());
+                    balance.setHdclassname(res.getHdclassname());
+                    balance.setRoomdm(roomdm);
+                    balance.setStatus(res.getStatus());
+                    balanceResponse.add(balance);
+                });
             }
         }
         System.out.println(JSONObject.toJSONString(balanceResponse));
@@ -384,13 +386,28 @@ public class IAppService {
                     refundResponse.setMessage("退费不成功,前一天还在用电,不能进行退费");
                     refundResponse.setStatus("-4");
                 } else {
+
+                    String money = "";
+                    String hdclassname = "电表";
+                    for (BalanceResponseWrapper.BalanceResponse balanceResponse : BALANCE_RESPONSE) {
+                        if (refundItem.getCztype().endsWith(balanceResponse.getCztype())) {
+                            money = balanceResponse.getLeftmoney();
+                            balanceResponse.setLeftmoney("0");
+                            hdclassname = balanceResponse.getHdclassname();
+                        }
+                    }
+
                     // 模拟退费成功的情况
                     refundResponse.setDianliang("-0.2");
-                    refundResponse.setMoney("-0.1");
+                    refundResponse.setMoney("-" + money);
                     refundResponse.setPrice("0.5380");
+                    refundResponse.setCztype(refundItem.getCztype());
+                    refundResponse.setLeftmoney(new BigDecimal(money));
+                    refundResponse.setHdclassname(hdclassname);
                     refundResponse.setMessage("退费处理中");
                     refundResponse.setStatus("0");
-                    LIST.add(refundItem.getRefundId());
+                    LIST.add(refundResponse);
+
                 }
 
                 refundResponses.add(refundResponse);
@@ -429,20 +446,36 @@ public class IAppService {
         // 创建响应对象
         GetRefundByRefundIdResponseWrapper response = new GetRefundByRefundIdResponseWrapper();
 
-        // 设置响应数据
-        response.setErrorMessage("退费成功");
-        response.setIsSuccess("true");
-        response.setMdid("10003");
-        response.setMessage("查询成功");
-        response.setRefundAmount("-0.1");
-        response.setRefundId(request.getRefundId());
-        response.setRefundTime("2025-06-24T11:03:34.903");
-        response.setRoomId("10060204");
-        response.setStatusCode("200");
-        response.setSuccess("true");
-        response.setIssend("1");
-        log.info("根据退费ID查询退费结果，请求参数--> refundId:{}, 返回结果:{}", request.getRefundId(), response);
-        return response;
+        List<BatchRefundResponseWrapper.RefundResponse> refundList = LIST.stream()
+            .filter(refundResponse -> refundResponse.getRefundId().equals(request.getRefundId())).collect(Collectors.toList());
+        if (CollectionUtils.isNotEmpty(refundList)) {
+            BatchRefundResponseWrapper.RefundResponse refundResponse = refundList.get(0);
+            // 设置响应数据
+            response.setErrorMessage("退费成功");
+            response.setIsSuccess("true");
+            response.setMdid("10003");
+            response.setMessage("查询成功");
+            response.setRefundAmount(refundResponse.getLeftmoney().toString());
+            response.setRefundId(request.getRefundId());
+            response.setRefundTime("2025-06-24T11:03:34.903");
+            response.setRoomId(refundResponse.getRoomdm());
+            response.setStatusCode("200");
+            response.setSuccess("true");
+            response.setIssend("1");
+            log.info("根据退费ID查询退费结果，请求参数--> refundId:{}, 返回结果:{}", request.getRefundId(), response);
+            return response;
+        } else {
+            // 设置响应数据
+            response.setErrorMessage("未找到退费订单");
+            response.setIsSuccess("true");
+            response.setMdid("10003");
+            response.setMessage("查询成功");
+            response.setRoomId(response.getRoomId());
+            response.setStatusCode("404");
+            log.info("根据退费ID查询退费结果，请求参数--> refundId:{}, 返回结果:{}", request.getRefundId(), response);
+            return response;
+        }
+
     }
 
     @WebMethod(operationName = "ValidateBatchRefund")
@@ -466,22 +499,22 @@ public class IAppService {
                 refundResponse.setMdname(refundItem.getRoomdm().substring(refundItem.getRoomdm().length() - 3) + "房间"); // 模拟房间名称
                 refundResponse.setCztype(refundItem.getCztype());
                 // 模拟不同的退费结果
-                if (refundItem.getRoomdm().endsWith("08")) {
+                /*if (refundItem.getRoomdm().endsWith("08") || refundItem.getCztype().endsWith("3")) {
                     // 模拟退费失败的情况
                     refundResponse.setDianliang("");
                     refundResponse.setMoney("");
                     refundResponse.setPrice("");
                     refundResponse.setMessage("退费不成功,前一天还在用电,不能进行退费");
                     refundResponse.setStatus("-4");
-                } else {
-                    // 模拟退费成功的情况
-                    //refundResponse.setDianliang("-0.2");
-                    //refundResponse.setMoney("-0.1");
-                    //refundResponse.setPrice();
-                    refundResponse.setMessage("验证通过，可以退费");
-                    refundResponse.setStatus("0");
-                    //LIST.add(refundItem.getRefundId());
-                }
+                } else {*/
+                // 模拟退费成功的情况
+                //refundResponse.setDianliang("-0.2");
+                //refundResponse.setMoney("-0.1");
+                //refundResponse.setPrice();
+                refundResponse.setMessage("验证通过，可以退费");
+                refundResponse.setStatus("0");
+                //LIST.add(refundItem.getRefundId());
+                //}
 
                 refundResponses.add(refundResponse);
             }
@@ -506,8 +539,52 @@ public class IAppService {
         return response;
     }
 
+    @WebMethod(operationName = "ReFund")
+    @WebResult(name = "ReFundResult")
+    public String ReFund(@WebParam(name = "signkey", targetNamespace = "www.cdgf.com") String signkey,
+                         @WebParam(name = "custsn", targetNamespace = "www.cdgf.com") String custsn,
+                         @WebParam(name = "roomdm", targetNamespace = "www.cdgf.com") String roomdm) {
+        log.info("常工V6退费， 请求参数--> roomdm:{}, signkey:{}, custsn:{}", roomdm, signkey, custsn);
+
+        BigDecimal refundMoney = BigDecimal.ZERO;
+        for (BalanceResponseWrapper.BalanceResponse balanceResponse : BALANCE_RESPONSE) {
+            if (new BigDecimal(balanceResponse.getLeftmoney()).compareTo(BigDecimal.ZERO) > 0) {
+                refundMoney = refundMoney.add(new BigDecimal(balanceResponse.getLeftmoney()));
+            }
+        }
+
+        JSONObject json = new JSONObject();
+        json.put("code", 0);
+        json.put("msg", "退费成功！");
+        json.put("data", refundMoney);
+        return json.toString();
+    }
+
+    @WebMethod(operationName = "ReFundRecord")
+    @WebResult(name = "ReFundRecordResult")
+    public String ReFundRecord(@WebParam(name = "signkey", targetNamespace = "www.cdgf.com") String signkey,
+                               @WebParam(name = "custsn", targetNamespace = "www.cdgf.com") String custsn,
+                               @WebParam(name = "roomdm", targetNamespace = "www.cdgf.com") String roomdm) {
+        log.info("常工V6退费查询， 请求参数--> roomdm:{}, signkey:{}, custsn:{}", roomdm, signkey, custsn);
+
+        BigDecimal refundMoney = BigDecimal.ZERO;
+        for (BalanceResponseWrapper.BalanceResponse balanceResponse : BALANCE_RESPONSE) {
+            if (new BigDecimal(balanceResponse.getLeftmoney()).compareTo(BigDecimal.ZERO) > 0) {
+                refundMoney = refundMoney.add(new BigDecimal(balanceResponse.getLeftmoney()));
+            }
+        }
+
+        JSONObject json = new JSONObject();
+        json.put("code", 0);
+        json.put("msg", "退费成功！");
+        json.put("data", refundMoney);
+        return json.toString();
+    }
+
     public static void main(String[] args) {
         Endpoint.publish("http://192.168.75.236:8080/AppService.svc", new IAppService());
+
         System.out.println("WebService is published!");
     }
+
 }

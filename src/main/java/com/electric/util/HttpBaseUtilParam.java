@@ -33,7 +33,7 @@ import org.apache.http.protocol.HttpContext;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.Args;
 
-import com.electric.constant.Numbers;
+import com.electric.model.constant.Numbers;
 import com.electric.util.model.ProxyAddressInfo;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;

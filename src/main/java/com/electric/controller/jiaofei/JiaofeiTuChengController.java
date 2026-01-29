@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
-import com.electric.param.jiaofei.tucheng.JiaofeiTuChengPayParam;
-import com.electric.param.jiaofei.tucheng.JiaofeiTuChengTokenParam;
-import com.electric.response.jiaofei.tucheng.JiaofeiTuChengBaseResult;
-import com.electric.response.jiaofei.tucheng.JiaofeiTuChengDebtResult;
+import com.electric.model.param.jiaofei.tucheng.JiaofeiTuChengPayParam;
+import com.electric.model.param.jiaofei.tucheng.JiaofeiTuChengTokenParam;
+import com.electric.model.response.jiaofei.tucheng.JiaofeiTuChengBaseResult;
+import com.electric.model.response.jiaofei.tucheng.JiaofeiTuChengDebtResult;
 import com.electric.util.DateUtil;
 import com.electric.util.Md5Util;
 import com.electric.util.SnowflakeIdGenerator;

@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.electric.param.special.KayRoadQuZhiRefundApplyParam;
-import com.electric.param.special.KayRoadQuZhiRefundStatusUpdateParam;
-import com.electric.param.special.SpecialUserParam;
-import com.electric.response.special.kayroad.KayRoadQuZhiBaseResponse;
-import com.electric.response.special.kayroad.KayRoadQuZhiRefundApplyResponse;
-import com.electric.response.special.kayroad.KayRoadQuZhiUserResponse;
+import com.electric.model.param.special.KayRoadQuZhiRefundApplyParam;
+import com.electric.model.param.special.KayRoadQuZhiRefundStatusUpdateParam;
+import com.electric.model.param.special.SpecialUserParam;
+import com.electric.model.response.special.kayroad.KayRoadQuZhiBaseResponse;
+import com.electric.model.response.special.kayroad.KayRoadQuZhiRefundApplyResponse;
+import com.electric.model.response.special.kayroad.KayRoadQuZhiUserResponse;
 
 /**
  * 生活缴费

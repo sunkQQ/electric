@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.electric.param.special.DianDianParam;
-import com.electric.response.special.diandian.DiandianAccInfoResult;
+import com.electric.model.param.special.DianDianParam;
+import com.electric.model.response.special.diandian.DiandianAccInfoResult;
 import com.electric.util.AesUtil;
 
 /**

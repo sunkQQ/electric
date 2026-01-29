@@ -1,6 +1,6 @@
 package com.electric.util;
 
-import com.electric.constant.Numbers;
+import com.electric.model.constant.Numbers;
 import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.BadPaddingException;

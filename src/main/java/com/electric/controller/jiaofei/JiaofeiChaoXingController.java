@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
-import com.electric.param.jiaofei.chaoxing.ChaoXingLibraryLendingParam;
-import com.electric.param.jiaofei.chaoxing.ChaoXingNoticeParam;
-import com.electric.response.jiaofei.chaoxing.ChaoXingBaseResult;
-import com.electric.response.jiaofei.chaoxing.ChaoxingUserDueDetailResult;
+import com.electric.model.param.jiaofei.chaoxing.ChaoXingLibraryLendingParam;
+import com.electric.model.param.jiaofei.chaoxing.ChaoXingNoticeParam;
+import com.electric.model.response.jiaofei.chaoxing.ChaoXingBaseResult;
+import com.electric.model.response.jiaofei.chaoxing.ChaoxingUserDueDetailResult;
 import com.electric.util.DateUtil;
 import com.electric.util.StringUtil;
 

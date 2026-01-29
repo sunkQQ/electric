@@ -17,8 +17,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import com.electric.constant.Numbers;
-import com.electric.constant.StringConstant;
+import com.electric.model.constant.Numbers;
+import com.electric.model.constant.StringConstant;
 import com.google.common.base.Splitter;
 
 import lombok.extern.slf4j.Slf4j;

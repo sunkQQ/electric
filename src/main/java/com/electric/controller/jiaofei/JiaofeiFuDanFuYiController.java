@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.electric.exception.BizException;
-import com.electric.param.jiaofei.fudanfuyi.FuDanFuYiQueryFeeParam;
-import com.electric.param.jiaofei.fudanfuyi.JiaofeiFudanfuyiParam;
+import com.electric.model.param.jiaofei.fudanfuyi.FuDanFuYiQueryFeeParam;
+import com.electric.model.param.jiaofei.fudanfuyi.JiaofeiFudanfuyiParam;
 import com.electric.util.DateUtil;
 import com.electric.util.ReflectionUtil;
 import com.electric.util.StringUtil;

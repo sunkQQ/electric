@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
-import com.electric.constant.StringConstant;
-import com.electric.param.net.NetRequestParam;
-import com.electric.response.net.cityhot.CityHotV5AccountInfoResponse;
+import com.electric.model.constant.StringConstant;
+import com.electric.model.param.net.NetRequestParam;
+import com.electric.model.response.net.cityhot.CityHotV5AccountInfoResponse;
 import com.electric.util.Base64Util;
 
 /**

@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
-import com.electric.param.jiaofei.JiaofeiUnifiedNoticeParam;
-import com.electric.param.jiaofei.JiaofeiUnifiedQueryParam;
-import com.electric.response.jiaofei.JiaofeiQueryDateResponse;
+import com.electric.model.param.jiaofei.JiaofeiUnifiedNoticeParam;
+import com.electric.model.param.jiaofei.JiaofeiUnifiedQueryParam;
+import com.electric.model.response.jiaofei.JiaofeiQueryDateResponse;
 import com.electric.util.DateUtil;
 import com.electric.util.HttpServletRequestUtil;
 import com.electric.util.SignUtil;

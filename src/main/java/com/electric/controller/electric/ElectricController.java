@@ -13,15 +13,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.electric.constant.Numbers;
-import com.electric.param.*;
-import com.electric.response.CommResponse;
-import com.electric.response.PageResult;
-import com.electric.response.electric.AppElectricUsageRecordVO;
-import com.electric.response.electric.AppRoomBuyRecordVO;
+import com.electric.model.constant.Numbers;
+import com.electric.model.param.*;
+import com.electric.model.response.CommResponse;
+import com.electric.model.response.PageResult;
+import com.electric.model.response.electric.AppElectricUsageRecordVO;
+import com.electric.model.response.electric.AppRoomBuyRecordVO;
 import com.electric.util.*;
-import com.electric.vo.ElectricRechargeVO;
-import com.electric.vo.ElectricRoomVO;
+import com.electric.model.vo.ElectricRechargeVO;
+import com.electric.model.vo.ElectricRoomVO;
 
 /**
  * 电费通用测试接口

@@ -125,6 +125,24 @@ public class SignUtil {
     }
 
     /**
+     * 根据key，md5一次
+     *
+     * @param paramMap
+     * @param key
+     * @return
+     * @create 2020年7月16日 下午1:03:58 luochao
+     * @history
+     */
+    public static String getSignMd5(Map<String, String> paramMap, String key) {
+        String str = getSignParams(paramMap);
+        System.out.println(str);
+        String sign = Md5Util.md5(getSignParams(paramMap) + PARAM_SPLIT + key);
+        System.out.println("第一次加密：" + sign);
+
+        return sign;
+    }
+
+    /**
      * 根据key,rsa解密
      *
      * @param paramMap

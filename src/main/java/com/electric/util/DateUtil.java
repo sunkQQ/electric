@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import com.alibaba.fastjson2.JSON;
-import com.electric.constant.Numbers;
-import com.electric.enums.WeekEnum;
+import com.electric.model.constant.Numbers;
+import com.electric.model.enums.WeekEnum;
 
 /**
  * 日期工具类
