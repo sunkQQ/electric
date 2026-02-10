@@ -1,10 +1,10 @@
 package com.electric.controller.reptiles.pic;
 
-import com.alibaba.fastjson2.JSONObject;
-import com.electric.util.HttpClientUtils;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.alibaba.fastjson2.JSONObject;
+import com.electric.util.HttpClient5Util;
 
 /**
  * 爬取图片类
@@ -28,7 +28,7 @@ public class SougouImgProcessor {
     }
 
     public void process(int idx, int size) {
-        String res = HttpClientUtils.get(String.format(this.url, idx, size, this.word));
+        String res = HttpClient5Util.sendGet(String.format(this.url, idx, size, this.word));
         JSONObject object = JSONObject.parseObject(res);
         List<JSONObject> items = (List<JSONObject>) ((JSONObject) object.get("data")).get("items");
         for (JSONObject item : items) {

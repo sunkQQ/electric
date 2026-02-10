@@ -12,7 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.electric.model.param.send.CenterElectricRemindParam;
 import com.electric.util.BeanConvertor;
-import com.electric.util.HttpClientUtils;
+import com.electric.util.HttpClient5Util;
 import com.electric.util.HttpServletRequestUtil;
 import com.electric.util.SignUtil;
 
@@ -43,7 +43,7 @@ public class ElectricSendMessageController {
         String signKey = SignUtil.getSignByMd5(paramMap, key);
         paramMap.put("sign", signKey);
         String url = "https://open.xiaofubao.com/routesc/api/route/ua/remind/send";
-        String result = HttpClientUtils.post(url, paramMap);
+        String result = HttpClient5Util.sendPost(url, paramMap);
 
         return result;
     }
@@ -79,7 +79,7 @@ public class ElectricSendMessageController {
         String url = "https://open.xiaofubao.com/routesc/api/route/ua/remind/send";
         //String url = "https://open.lsmart.wang/routesc/api/route/ua/remind/send";
         //String url = "http://localhost:8087/api/route/ua/remind/send";
-        String result = HttpClientUtils.post(url, paramMap);
+        String result = HttpClient5Util.sendPost(url, paramMap);
         System.out.println(result);
     }
 }

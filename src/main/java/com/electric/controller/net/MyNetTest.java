@@ -13,7 +13,7 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.electric.util.Base64Util;
 import com.electric.util.DateUtil;
-import com.electric.util.HttpClientUtils;
+import com.electric.util.HttpClient5Util;
 import com.electric.util.Md5Util;
 import com.electric.util.SignUtil;
 
@@ -76,7 +76,7 @@ public class MyNetTest {
         try {
             System.out.println("校验一卡通账号请求参数：" + map.toString());
 
-            response = HttpClientUtils.post(url, map);
+            response = HttpClient5Util.sendPost(url, map);
             System.out.println("校验一卡通账号,接口返回：" + response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -111,7 +111,7 @@ public class MyNetTest {
             map.put("incomeAccount", java.net.URLEncoder.encode(incomeAccount, "utf-8"));
             System.out.println("校验一卡通账号请求参数：" + map.toString());
 
-            response = HttpClientUtils.post(url, map, "utf-8");
+            response = HttpClient5Util.sendPost(url, map);
             System.out.println("校验一卡通账号,接口返回：" + response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -214,7 +214,7 @@ public class MyNetTest {
         map.put("buildingNo", buildingNo);
         String sign = SignUtil.getSignByMd5(map, signKey);
         map.put("sign", sign);
-        String result = HttpClientUtils.post(reqUrl, map);
+        String result = HttpClient5Util.sendPost(reqUrl, map);
         System.out.println(result);
     }
 
@@ -249,7 +249,7 @@ public class MyNetTest {
             map.put("incomeAccount", java.net.URLEncoder.encode(incomeAccount, "utf-8"));
             System.out.println("校验一卡通账号请求参数：" + map.toString());
 
-            response = HttpClientUtils.post(url, map);
+            response = HttpClient5Util.sendPost(url, map);
             System.out.println("校验一卡通账号,接口返回：" + response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -287,7 +287,7 @@ public class MyNetTest {
         System.out.println("查询消费记录----第二次签名----" + sign);
 
         params.put("sign", sign);
-        String result = HttpClientUtils.post(postUrl, params, "utf-8");
+        String result = HttpClient5Util.sendPost(postUrl, params);
         System.out.println(result);
     }
 
@@ -391,7 +391,7 @@ public class MyNetTest {
         map.put("sign", sign);
         map.put("payMethod", unifiedMethod);
         map.put("orderCode", orderCode);
-        String result = HttpClientUtils.post(reqUrl, map);
+        String result = HttpClient5Util.sendPost(reqUrl, map);
         System.out.println(result);
     }
 
@@ -418,7 +418,7 @@ public class MyNetTest {
         try {
             map.put("realName", java.net.URLEncoder.encode(realName, "utf-8"));
             map.put("incomeAccount", java.net.URLEncoder.encode(cardNo, "utf-8"));
-            response = HttpClientUtils.post(url, map, "utf-8");
+            response = HttpClient5Util.sendPost(url, map);
             System.out.println(response);
         } catch (UnsupportedEncodingException e) {
             // TODO Auto-generated catch block
@@ -465,7 +465,7 @@ public class MyNetTest {
         String sign = SignUtil.getSignMd5(paramsMap, signKey);
         paramsMap.put("sign", sign);
         System.out.println("城市热点，请求参数：" + paramsMap);
-        String result = HttpClientUtils.post(reqUrl, paramsMap);
+        String result = HttpClient5Util.sendPost(reqUrl, paramsMap);
         System.out.println("城市热点，请求返回：" + result);
         if (StringUtils.isNotBlank(result)) {
             try {

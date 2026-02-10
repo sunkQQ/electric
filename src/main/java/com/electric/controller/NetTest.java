@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.electric.model.constant.Numbers;
-import com.electric.util.HttpClientUtils;
+import com.electric.util.HttpClient5Util;
 import com.electric.util.Md5Util;
 
 /**
@@ -44,7 +44,7 @@ public class NetTest {
         /*String ADDRESS = "http://ddfkdev.jiaxingren.com/open/user/getAccByPhone";
         Map<String, String> map = new HashMap<>();
         map.put("phones", "18710369301");
-        String result = HttpClientUtils.post(ADDRESS, map);
+        String result = HttpClient5Util.sendPost(ADDRESS, map);
         System.out.println(result);*/
         String address = "https://open.xiaofubao.com/routesapp/api/route/ua/ccb/electric/queryRoomSurplus";
         //String address = "https://183.131.4.58:9301/routesc/api/route/ua/ccb/electric/queryRoomSurplus";
@@ -66,7 +66,7 @@ public class NetTest {
         map.put("floorCode", "200102");
         String sign = md5(map, "8ZH7+2hPcMENcEr0a9DmHPGR+/toT3DB");
         map.put("SIGN", sign);
-        String result = HttpClientUtils.post(address, map);
+        String result = HttpClient5Util.sendPost(address, map);
         System.out.println(result);
     }
 

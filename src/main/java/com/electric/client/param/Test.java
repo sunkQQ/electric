@@ -3,7 +3,12 @@ package com.electric.client.param;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.spec.AlgorithmParameterSpec;
-import java.util.*;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKeyFactory;
@@ -15,7 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.alibaba.fastjson2.JSONObject;
 import com.electric.exception.BizException;
 import com.electric.util.Base64Util;
-import com.electric.util.HttpClientUtils;
+import com.electric.util.HttpClient5Util;
 import com.electric.util.Md5Util;
 
 /**
@@ -68,7 +73,7 @@ public class Test {
         String result;
         try {
             System.out.println("[测试], 正元水控, 使用记录的订单列表接口, 账号: " + accNum + ", 请求参数：" + map);
-            result = HttpClientUtils.post(URL + TRANSACTION_LIST_URL, map);
+            result = HttpClient5Util.sendPost(URL + TRANSACTION_LIST_URL, map);
             System.out.println("[测试], 正元水控, 使用记录的订单列表接口, 账号: " + accNum + ", 返回结果：" + result);
 
             //result = DesUtil.decode(result, signKey, ivText);

@@ -2,9 +2,17 @@ package com.electric.demo;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.KeyFactory;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -15,7 +23,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 
 import com.electric.util.DateUtil;
-import com.electric.util.HttpBaseUtil;
+import com.electric.util.HttpClient5Util;
 
 /**
  * RSADemo
@@ -211,7 +219,7 @@ public class RSADemo {
         String signParams = md5(getSignParams(map));
         String sign = encryptByPublicKey(signParams, publicKey);
         map.put("sign", sign);
-        String result = HttpBaseUtil.sendPost(url, map);
+        String result = HttpClient5Util.sendPost(url, map);
         System.out.println(result);
     }
 }

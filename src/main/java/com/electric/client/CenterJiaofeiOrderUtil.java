@@ -3,7 +3,7 @@ package com.electric.client;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.electric.util.HttpClientUtils;
+import com.electric.util.HttpClient5Util;
 import com.electric.util.SignUtil;
 
 /**
@@ -46,7 +46,7 @@ public class CenterJiaofeiOrderUtil {
         System.out.println(sign);
         map.put("sign", sign);
         System.out.println(sign);
-        String result = HttpClientUtils.post(queryOrderPage, map);
+        String result = HttpClient5Util.sendPost(queryOrderPage, map);
         System.out.println(result);
         //
         //List<String> strList = Arrays.asList("s", "k");

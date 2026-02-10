@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.electric.model.constant.Numbers;
-import com.electric.util.HttpClientUtils;
+import com.electric.util.HttpClient5Util;
 import com.electric.util.Md5Util;
 
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +41,7 @@ public class CcbElectricUtil {
         String sign = md5(map, SIGN_KEY);
         map.put("SIGN", sign);
         System.out.println("请求参数：" + map);
-        String result = HttpClientUtils.post(QUERY_AREA_URL, map);
+        String result = HttpClient5Util.sendPost(QUERY_AREA_URL, map);
         System.out.println(result);
     }
 

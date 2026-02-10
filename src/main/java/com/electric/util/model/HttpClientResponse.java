@@ -3,6 +3,7 @@ package com.electric.util.model;
 import org.apache.hc.core5.http.Header;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -10,6 +11,7 @@ import lombok.Getter;
  * @author sunk
  * @date 2024/09/11
  */
+@Setter
 @Getter
 public class HttpClientResponse {
 
@@ -22,11 +24,4 @@ public class HttpClientResponse {
         this.header = header;
     }
 
-    public void setResult(String result) {
-        this.result = result;
-    }
-
-    public void setHeader(Header[] header) {
-        this.header = header;
-    }
 }

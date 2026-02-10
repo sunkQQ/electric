@@ -25,7 +25,7 @@ import org.apache.commons.lang.StringUtils;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.electric.util.DateUtil;
-import com.electric.util.HttpClientUtils;
+import com.electric.util.HttpClient5Util;
 import com.electric.util.StringUtil;
 
 /**
@@ -104,7 +104,7 @@ public class CenterAppOrderTest {
         System.out.println(sign);
         map.put("sign", sign);
         System.out.println(sign);
-        String result = HttpClientUtils.post("http://127.0.0.1:8087/app/third/order/batchSave", map);
+        String result = HttpClient5Util.sendPost("http://127.0.0.1:8087/app/third/order/batchSave", map);
         System.out.println(result);
     }
 
@@ -137,7 +137,7 @@ public class CenterAppOrderTest {
         System.out.println(sign);
         map.put("sign", sign);
         System.out.println(sign);
-        String result = HttpClientUtils.post(SAVE_ORDER, map);
+        String result = HttpClient5Util.sendPost(SAVE_ORDER, map);
         System.out.println(result);
         //}
     }
