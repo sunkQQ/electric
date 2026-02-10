@@ -1,7 +1,6 @@
 package com.electric.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -96,20 +95,7 @@ public class DoubleColorBallGenerator {
         List<Integer> redBalls = ticket.get("red");
         List<Integer> blueBalls = ticket.get("blue");
 
-        if (!blueBalls.get(0).equals(4)) {
-            return;
-        }
-
-        List<Integer> oldRedBalls = Arrays.asList(1, 3, 5, 18, 29, 32);
-
-        // 判断两个列表是否包含任意一个元素
-        /*boolean result = containsAny(redBalls, oldRedBalls); // true
-        if (!result) {
-            return;
-        }*/
-        // 判断两个列表是否包含任意一个元素
-        boolean result = containsSameElements(redBalls, oldRedBalls); // true
-        if (!result) {
+        if (checkOld(blueBalls, redBalls)) {
             return;
         }
 
@@ -122,6 +108,33 @@ public class DoubleColorBallGenerator {
             System.out.printf("%02d", blueBall);
         }
         System.out.println();
+    }
+
+    /**
+     * 是否验证历史数据
+     * @param blueBalls
+     * @param redBalls
+     * @return
+     */
+    private static boolean checkOld(List<Integer> blueBalls, List<Integer> redBalls) {
+        return false;
+        /*if (!blueBalls.get(0).equals(4)) {
+            return true;
+        }
+        
+        List<Integer> oldRedBalls = Arrays.asList(1, 3, 5, 18, 29, 32);
+        
+        // 判断两个列表是否包含任意一个元素
+        *//*boolean result = containsAny(redBalls, oldRedBalls); // true
+             if (!result) {
+               return;
+             }*//*
+                   // 判断两个列表是否包含任意一个元素
+                   boolean result = containsSameElements(redBalls, oldRedBalls); // true
+                   if (!result) {
+                    return true;
+                   }
+                   return false;*/
     }
 
     /**
@@ -190,8 +203,6 @@ public class DoubleColorBallGenerator {
         //System.out.println("【示例1：生成5注随机号码】");
         //generateAndPrint(1000000);
 
-        System.out.println("\n====================================\n");
-
         // 示例2：生成单注并获取详细数据
         /*System.out.println("【示例2：生成单注号码并获取数据】");
         Map<String, List<Integer>> singleTicket = generateSingle();
@@ -203,15 +214,15 @@ public class DoubleColorBallGenerator {
         System.out.println("\n====================================\n");*/
 
         // 示例3：生成3注不重复的红球组合
-        for (int e = 0; e < 10; e++) {
-            int count = 1000000;
-            System.out.println("========== 双色球号码生成器 ==========");
-            System.out.println("注数：" + count + "\n");
-            List<Map<String, List<Integer>>> uniqueTickets = generateUniqueCombinations(count);
-            for (int i = 0; i < uniqueTickets.size(); i++) {
-                //System.out.printf("第%02d注：", i + 1);
-                printTicket(uniqueTickets.get(i));
-            }
+        int count = 10;
+        System.out.println("========== 双色球号码生成器 ==========");
+        System.out.println("注数：" + count + "\n");
+        List<Map<String, List<Integer>>> uniqueTickets = generateUniqueCombinations(count);
+        for (int i = 0; i < uniqueTickets.size(); i++) {
+            //System.out.printf("第%02d注：", i + 1);
+            printTicket(uniqueTickets.get(i));
         }
+
+        System.out.println("\n====================================\n");
     }
 }
