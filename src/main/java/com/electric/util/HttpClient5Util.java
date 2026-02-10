@@ -146,7 +146,7 @@ public class HttpClient5Util {
 
         // 注册JVM关闭钩子
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            log.info("JVM关闭钩子执行，正在清理HTTP连接池...");
+            //log.info("JVM关闭钩子执行，正在清理HTTP连接池...");
             shutdownGracefully();
         }));
     }
@@ -792,13 +792,13 @@ public class HttpClient5Util {
      * 优雅关闭HTTP客户端
      */
     public static void shutdownGracefully() {
-        log.info("开始关闭HTTP连接池...");
+        //log.info("开始关闭HTTP连接池...");
 
         try {
             // 1. 先关闭连接管理器（核心）
             if (connManager != null) {
                 connManager.close(); // 这会等待活跃连接完成
-                log.info("HTTP连接管理器已关闭");
+                //log.info("HTTP连接管理器已关闭");
             }
         } catch (Exception e) {
             log.warn("关闭连接管理器异常", e);
@@ -808,7 +808,7 @@ public class HttpClient5Util {
             // 2. 关闭HTTP客户端实例
             if (httpsclient != null) {
                 httpsclient.close();
-                log.info("HTTP客户端1已关闭");
+                //log.info("HTTP客户端1已关闭");
             }
         } catch (Exception e) {
             log.warn("关闭HTTP客户端1异常", e);
@@ -817,12 +817,12 @@ public class HttpClient5Util {
         try {
             if (httpsclient2 != null) {
                 httpsclient2.close();
-                log.info("HTTP客户端2已关闭");
+                //log.info("HTTP客户端2已关闭");
             }
         } catch (Exception e) {
             log.warn("关闭HTTP客户端2异常", e);
         }
 
-        log.info("HTTP连接池关闭完成");
+        //log.info("HTTP连接池关闭完成");
     }
 }
