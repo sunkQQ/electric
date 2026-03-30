@@ -16,6 +16,7 @@ import com.electric.model.constant.StringConstant;
 import com.electric.model.param.net.NetRequestParam;
 import com.electric.model.response.net.cityhot.CityHotV5AccountInfoResponse;
 import com.electric.util.Base64Util;
+import com.electric.util.DateUtil;
 
 /**
  * 城市热点网费
@@ -130,7 +131,13 @@ public class NetCityHotController {
                 response1.setPackage_group_id(101);
                 list.add(response1);
             } else if ("test001".equals(param.getAccount())) {
-
+                //{"result":"X40","result_msg":"查询无记录","list":[],"timestamp":"20260320155154735"}
+                JSONObject json = new JSONObject();
+                json.put("result", "X40");
+                json.put("result_msg", "查询无记录");
+                json.put("list", list);
+                json.put("timestamp", DateUtil.getTimeNow2());
+                return json.toString();
             } else {
                 //for (int i = 0; i <= 20; i++) {
                 CityHotV5AccountInfoResponse response1 = new CityHotV5AccountInfoResponse();
@@ -150,6 +157,11 @@ public class NetCityHotController {
             jsonObject.put("list", new ArrayList<>());
             return jsonObject.toString();
         } else if ("010".equals(param.getCode())) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("result", "E00");
+            return jsonObject.toString();
+        } else if ("001".equals(param.getCode())) {
+            // 注册
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("result", "E00");
             return jsonObject.toString();

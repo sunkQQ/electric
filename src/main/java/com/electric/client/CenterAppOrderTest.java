@@ -123,9 +123,9 @@ public class CenterAppOrderTest {
         map.put("payMoney", money);
         //map.put("payType", "ALIPAY_FACE");
         map.put("payType", "WXPAY");
-        map.put("createTime", "2024-10-20 13:20");
-        map.put("payTime", "2024-10-20 13:22");
-        map.put("refundTime", DateUtil.getTimeNow());
+        map.put("createTime", DateUtil.getTimeNow());
+        map.put("payTime", DateUtil.getTimeNow());
+        //map.put("refundTime", DateUtil.getTimeNow());
         map.put("totalMoney", money);
 
         //String sourceStr1 = RsaUtil3.encryptByPublicKey(sign, public_key);
