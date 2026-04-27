@@ -1,5 +1,6 @@
 package com.electric.util;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -12,6 +13,7 @@ import java.util.Map;
 import javax.net.ssl.SSLContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.MapUtils;
 import org.apache.hc.client5.http.ConnectionKeepAliveStrategy;
 import org.apache.hc.client5.http.auth.AuthScope;
 import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
@@ -20,6 +22,7 @@ import org.apache.hc.client5.http.classic.methods.HttpPut;
 import org.apache.hc.client5.http.config.ConnectionConfig;
 import org.apache.hc.client5.http.config.RequestConfig;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
 import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
@@ -31,6 +34,7 @@ import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.HeaderElement;
 import org.apache.hc.core5.http.HeaderElements;
+import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.HttpHeaders;
 import org.apache.hc.core5.http.HttpResponse;
 import org.apache.hc.core5.http.NameValuePair;
@@ -40,11 +44,13 @@ import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
 import org.apache.hc.core5.http.message.MessageSupport;
 import org.apache.hc.core5.http.protocol.HttpContext;
+import org.apache.hc.core5.io.CloseMode;
 import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.apache.hc.core5.ssl.TrustStrategy;
 import org.apache.hc.core5.util.Args;
 import org.apache.hc.core5.util.TimeValue;
 import org.apache.hc.core5.util.Timeout;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
@@ -54,6 +60,7 @@ import com.electric.util.enums.ContentTypeEnum;
 import com.electric.util.enums.HttpRequestTimeoutEnum;
 import com.electric.util.model.HttpClientResponse;
 
+import cn.hutool.core.date.SystemClock;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -62,7 +69,9 @@ import lombok.extern.slf4j.Slf4j;
  * 包含SSL忽略证书、连接池管理、超时配置、重试策略等功能
  */
 @Slf4j
-public class HttpClient5Util {
+public final class HttpClient5Util {
+    /**最长耗时告警*/
+    private static final long                           COST_MAX_WARN               = 3000l;
     protected static final String                       QUESTION_MARK               = "?";
     protected static final String                       AND_MARK                    = "&";
     protected static final String                       CHARTSET_UTF8               = "UTF-8";
@@ -77,15 +86,16 @@ public class HttpClient5Util {
     protected static final String                       USER_AGENT_VALUE            = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36";
     protected static RequestConfig                      requestConfig;
     protected static RequestConfig                      requestConfig2;
+    protected static RequestConfig                      requestConfig3;
     /**会话保持*/
     protected static ConnectionKeepAliveStrategy        connectionKeepAliveStrategy = null;
     protected static PoolingHttpClientConnectionManager connManager;
     protected static CloseableHttpClient                httpsclient;
     protected static CloseableHttpClient                httpsclient2;
+    protected static CloseableHttpClient                httpsclient3;
 
     // 静态初始化块，初始化HTTP客户端配置
     static {
-
         connectionKeepAliveStrategy = new ConnectionKeepAliveStrategy() {
             @Override
             public TimeValue getKeepAliveDuration(HttpResponse response, HttpContext context) {
@@ -130,12 +140,12 @@ public class HttpClient5Util {
             log.error("SSL context initialization failed", e);
         }
 
-        // 创建请求配置（连接超时3秒，响应超时10秒）
+        //requestConfig
         requestConfig = RequestConfig.custom().setResponseTimeout(Timeout.ofMilliseconds(10000))
             .setConnectionRequestTimeout(Timeout.ofMilliseconds(3000)).build();
-
-        // 创建另一个请求配置（连接超时3秒，响应超时30秒）
         requestConfig2 = RequestConfig.custom().setResponseTimeout(Timeout.ofMilliseconds(30000))
+            .setConnectionRequestTimeout(Timeout.ofMilliseconds(3000)).build();
+        requestConfig3 = RequestConfig.custom().setResponseTimeout(Timeout.ofMilliseconds(600000))
             .setConnectionRequestTimeout(Timeout.ofMilliseconds(3000)).build();
 
         // 创建HTTP客户端实例
@@ -143,10 +153,12 @@ public class HttpClient5Util {
             .setDefaultRequestConfig(requestConfig).build();
         httpsclient2 = HttpClients.custom().setConnectionManager(connManager).setKeepAliveStrategy(connectionKeepAliveStrategy)
             .setDefaultRequestConfig(requestConfig2).build();
+        httpsclient3 = HttpClients.custom().setConnectionManager(connManager).setKeepAliveStrategy(connectionKeepAliveStrategy)
+            .setDefaultRequestConfig(requestConfig3).build();
 
         // 注册JVM关闭钩子
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            //log.info("JVM关闭钩子执行，正在清理HTTP连接池...");
+            log.info("JVM关闭钩子执行，正在清理HTTP连接池...");
             shutdownGracefully();
         }));
     }
@@ -201,6 +213,7 @@ public class HttpClient5Util {
      * @return 响应内容
      */
     public static String sendGet(String url, Map<String, String> params, Map<String, String> head, HttpRequestTimeoutEnum timeoutEnum) {
+        long start = SystemClock.now();
         try {
             ClassicRequestBuilder builder = ClassicRequestBuilder.get(url);
             // 添加参数
@@ -223,22 +236,64 @@ public class HttpClient5Util {
             String ip = IpUtil.getRemoteIp(url);
             log.warn("发送get请求异常,ip:{},url:{}", ip, url, e);
             throw new BizException("发送get请求异常", ip, e);
+        } finally {
+            long cost = SystemClock.now() - start;
+            if (cost > COST_MAX_WARN) {
+                log.warn("HTTP请求完成,url:{},耗时:{}ms", url, cost);
+            }
         }
     }
 
     /**
      * 发送带基本认证的GET请求
-     * @param url 请求地址
-     * @param params 请求参数
-     * @param name 用户名
-     * @param password 密码
-     * @return 响应内容
+     *
+     * @param url
+     * @param params
+     * @param name
+     * @param password
+     * @return
+     * @date  2026年3月5日 下午1:25:02 luochao
+     *
      */
     public static String sendNewGet(String url, Map<String, String> params, String name, String password) {
-        BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
-        credsProvider.setCredentials(new AuthScope(null, -1), new UsernamePasswordCredentials(name, password.toCharArray()));
-        try (CloseableHttpClient client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).setDefaultRequestConfig(requestConfig)
-            .build()) {
+        return sendNewGet(url, params, name, password, Numbers.INT_30000);
+    }
+
+    /**
+     * 发送get请求
+     *
+     * @param url
+     * @param params
+     * @param timeoutMillis
+     * @return
+     * @date  2026年3月5日 下午1:29:05 luochao
+     *
+     */
+    public static String sendNewGet(String url, Map<String, String> params, int timeoutMillis) {
+        return sendNewGet(url, params, null, null, timeoutMillis);
+    }
+
+    /**
+     * 发送带基本认证的GET请求（可指定超时时间，毫秒）
+     *
+     * @param url
+     * @param params
+     * @param name
+     * @param password
+     * @param timeoutMillis 超时  单位:毫秒
+     * @return
+     * @date  2026年3月5日 下午1:11:56 luochao
+     *
+     */
+    public static String sendNewGet(String url, Map<String, String> params, String name, String password, int timeoutMillis) {
+        long start = SystemClock.now();
+        BasicCredentialsProvider credsProvider = null;
+        if (name != null && password != null) {
+            credsProvider = new BasicCredentialsProvider();
+            credsProvider.setCredentials(new AuthScope(null, -1), new UsernamePasswordCredentials(name, password.toCharArray()));
+        }
+        try (CloseableHttpClient client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider)
+            .setDefaultRequestConfig(buildRequestConfig(timeoutMillis)).build()) {
             ClassicRequestBuilder builder = ClassicRequestBuilder.get(url);
             if (params != null) {
                 for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -249,13 +304,17 @@ public class HttpClient5Util {
                 try {
                     return EntityUtils.toString(response.getEntity());
                 } finally {
-                    // 确保实体被完全消费，释放连接
                     EntityUtils.consumeQuietly(response.getEntity());
                 }
             });
         } catch (Exception e) {
             log.error("发送请求失败", e);
             throw new RuntimeException(e);
+        } finally {
+            long cost = SystemClock.now() - start;
+            if (cost > COST_MAX_WARN) {
+                log.warn("HTTP请求完成,url:{},耗时:{}ms", url, cost);
+            }
         }
     }
 
@@ -276,20 +335,67 @@ public class HttpClient5Util {
      * @return 响应内容
      */
     public static String sendNewPost(String url, StringEntity stringEntity) {
-        try (CloseableHttpClient client = HttpClients.custom().setDefaultRequestConfig(requestConfig).build()) {
+        return sendNewPost(url, stringEntity, Numbers.INT_30000);
+    }
+
+    /**
+     * 发送POST请求
+     *
+     * @param url 地址
+     * @param params 参数
+     * @param timeoutMillis 超时  单位:毫秒
+     * @return
+     * @date  2026年3月5日 下午1:24:21 luochao
+     *
+     */
+    public static String sendNewPost(String url, Map<String, String> params, int timeoutMillis) {
+        return sendNewPost(url, assembleParam(params, ContentTypeEnum.FORM_URL.getContentType()), Numbers.INT_30000);
+    }
+
+    /**
+     * 发送POST请求
+     *
+     * @param url 地址
+     * @param params 参数
+     * @param timeoutMillis  超时  单位:毫秒
+     * @return
+     * @date  2026年3月5日 下午3:44:53 luochao
+     *
+     */
+    public static String sendNewPostJson(String url, JSONObject params, int timeoutMillis) {
+        return sendNewPost(url, new StringEntity(params.toJSONString(), ContentType.APPLICATION_JSON), timeoutMillis);
+    }
+
+    /**
+     * 发送POST请求（可指定超时时间，毫秒）
+     *
+     * @param url 地址
+     * @param stringEntity 参数
+     * @param timeoutMillis 超时  单位:毫秒
+     * @return
+     * @date  2026年3月5日 下午1:15:32 luochao
+     *
+     */
+    public static String sendNewPost(String url, StringEntity stringEntity, int timeoutMillis) {
+        long start = SystemClock.now();
+        try (CloseableHttpClient client = HttpClients.custom().setDefaultRequestConfig(buildRequestConfig(timeoutMillis)).build()) {
             HttpPost httpPost = new HttpPost(url);
             httpPost.setEntity(stringEntity);
             return client.execute(httpPost, response -> {
                 try {
                     return EntityUtils.toString(response.getEntity());
                 } finally {
-                    // 确保实体被完全消费，释放连接
                     EntityUtils.consumeQuietly(response.getEntity());
                 }
             });
         } catch (Exception e) {
             log.error("发送http post请求失败", e);
             throw new RuntimeException("发送http post请求失败", e);
+        } finally {
+            long cost = SystemClock.now() - start;
+            if (cost > COST_MAX_WARN) {
+                log.warn("HTTP请求完成,url:{},耗时:{}ms", url, cost);
+            }
         }
     }
 
@@ -362,7 +468,7 @@ public class HttpClient5Util {
      * 发送POST请求
      * @param url 请求地址
      * @param params 请求参数
-     * @param contentType 请使用枚举 ContentTypeEnum 中提供的ContentType
+     * @param contentType 请使用枚举 ContentType5Enum 中提供的ContentType
      * @return 响应对象
      */
     public static HttpClientResponse sendPost(String url, Map<String, String> params, ContentType contentType) {
@@ -390,8 +496,8 @@ public class HttpClient5Util {
      * 发送POST请求
      * @param url 请求地址
      * @param params 请求参数
-     * @param contentType 请使用枚举 ContentTypeEnum 中提供的ContentType
-     * @param returnHeader returnHeader
+     * @param contentType 请使用枚举 ContentType5Enum 中提供的ContentType
+     * @param returnHeader
      * @return 响应对象
      */
     public static HttpClientResponse sendPost(String url, Map<String, String> params, ContentType contentType, String returnHeader) {
@@ -407,7 +513,7 @@ public class HttpClient5Util {
      * @param params 请求参数
      * @param head 请求头
      * @param returnCharset 返回字符集
-     * @param contentType 请使用枚举 ContentTypeEnum 中提供的ContentType
+     * @param contentType 请使用枚举 ContentType5Enum 中提供的ContentType
      * @param timeoutEnum 超时枚举
      * @return 响应对象
      */
@@ -425,6 +531,7 @@ public class HttpClient5Util {
      * @param url
      * @param paramMap
      * @return
+     * @date  2025年8月27日 下午1:14:38 luochao
      *
      */
     public static String sendPost1(String url, Map<String, Object> paramMap) {
@@ -438,6 +545,7 @@ public class HttpClient5Util {
      * @param paramMap
      * @param headMap
      * @return
+     * @date  2025年8月27日 下午1:14:49 luochao
      *
      */
     public static String sendPost1(String url, Map<String, Object> paramMap, Map<String, String> headMap) {
@@ -448,7 +556,7 @@ public class HttpClient5Util {
      * 发送post请求， 注此方法适用于ContentType=application/x-www-form-urlencoded
      *
      * @param url
-     * @param map
+     * @param paramMap
      * @param headMap 请求头携带参数
      * @param returnCharset 返回数据编码格式
      * @return
@@ -479,6 +587,7 @@ public class HttpClient5Util {
      * @return 响应内容
      */
     public static String sendPostJson(String url, String jsonParam, String name, String password) {
+        long start = SystemClock.now();
         BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
         credsProvider.setCredentials(new AuthScope(null, -1), new UsernamePasswordCredentials(name, password.toCharArray()));
         try (CloseableHttpClient client = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).setDefaultRequestConfig(requestConfig)
@@ -497,6 +606,11 @@ public class HttpClient5Util {
         } catch (Exception e) {
             log.error("发送sendPostJson请求失败", e);
             throw new RuntimeException(e);
+        } finally {
+            long cost = SystemClock.now() - start;
+            if (cost > COST_MAX_WARN) {
+                log.warn("HTTP请求完成,url:{},耗时:{}ms", url, cost);
+            }
         }
     }
 
@@ -549,6 +663,52 @@ public class HttpClient5Util {
     }
 
     /**
+     * 发送post文件请求
+     *
+     * @param url
+     * @param params
+     * @param head
+     * @param returnCharset
+     * @param timeoutEnum
+     * @param file
+     * @return
+     * @create
+     * @history
+     */
+    public static HttpClientResponse sendPostFile(String url, Map<String, String> params, Map<String, String> head, String returnCharset,
+                                                  HttpRequestTimeoutEnum timeoutEnum, MultipartFile file) {
+        if (null == timeoutEnum) {
+            timeoutEnum = HttpRequestTimeoutEnum.ten;
+        }
+
+        //  创建Post方式请求
+        HttpPost httpPost = new HttpPost(url);
+        assembleHeader(httpPost, head, ContentType.MULTIPART_FORM_DATA);
+        MultipartEntityBuilder multipartEntityBuilder = MultipartEntityBuilder.create().setCharset(StandardCharsets.UTF_8);
+
+        if (MapUtils.isNotEmpty(params)) {
+            //设置请求体的参数
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                multipartEntityBuilder.addTextBody(entry.getKey(), entry.getValue());
+            }
+        }
+
+        try {
+            //把文件放到请求体中
+            multipartEntityBuilder.addBinaryBody("file", file.getInputStream(), ContentType.MULTIPART_FORM_DATA, file.getOriginalFilename());
+        } catch (IOException e) {
+            String hostAddress = IpUtil.getRemoteIp(url);
+            log.info("文件传输失败,ip-->{},host-->{}", hostAddress, url);
+            throw new BizException("发送post请求异常", hostAddress, e);
+        }
+
+        //构建请求实体
+        HttpEntity entity = multipartEntityBuilder.build();
+        httpPost.setEntity(entity);
+        return basePost(url, httpPost, returnCharset, timeoutEnum, null);
+    }
+
+    /**
      * 发送JSON PUT请求
      * @param url 请求地址
      * @param jsonParams JSON参数
@@ -565,7 +725,7 @@ public class HttpClient5Util {
      * @param jsonParams JSON参数
      * @param head 请求头
      * @param returnCharset 返回字符集
-     * @param contentType 请使用枚举 ContentTypeEnum 中提供的ContentType
+     * @param contentType 请使用枚举 ContentType5Enum 中提供的ContentType
      * @param timeoutEnum 超时枚举
      * @return 响应对象
      */
@@ -595,7 +755,7 @@ public class HttpClient5Util {
      *
      * @param url 请求地址
      * @param stringParams 参数，与contentType对应
-     * @param contentType 请使用枚举 ContentTypeEnum 中提供的ContentType
+     * @param contentType 请使用枚举 ContentType5Enum 中提供的ContentType
      * @return
      * @date  2025年8月22日 下午6:16:32 luochao
      *
@@ -609,7 +769,7 @@ public class HttpClient5Util {
      * @param url 请求地址
      * @param stringParams 字符串参数
      * @param head 请求头
-     * @param contentType 请使用枚举 ContentTypeEnum 中提供的ContentType
+     * @param contentType 请使用枚举 ContentType5Enum 中提供的ContentType
      * @return 响应内容
      */
     public static String sendPostString(String url, String stringParams, Map<String, String> head, ContentType contentType) {
@@ -617,11 +777,11 @@ public class HttpClient5Util {
     }
 
     /**
-     * 发送字符串POST请求,ContentTypeEnum为框架提供
+     * 发送字符串POST请求,ContentType5Enum为框架提供
      *
      * @param url
      * @param stringParams
-     * @param contentTypeEnum 请使用枚举 ContentTypeEnum 中提供的ContentType
+     * @param contentTypeEnum 请使用枚举 ContentType5Enum 中提供的ContentType
      * @return
      * @date  2025年8月27日 下午2:22:54 luochao
      *
@@ -635,7 +795,7 @@ public class HttpClient5Util {
      * @param url 请求地址
      * @param stringParams 字符串参数
      * @param head 请求头
-     * @param contentType 请使用枚举 ContentTypeEnum 中提供的ContentType
+     * @param contentType 请使用枚举 ContentType5Enum 中提供的ContentType
      * @param timeoutEnum 超时枚举
      * @return 响应内容
      */
@@ -649,7 +809,7 @@ public class HttpClient5Util {
      * @param url 请求地址
      * @param stringParams 字符串参数
      * @param head 请求头
-     * @param contentType 请使用枚举 ContentTypeEnum 中提供的ContentType
+     * @param contentType 请使用枚举 ContentType5Enum 中提供的ContentType
      * @param timeoutEnum 超时枚举
      * @return 响应对象
      */
@@ -663,7 +823,7 @@ public class HttpClient5Util {
      * @param url 请求地址
      * @param stringParams 字符串参数
      * @param head 请求头
-     * @param contentType 请使用枚举 ContentTypeEnum 中提供的ContentType
+     * @param contentType 请使用枚举 ContentType5Enum 中提供的ContentType
      * @param returnCharset 返回字符集
      * @param timeoutEnum 超时枚举
      * @return 响应对象
@@ -690,6 +850,7 @@ public class HttpClient5Util {
      */
     private static HttpClientResponse basePost(String url, ClassicHttpRequest request, String returnCharset, HttpRequestTimeoutEnum timeoutEnum,
                                                String returnHeader) {
+        long start = SystemClock.now();
         try {
             return getHttpClient(timeoutEnum).execute(request, response -> {
                 try {
@@ -708,13 +869,18 @@ public class HttpClient5Util {
             String ip = IpUtil.getRemoteIp(url);
             log.warn("发送post请求异常,ip:{},url:{}", ip, url, e);
             throw new BizException("发送post请求异常", ip, e);
+        } finally {
+            long cost = SystemClock.now() - start;
+            if (cost > COST_MAX_WARN) {
+                log.warn("HTTP请求完成,url:{},耗时:{}ms", url, cost);
+            }
         }
     }
 
     /**
      * 组装请求参数
      * @param map 参数映射
-     * @param contentType 请使用枚举 ContentTypeEnum 中提供的ContentType
+     * @param contentType 请使用枚举 ContentType5Enum 中提供的ContentType
      * @return 字符串实体
      */
     public static StringEntity assembleParam(Map<String, String> map, ContentType contentType) {
@@ -733,7 +899,7 @@ public class HttpClient5Util {
      * 组装请求头
      * @param request 请求对象
      * @param head 请求头映射
-     * @param contentType 请使用枚举 ContentTypeEnum 中提供的ContentType
+     * @param contentType 请使用枚举 ContentType5Enum 中提供的ContentType
      */
     private static void assembleHeader(ClassicHttpRequest request, Map<String, String> head, ContentType contentType) {
         if (ContentType.APPLICATION_JSON.getMimeType().equals(contentType.getMimeType())) {
@@ -768,12 +934,29 @@ public class HttpClient5Util {
     }
 
     /**
+     * 根据超时毫秒数构建请求配置
+     */
+    private static RequestConfig buildRequestConfig(int timeoutMillis) {
+        return RequestConfig.custom().setResponseTimeout(Timeout.ofMilliseconds(timeoutMillis))
+            .setConnectionRequestTimeout(Timeout.ofMilliseconds(3000)) // 与原枚举保持一致
+            .build();
+    }
+
+    /**
      * 获取HTTP客户端
      * @param timeoutEnum 超时枚举
      * @return HTTP客户端实例
      */
-    private static CloseableHttpClient getHttpClient(HttpRequestTimeoutEnum timeoutEnum) {
-        return timeoutEnum == HttpRequestTimeoutEnum.ten ? httpsclient : httpsclient2;
+    protected static CloseableHttpClient getHttpClient(HttpRequestTimeoutEnum timeoutEnum) {
+        if (HttpRequestTimeoutEnum.ten.equals(timeoutEnum)) {
+            return httpsclient;
+        } else if (HttpRequestTimeoutEnum.thirty.equals(timeoutEnum)) {
+            return httpsclient2;
+        } else if (HttpRequestTimeoutEnum.six_hundred.equals(timeoutEnum)) {
+            return httpsclient3;
+        } else {
+            return httpsclient;
+        }
     }
 
     /**
@@ -797,7 +980,7 @@ public class HttpClient5Util {
         try {
             // 1. 先关闭连接管理器（核心）
             if (connManager != null) {
-                connManager.close(); // 这会等待活跃连接完成
+                connManager.close(CloseMode.IMMEDIATE); // 这会等待活跃连接完成
                 log.info("HTTP连接管理器已关闭");
             }
         } catch (Exception e) {
@@ -821,6 +1004,15 @@ public class HttpClient5Util {
             }
         } catch (Exception e) {
             log.warn("关闭HTTP客户端2异常", e);
+        }
+
+        try {
+            if (httpsclient3 != null) {
+                httpsclient3.close();
+                log.info("HTTP客户端3已关闭");
+            }
+        } catch (Exception e) {
+            log.warn("关闭HTTP客户端3异常", e);
         }
 
         log.info("HTTP连接池关闭完成");
