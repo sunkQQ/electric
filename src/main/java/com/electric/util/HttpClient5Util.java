@@ -133,8 +133,8 @@ public final class HttpClient5Util {
 
             // 创建连接池管理器
             connManager = PoolingHttpClientConnectionManagerBuilder.create().setTlsSocketStrategy(tlsStrategy).setMaxConnTotal(500)
-                .setMaxConnPerRoute(200).setDefaultConnectionConfig(ConnectionConfig.custom().setSocketTimeout(Timeout.ofSeconds(30))
-                    .setConnectTimeout(Timeout.ofSeconds(10)).setValidateAfterInactivity(TimeValue.ofSeconds(60)).build())
+                .setMaxConnPerRoute(100).setDefaultConnectionConfig(ConnectionConfig.custom().setSocketTimeout(Timeout.ofSeconds(30))
+                    .setConnectTimeout(Timeout.ofSeconds(3)).setValidateAfterInactivity(TimeValue.ofSeconds(30)).build())
                 .build();
         } catch (Exception e) {
             log.error("SSL context initialization failed", e);
@@ -149,12 +149,9 @@ public final class HttpClient5Util {
             .setConnectionRequestTimeout(Timeout.ofMilliseconds(3000)).build();
 
         // 创建HTTP客户端实例
-        httpsclient = HttpClients.custom().setConnectionManager(connManager).setKeepAliveStrategy(connectionKeepAliveStrategy)
-            .setDefaultRequestConfig(requestConfig).build();
-        httpsclient2 = HttpClients.custom().setConnectionManager(connManager).setKeepAliveStrategy(connectionKeepAliveStrategy)
-            .setDefaultRequestConfig(requestConfig2).build();
-        httpsclient3 = HttpClients.custom().setConnectionManager(connManager).setKeepAliveStrategy(connectionKeepAliveStrategy)
-            .setDefaultRequestConfig(requestConfig3).build();
+        httpsclient = HttpClients.custom().setConnectionManager(connManager).setDefaultRequestConfig(requestConfig).build();
+        httpsclient2 = HttpClients.custom().setConnectionManager(connManager).setDefaultRequestConfig(requestConfig2).build();
+        httpsclient3 = HttpClients.custom().setConnectionManager(connManager).setDefaultRequestConfig(requestConfig3).build();
 
         // 注册JVM关闭钩子
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -556,7 +553,7 @@ public final class HttpClient5Util {
      * 发送post请求， 注此方法适用于ContentType=application/x-www-form-urlencoded
      *
      * @param url
-     * @param paramMap
+     * @param map
      * @param headMap 请求头携带参数
      * @param returnCharset 返回数据编码格式
      * @return
@@ -769,7 +766,7 @@ public final class HttpClient5Util {
      * @param url 请求地址
      * @param stringParams 字符串参数
      * @param head 请求头
-     * @param contentType 请使用枚举 ContentType5Enum 中提供的ContentType
+     * @param contentTypeEnum 请使用枚举 ContentType5Enum 中提供的ContentType
      * @return 响应内容
      */
     public static String sendPostString(String url, String stringParams, Map<String, String> head, ContentType contentType) {
@@ -980,7 +977,7 @@ public final class HttpClient5Util {
         try {
             // 1. 先关闭连接管理器（核心）
             if (connManager != null) {
-                connManager.close(CloseMode.IMMEDIATE); // 这会等待活跃连接完成
+                connManager.close(CloseMode.IMMEDIATE);
                 log.info("HTTP连接管理器已关闭");
             }
         } catch (Exception e) {
@@ -990,7 +987,7 @@ public final class HttpClient5Util {
         try {
             // 2. 关闭HTTP客户端实例
             if (httpsclient != null) {
-                httpsclient.close();
+                httpsclient.close(CloseMode.IMMEDIATE);
                 log.info("HTTP客户端1已关闭");
             }
         } catch (Exception e) {
@@ -999,7 +996,7 @@ public final class HttpClient5Util {
 
         try {
             if (httpsclient2 != null) {
-                httpsclient2.close();
+                httpsclient2.close(CloseMode.IMMEDIATE);
                 log.info("HTTP客户端2已关闭");
             }
         } catch (Exception e) {
@@ -1008,7 +1005,7 @@ public final class HttpClient5Util {
 
         try {
             if (httpsclient3 != null) {
-                httpsclient3.close();
+                httpsclient3.close(CloseMode.IMMEDIATE);
                 log.info("HTTP客户端3已关闭");
             }
         } catch (Exception e) {
@@ -1017,4 +1014,5 @@ public final class HttpClient5Util {
 
         log.info("HTTP连接池关闭完成");
     }
+
 }

@@ -127,4 +127,5 @@ public class Numbers {
     public static final String STRING_2      = "2";
     public static final String STRING_7      = "7";
 
+    public static final int    INT_30000     = 30000;
 }

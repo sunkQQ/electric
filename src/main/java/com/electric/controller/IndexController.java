@@ -1,5 +1,7 @@
 package com.electric.controller;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.electric.model.param.ElectricQuerySurplueParam;
 
 /**
@@ -75,5 +78,27 @@ public class IndexController {
 
         // System.out.println("test");
         return "index2";
+    }
+
+    @RequestMapping(value = "/getParamStr")
+    public @ResponseBody String getParamFromRequestStr(HttpServletRequest request) throws IOException {
+
+        BufferedReader br = request.getReader();
+        Map<String, String[]> paramMap = request.getParameterMap();
+        JSONObject json = new JSONObject();
+        json.put("code", "0");
+        JSONObject formData = new JSONObject();
+        for (Map.Entry<String, String[]> entry : paramMap.entrySet()) {
+            String key = entry.getKey();
+            String[] values = entry.getValue();
+            String value = null;
+            if (values.length > 0) {
+                value = values[0];
+            }
+            formData.put(key, value);
+
+        }
+        json.put("formData", formData);
+        return json.toString();
     }
 }

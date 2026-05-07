@@ -15,6 +15,8 @@ public enum HttpRequestTimeoutEnum {
     /** 30s */
     thirty(30, "30秒"),
 
+    six_hundred(600, "600秒"),
+
     /***/
     ;
 
